@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/ant/projects/CarAndAll/Backend/Backend.csproj": {}
+    "C:\\Users\\pbt05\\project voor school official\\CarAndAll\\Backend\\Backend.csproj": {}
   },
   "projects": {
-    "/home/ant/projects/CarAndAll/Backend/Backend.csproj": {
+    "C:\\Users\\pbt05\\project voor school official\\CarAndAll\\Backend\\Backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/ant/projects/CarAndAll/Backend/Backend.csproj",
+        "projectUniqueName": "C:\\Users\\pbt05\\project voor school official\\CarAndAll\\Backend\\Backend.csproj",
         "projectName": "Backend",
-        "projectPath": "/home/ant/projects/CarAndAll/Backend/Backend.csproj",
-        "packagesPath": "/home/ant/.nuget/packages/",
-        "outputPath": "/home/ant/projects/CarAndAll/Backend/obj/",
+        "projectPath": "C:\\Users\\pbt05\\project voor school official\\CarAndAll\\Backend\\Backend.csproj",
+        "packagesPath": "C:\\Users\\pbt05\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\pbt05\\project voor school official\\CarAndAll\\Backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/ant/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\pbt05\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -43,6 +43,24 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.AspNetCore": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.4.0, )"
@@ -67,7 +85,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/ant/.dotnet/sdk/8.0.401/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
