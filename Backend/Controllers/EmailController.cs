@@ -14,7 +14,7 @@ namespace CarAndAll
 
     public class EmailDbContext : DbContext
     {
-        public DbSet<Email> Emails { get; set; }
+        public required DbSet<Email> Emails { get; set; }
 
         public EmailDbContext(DbContextOptions<EmailDbContext> options) : base(options)
         {
@@ -31,8 +31,6 @@ namespace CarAndAll
         {
             _emailDbContext = context;
         }
-
-        // ...existing code...
 
         public class EmailModel
         {
