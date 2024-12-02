@@ -1,34 +1,34 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const EmailRemove: React.FC<{ setEmails: React.Dispatch<React.SetStateAction<string[]>> }> = ({ setEmails }) => {
-    const [emailToRemove, setEmailToRemove] = useState<string>('');
+interface EmailRemoveProps {
+    setEmails: React.Dispatch<React.SetStateAction<string[]>>;
+}
 
-    const removeEmail = async () => {
-        if (!emailToRemove) return;
+const EmailRemove: React.FC<EmailRemoveProps> = ({ setEmails }) => {
+    const [email, setEmail] = useState('');
+
+    const handleRemoveEmail = async () => {
         try {
-            const response = await axios.delete<string[]>(`http://localhost:5016/api/email/emails/${emailToRemove}`);
-            setEmails(response.data);
-            setEmailToRemove('');
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                console.error('Error removing email:', error.message);
-            } else {
-                console.error('Error removing email:', error);
+            const response = await axios.post('http://localhost:5016/api/email/removeUserFromCompany', { email });
+            if (response.status === 200) {
+                setEmails(prevEmails => prevEmails.filter(e => e !== email));
+                setEmail('');
             }
+        } catch (error) {
+            console.error('Error removing email:', error);
         }
     };
 
     return (
-        <div className="remove-email">
-            <h2>Remove Email</h2>
+        <div>
             <input
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter email to remove"
-                value={emailToRemove}
-                onChange={(e) => setEmailToRemove(e.target.value)}
             />
-            <button onClick={removeEmail}>Remove</button>
+            <button onClick={handleRemoveEmail}>Remove Email</button>
         </div>
     );
 };

@@ -1,24 +1,39 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace CarAndAll
 {
-    public class Email
-    {
-        public int Id { get; set; }
-        public required string Address { get; set; }
-    }
-
     public class EmailDbContext : DbContext
     {
-        public required DbSet<Email> Emails { get; set; }
+        public DbSet<Account> Accounts { get; set; }
+        public DbSet<Bedrijf> Bedrijven { get; set; }
+        public DbSet<AccountBedrijf> AccountBedrijven { get; set; } // Update this line
 
         public EmailDbContext(DbContextOptions<EmailDbContext> options) : base(options)
         {
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Define the many-to-many relationship between Account and Bedrijf
+            modelBuilder.Entity<AccountBedrijf>()
+                .HasKey(ab => new { ab.account_id, ab.bedrijf_id });
+
+            modelBuilder.Entity<AccountBedrijf>()
+                .HasOne(ab => ab.Account)
+                .WithMany(a => a.AccountBedrijven)
+                .HasForeignKey(ab => ab.account_id);
+
+            modelBuilder.Entity<AccountBedrijf>()
+                .HasOne(ab => ab.Bedrijf)
+                .WithMany(b => b.AccountBedrijven)
+                .HasForeignKey(ab => ab.bedrijf_id);
         }
     }
 
@@ -26,64 +41,131 @@ namespace CarAndAll
     [Route("api/[controller]")]
     public class EmailController : ControllerBase
     {
-        private readonly EmailDbContext _emailDbContext;
+        private readonly ApplicationDbContext _emailDbContext;
+        private readonly IUserService _userService;
 
-        public EmailController(EmailDbContext context)
+        public EmailController(ApplicationDbContext context, IUserService userService)
         {
             _emailDbContext = context;
+            _userService = userService;
         }
-
-        // ...existing code...
 
         public class EmailModel
         {
-            [JsonProperty("Email")]
+            [JsonProperty("email")]
             public required string Email { get; set; }
         }
 
-        [HttpGet("emails")]
+        [HttpGet("emails")] // Ensure this matches the frontend request
         public async Task<IActionResult> GetEmails()
         {
             try
             {
-                var emails = await _emailDbContext.Emails.Select(e => e.Address).ToListAsync();
-                return Ok(emails);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
+                var account_id = _userService.GetAccount_Id();  // Get logged-in user's AccountId
+                var bedrijf_id = await _emailDbContext.AccountBedrijven
+                    .Where(ab => ab.account_id == account_id)
+                    .Select(ab => ab.bedrijf_id)
+                    .FirstOrDefaultAsync();
 
-        [HttpPost("emails/add")]
-        public async Task<IActionResult> AddEmail([FromBody] EmailModel emailModel)
-        {
-            try
-            {
-                _emailDbContext.Emails.Add(new Email { Address = emailModel.Email });
-                await _emailDbContext.SaveChangesAsync();
-                var emails = await _emailDbContext.Emails.Select(e => e.Address).ToListAsync();
-                return Ok(emails);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
-        [HttpDelete("emails/{email}")]
-        public async Task<IActionResult> RemoveEmail(string email)
-        {
-            try
-            {
-                var emailEntity = await _emailDbContext.Emails.FirstOrDefaultAsync(e => e.Address == email);
-                if (emailEntity != null)
+                if (bedrijf_id == 0)
                 {
-                    _emailDbContext.Emails.Remove(emailEntity);
-                    await _emailDbContext.SaveChangesAsync();
+                    return Unauthorized("User is not associated with any company.");
                 }
-                var emails = await _emailDbContext.Emails.Select(e => e.Address).ToListAsync();
-                return Ok(emails);
+
+                var accountEmails = await _emailDbContext.Accounts
+                    .Join(_emailDbContext.AccountBedrijven,
+                          a => a.Id,
+                          ab => ab.account_id,
+                          (a, ab) => new { a.Email, ab.bedrijf_id })
+                    .Where(result => result.bedrijf_id == bedrijf_id)
+                    .Select(result => result.Email)
+                    .ToListAsync();
+
+                return Ok(accountEmails);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("addUserToCompany")]
+        public async Task<IActionResult> AddUserToCompany([FromBody] EmailModel model)
+        {
+            try
+            {
+                var account = await _emailDbContext.Accounts
+                    .FirstOrDefaultAsync(a => a.Email == model.Email);
+
+                if (account == null)
+                {
+                    return NotFound("Account with the provided email does not exist.");
+                }
+
+                var account_id = _userService.GetAccount_Id();  // Get logged-in user's AccountId
+                var bedrijf_id = await _emailDbContext.AccountBedrijven
+                    .Where(ab => ab.account_id == account_id)
+                    .Select(ab => ab.bedrijf_id)
+                    .FirstOrDefaultAsync();
+
+                if (bedrijf_id == 0)
+                {
+                    return Unauthorized("User is not associated with any company.");
+                }
+
+                var accountBedrijf = new AccountBedrijf
+                {
+                    account_id = account.Id,
+                    bedrijf_id = bedrijf_id
+                };
+
+                _emailDbContext.AccountBedrijven.Add(accountBedrijf);
+                await _emailDbContext.SaveChangesAsync();
+
+                return Ok("User added to the company successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("removeUserFromCompany")]
+        public async Task<IActionResult> RemoveUserFromCompany([FromBody] EmailModel model)
+        {
+            try
+            {
+                var account = await _emailDbContext.Accounts
+                    .FirstOrDefaultAsync(a => a.Email == model.Email);
+
+                if (account == null)
+                {
+                    return NotFound("Account with the provided email does not exist.");
+                }
+
+                var account_id = _userService.GetAccount_Id();  // Get logged-in user's AccountId
+                var bedrijf_id = await _emailDbContext.AccountBedrijven
+                    .Where(ab => ab.account_id == account_id)
+                    .Select(ab => ab.bedrijf_id)
+                    .FirstOrDefaultAsync();
+
+                if (bedrijf_id == 0)
+                {
+                    return Unauthorized("User is not associated with any company.");
+                }
+
+                var accountBedrijf = await _emailDbContext.AccountBedrijven
+                    .FirstOrDefaultAsync(ab => ab.account_id == account.Id && ab.bedrijf_id == bedrijf_id);
+
+                if (accountBedrijf == null)
+                {
+                    return NotFound("User is not associated with the company.");
+                }
+
+                _emailDbContext.AccountBedrijven.Remove(accountBedrijf);
+                await _emailDbContext.SaveChangesAsync();
+
+                return Ok("User removed from the company successfully.");
             }
             catch (Exception ex)
             {

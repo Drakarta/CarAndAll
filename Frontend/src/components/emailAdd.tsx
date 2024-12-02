@@ -1,34 +1,34 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const EmailAdd: React.FC<{ setEmails: React.Dispatch<React.SetStateAction<string[]>> }> = ({ setEmails }) => {
-    const [newEmail, setNewEmail] = useState<string>('');
+interface EmailAddProps {
+    setEmails: React.Dispatch<React.SetStateAction<string[]>>;
+}
 
-    const addEmail = async () => {
-        if (!newEmail) return;
+const EmailAdd: React.FC<EmailAddProps> = ({ setEmails }) => {
+    const [email, setEmail] = useState('');
+
+    const handleAddEmail = async () => {
         try {
-            const response = await axios.post<string[]>('http://localhost:5016/api/email/emails/add', { Email: newEmail });
-            setEmails(response.data);
-            setNewEmail('');
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                console.error('Error adding email:', error.message);
-            } else {
-                console.error('Error adding email:', error);
+            const response = await axios.post('http://localhost:5016/api/email/addUserToCompany', { email });
+            if (response.status === 200) {
+                setEmails(prevEmails => [...prevEmails, email]);
+                setEmail('');
             }
+        } catch (error) {
+            console.error('Error adding email:', error);
         }
     };
 
     return (
-        <div className="add-email">
-            <h2>Add Email</h2>
+        <div>
             <input
                 type="email"
-                placeholder="Enter new email"
-                value={newEmail}
-                onChange={(e) => setNewEmail(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter email"
             />
-            <button onClick={addEmail}>Add</button>
+            <button onClick={handleAddEmail}>Add Email</button>
         </div>
     );
 };

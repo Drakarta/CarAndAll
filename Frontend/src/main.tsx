@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 
 import Index from './pages/index'
-import EmailManager from './components/EmailManager'
+import EmailManager from './pages/klant/underOverview' // Ensure this line is correct
 
 import './styles/index.css'
 

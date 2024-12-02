@@ -24,7 +24,7 @@ _UpgradeReport_Files/
 # Directories #
 ###############
 bin/
-obj/*
+obj/
 Backend/obj/*
 TestResults/
 ###################
