@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:132.0) Gecko/20100101 Firefox/132.0" version="24.8.6">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 OPR/114.0.0.0" version="24.8.4">
   <diagram name="Page-1" id="v_s4sWRQ4vv6Tch7yq_D">
-    <mxGraphModel dx="2513" dy="993" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1859" dy="685" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -11,13 +11,10 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="xKA6z_1evjKlugJneLph-8" value="&lt;div&gt;Bedrijf&lt;/div&gt;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="-120" y="521" width="160" height="118" as="geometry" />
+          <mxGeometry x="-120" y="521" width="160" height="120" as="geometry" />
         </mxCell>
-        <mxCell id="xKA6z_1evjKlugJneLph-9" value="+ Naam : string &lt;br&gt;+ Bedrijf : string &lt;br&gt;&lt;div&gt;+ Adres : string &lt;/div&gt;+ KVK-nummer : string &lt;br&gt;+ Wachtwoord : string " style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="xKA6z_1evjKlugJneLph-8" vertex="1">
-          <mxGeometry y="26" width="160" height="84" as="geometry" />
-        </mxCell>
-        <mxCell id="xKA6z_1evjKlugJneLph-10" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="xKA6z_1evjKlugJneLph-8" vertex="1">
-          <mxGeometry y="110" width="160" height="8" as="geometry" />
+        <mxCell id="xKA6z_1evjKlugJneLph-9" value="+ Naam : string &lt;br&gt;+ Bedrijf : string &lt;br&gt;&lt;div&gt;+ Adres : string &lt;/div&gt;+ KVK-nummer : string &lt;br&gt;+ Wachtwoord : string &lt;div&gt;+ Eigenaar: int&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="xKA6z_1evjKlugJneLph-8" vertex="1">
+          <mxGeometry y="26" width="160" height="94" as="geometry" />
         </mxCell>
         <mxCell id="xKA6z_1evjKlugJneLph-49" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" target="xKA6z_1evjKlugJneLph-46" edge="1">
           <mxGeometry relative="1" as="geometry">
@@ -56,6 +53,14 @@
         </mxCell>
         <mxCell id="xKA6z_1evjKlugJneLph-56" value="Account" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-110" y="240" width="160" height="158" as="geometry" />
+        </mxCell>
+        <mxCell id="BqF4q3o8CuuOJUzoupkD-10" style="edgeStyle=none;curved=0;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;startSize=8;endSize=8;" edge="1" parent="xKA6z_1evjKlugJneLph-56" source="xKA6z_1evjKlugJneLph-57">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-140" y="150" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="-140" y="70" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="xKA6z_1evjKlugJneLph-57" value="+ Naam : string &lt;br&gt;+ Adres : string &lt;br&gt;+ Email : string &lt;br&gt;+ 06nummer : string &lt;br&gt;+ Wachtwoord : string " style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="xKA6z_1evjKlugJneLph-56" vertex="1">
           <mxGeometry y="26" width="160" height="84" as="geometry" />
@@ -159,6 +164,35 @@
         </mxCell>
         <mxCell id="xKA6z_1evjKlugJneLph-107" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.481;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="xKA6z_1evjKlugJneLph-102" target="xKA6z_1evjKlugJneLph-100" edge="1">
           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="BqF4q3o8CuuOJUzoupkD-1" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.179;entryY=1.04;entryDx=0;entryDy=0;entryPerimeter=0;fontSize=12;startSize=8;endSize=8;endArrow=none;endFill=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="10" y="521" as="sourcePoint" />
+            <mxPoint x="8.6400000000001" y="399.5999999999999" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="BqF4q3o8CuuOJUzoupkD-2" value="1" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="-10" y="398" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="BqF4q3o8CuuOJUzoupkD-3" value="1" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry y="491" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="BqF4q3o8CuuOJUzoupkD-4" value="is eigenaar van" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="20" y="439" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="BqF4q3o8CuuOJUzoupkD-5" value="AccountBedrijven" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-340" y="394" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="BqF4q3o8CuuOJUzoupkD-6" value="account_id: int&lt;div&gt;bedrijf_id: int&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="BqF4q3o8CuuOJUzoupkD-5">
+          <mxGeometry y="30" width="140" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="BqF4q3o8CuuOJUzoupkD-11" style="edgeStyle=none;curved=0;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;startSize=8;endSize=8;entryX=0.44;entryY=1.14;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="xKA6z_1evjKlugJneLph-9" target="BqF4q3o8CuuOJUzoupkD-6">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-280" y="540" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="-280" y="600" />
+            </Array>
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
