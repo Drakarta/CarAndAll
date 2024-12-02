@@ -4,9 +4,9 @@ export default function LoginForm() {
   return (
     <div>
       <form className="auth-form">
-        <input type="text" placeholder="Username" />
-        <input type="password" placeholder="Password" />
-        <button>Login</button>
+        <input className="input" type="text" placeholder="Username" />
+        <input className="input" type="password" placeholder="Password" />
+        <button className="button">Login</button>
       </form>
     </div>
   )

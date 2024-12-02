@@ -10,7 +10,7 @@ export default function LoginRegister() {
       <div className="page-center">
         <div className="auth-container">
           {register ? <RegisterForm /> : <LoginForm />}
-          <button onClick={() => setRegister(!register)}>
+          <button className="button" onClick={() => setRegister(!register)}>
             {register ? "Already have an account?" : "Don't have an account?"}
           </button>
         </div>

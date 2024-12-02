@@ -15,10 +15,6 @@ createRoot(document.getElementById('root')!).render(
         {/* reactrouter.com */}
         <Route path="/" element={<Index />} />'
         <Route path="/auth" element={<LoginRegister />} />
-        <Route path="/test">
-          <Route index element={<h1>Test</h1>} />
-          <Route path="/pagina" element={<h1>Test </h1>} />
-        </Route>
       </Routes>
     </BrowserRouter>
   </StrictMode>,
