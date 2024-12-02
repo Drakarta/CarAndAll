@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace CarAndAll
 {
@@ -31,6 +32,8 @@ namespace CarAndAll
         {
             _emailDbContext = context;
         }
+
+        // ...existing code...
 
         public class EmailModel
         {
