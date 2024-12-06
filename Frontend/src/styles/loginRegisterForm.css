@@ -6,7 +6,6 @@
 
 .auth-container button {
     margin: auto;
-    width: 10rem;
 }
 
 .auth-form {
@@ -19,4 +18,31 @@
 .auth-form button {
     margin: auto;
     width: 6rem;
+}
+
+.already-logged-in {
+    background-color: #00000040;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.already-logged-in > div {
+    background-color: #ffffff;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    width: 20rem;
+    height: 24rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.already-logged-in > div > div {
+    display: flex;
+    justify-content: space-between;
+}
+
+.already-logged-in div div button {
+    width: 4rem;
 }

@@ -1,4 +1,4 @@
-export default function Index(props: any) {
+export default function Index() {
   return (
     <div>
       

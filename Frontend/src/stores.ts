@@ -8,9 +8,12 @@ interface TokenStore {
 
 export const useTokenStore = create<TokenStore>((set) => ({
     token: localStorage.getItem("token") || null,
-    setToken: (token: string) => set({token}),
+    setToken: (token: string) => {
+        set({token})
+        window.localStorage.setItem("token", token)
+    },
     deleteToken: () => {
         set({token: null})
-        localStorage.removeItem("token")
+        window.localStorage.removeItem("token")
     }
 }));

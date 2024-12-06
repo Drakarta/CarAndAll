@@ -1,4 +1,3 @@
-import React from 'react'
 import { useTokenStore } from '../stores'
 
 export default function LogOutButton() {
@@ -9,6 +8,6 @@ export default function LogOutButton() {
   }
 
   return (
-    <button onClick={() => logOut} className="button">Log out</button>
+    <button onClick={() => logOut} className={"button"}>Log out</button>
   )
 }

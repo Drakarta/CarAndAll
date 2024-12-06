@@ -16,7 +16,6 @@
     padding: 0.4rem;
     border: 1px solid #ced4da;
     border-radius: 0.25rem;
-    width: 100%;
 }
 
 .button {
@@ -24,5 +23,4 @@
     border: 1px solid #ced4da;
     border-radius: 0.25rem;
     cursor: pointer;
-    width: 100%;
 }
