@@ -2,8 +2,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using CarAndAll;
+using Backend.Data;
 using Microsoft.AspNetCore.Identity;
+using Backend.Entities;
+using Backend.Interface;
+using Microsoft.Extensions.Options;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

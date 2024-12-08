@@ -1,4 +1,6 @@
-namespace CarAndAll
+using Backend.Interface;
+
+namespace Backend.Entities
 {
     using Microsoft.AspNetCore.Identity;
 

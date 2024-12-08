@@ -1,4 +1,4 @@
-namespace CarAndAll
+namespace Backend.Interface
 {
     public interface IUserService
     {

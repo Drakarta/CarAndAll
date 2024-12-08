@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Backend.Entities;
 
-namespace CarAndAll
+namespace Backend.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
@@ -11,15 +12,14 @@ namespace CarAndAll
         }
 
         public DbSet<Account> Accounts { get; set; }
-        public DbSet<Bedrijf> Bedrijven { get; set; }
+        public DbSet<Bedrijf> Bedrijf { get; set; }
         public DbSet<AccountBedrijf> AccountBedrijven { get; set; }
-        public DbSet<Email> Emails { get; set; } // Fix this line
+        public DbSet<Email> Emails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Define the many-to-many relationship between Account and Bedrijf
             modelBuilder.Entity<AccountBedrijf>()
                 .HasKey(ab => new { ab.account_id, ab.bedrijf_id });
 
@@ -35,3 +35,4 @@ namespace CarAndAll
         }
     }
 }
+

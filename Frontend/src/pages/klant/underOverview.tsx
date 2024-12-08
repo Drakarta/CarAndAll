@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import '../../styles/EmailManager.css';
 import EmailList from '../../components/emailList';
 import EmailAdd from '../../components/emailAdd';
 import EmailRemove from '../../components/emailRemove';
 
-const underOveriew: React.FC = () => {
+const UnderOverview: React.FC = () => {
     const [emails, setEmails] = useState<string[]>([]);
 
     useEffect(() => {
@@ -14,14 +13,18 @@ const underOveriew: React.FC = () => {
 
     const fetchEmails = async () => {
         try {
-            const response = await axios.get<string[]>('http://localhost:5016/api/email/emails');
-            setEmails(response.data);
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                console.error('Error fetching emails:', error.message);
-            } else {
-                console.error('Error fetching emails:', error);
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_EMAIL_API_URL}/emails`, {
+                headers: {
+                    'Authorization': `Bearer ${import.meta.env.VITE_REACT_APP_EMAIL_API_KEY}`
+                }
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
+            const data = await response.json();
+            setEmails(data);
+        } catch (error) {
+            console.error('Error fetching emails:', error);
         }
     };
 
@@ -41,4 +44,4 @@ const underOveriew: React.FC = () => {
     );
 };
 
-export default underOveriew;
+export default UnderOverview;

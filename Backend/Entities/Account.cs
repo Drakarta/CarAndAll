@@ -1,10 +1,9 @@
-namespace CarAndAll { 
- 
+namespace Backend.Entities {
  public class Account
     {
-      public int Id { get; set; }
+      public required int Id { get; set; }
         public required string Email { get; set; }
         // Other properties like username, password, etc.
-        public ICollection<AccountBedrijf> AccountBedrijven { get; set; } // Update this line
+        public required ICollection<AccountBedrijf> AccountBedrijven { get; set; } // Update this line
     }
 }
