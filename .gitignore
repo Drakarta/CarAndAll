@@ -25,6 +25,7 @@ _UpgradeReport_Files/
 ###############
 bin/
 obj/
+Backend/obj/*
 TestResults/
 ###################
 # Web publish log #
@@ -286,3 +287,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+Backend/obj/Debug/net8.0/Backend.AssemblyInfoInputs.cache
+Backend/obj/Debug/net8.0/Backend.GeneratedMSBuildEditorConfig.editorconfig
+Backend/obj/Debug/net8.0/Backend.GeneratedMSBuildEditorConfig.editorconfig
+Backend/obj/Debug/net8.0/Backend.assets.cache
+Backend/obj/Debug/net8.0/Backend.AssemblyInfoInputs.cache
+Backend/obj/Debug/net8.0/Backend.AssemblyInfo.cs
+Backend/obj/Debug/net8.0/Backend.AssemblyInfoInputs.cache
+Backend/obj/Debug/net8.0/Backend.AssemblyInfo.cs
