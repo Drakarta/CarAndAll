@@ -1,25 +1,32 @@
 {
   "format": 1,
   "restore": {
-    "/home/ant/projects/CarAndAll/Backend/Backend.csproj": {}
+    "C:\\Users\\rodyv\\source\\repos\\CarAndAll\\backend\\Backend.csproj": {}
   },
   "projects": {
-    "/home/ant/projects/CarAndAll/Backend/Backend.csproj": {
+    "C:\\Users\\rodyv\\source\\repos\\CarAndAll\\backend\\Backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/ant/projects/CarAndAll/Backend/Backend.csproj",
+        "projectUniqueName": "C:\\Users\\rodyv\\source\\repos\\CarAndAll\\backend\\Backend.csproj",
         "projectName": "Backend",
-        "projectPath": "/home/ant/projects/CarAndAll/Backend/Backend.csproj",
-        "packagesPath": "/home/ant/.nuget/packages/",
-        "outputPath": "/home/ant/projects/CarAndAll/Backend/obj/",
+        "projectPath": "C:\\Users\\rodyv\\source\\repos\\CarAndAll\\backend\\Backend.csproj",
+        "packagesPath": "C:\\Users\\rodyv\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\rodyv\\source\\repos\\CarAndAll\\backend\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/home/ant/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\rodyv\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -43,6 +50,40 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Hosting": {
+              "target": "Package",
+              "version": "[2.2.7, )"
+            },
+            "Microsoft.AspNetCore.Identity": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.4.0, )"
@@ -67,7 +108,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/ant/.dotnet/sdk/8.0.401/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
