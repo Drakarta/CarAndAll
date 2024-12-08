@@ -3,7 +3,7 @@ import "../styles/voertuigenOverview.css";
 
 export default function VoertuigenOverview() {
   const [Voertuigen, setVoertuigen] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState("Alle");
 
   useEffect(() => {
     const fetchVoertuigen = async () => {
@@ -18,7 +18,6 @@ export default function VoertuigenOverview() {
 
     fetchVoertuigen();
   }, []);
-
 // Op basis van (.filter() kopje): https://medium.com/poka-techblog/simplify-your-javascript-use-map-reduce-and-filter-bd02c593cc2d
   const filterResultaat = Voertuigen.filter((voertuig) => {
     return selectedCategory === "Alle" || voertuig.categorie === selectedCategory;
