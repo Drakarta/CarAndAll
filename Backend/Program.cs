@@ -4,14 +4,22 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Backend.Data;
 using Microsoft.AspNetCore.Identity;
+using Backend.Entities;
+using Backend.Interface;
+using Microsoft.Extensions.Options;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure services, hier moet je je .cs file waar die verbinden maakt met db zetten
+// Configure services
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
+builder.Services.AddScoped<IUserService, UserService>(); // Register UserService
 
 builder.Services.AddHttpContextAccessor(); // Ensure this line is present
 
