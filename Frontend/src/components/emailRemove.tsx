@@ -13,7 +13,7 @@ const EmailRemove: React.FC<EmailRemoveProps> = ({ setEmails }) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${import.meta.env.VITE_REACT_APP_EMAIL_API_KEY}`
+                    'Authorization': `Bearer ${import.meta.env.VITE_REACT_APP_API_KEY}`
                 },
                 body: JSON.stringify({ email }),
             });

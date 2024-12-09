@@ -15,7 +15,7 @@ const UnderOverview: React.FC = () => {
         try {
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_EMAIL_API_URL}/emails`, {
                 headers: {
-                    'Authorization': `Bearer ${import.meta.env.VITE_REACT_APP_EMAIL_API_KEY}`
+                    'Authorization': `Bearer ${import.meta.env.VITE_REACT_APP_API_KEY}`
                 }
             });
             if (!response.ok) {
