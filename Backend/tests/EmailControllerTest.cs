@@ -36,8 +36,9 @@ public class EmailControllerTest
         // Mock database entries
         var account = new Account
         {
-            Id = 1,
+            Id = Guid.NewGuid(),
             Email = "test@CarAndAll.com",
+            Wachtwoord = "12345",
             AccountBedrijven = new List<AccountBedrijf>()
         };
 
@@ -79,8 +80,9 @@ public class EmailControllerTest
         // Mock database entries
         var account = new Account
         {
-            Id = 2,
+            Id = Guid.NewGuid(),
             Email = "jhon.deer@CarAndAll.com",
+            Wachtwoord = "123",
             AccountBedrijven = new List<AccountBedrijf>()
         };
 
@@ -94,8 +96,8 @@ public class EmailControllerTest
 
         var accountBedrijf = new AccountBedrijf
         {
-            account_id = 2,
-            bedrijf_id = 3,
+            Account_id = Guid.NewGuid(),
+            Bedrijf_id = 2,
             Account = account,
             Bedrijf = bedrijf
         };
@@ -128,8 +130,9 @@ public class EmailControllerTest
         // Arrange
         var account = new Account
         {
-            Id = 4,
+            Id = Guid.NewGuid(),
             Email = "jhon.deer@CarAndAll.com",
+            Wachtwoord="123",
             AccountBedrijven = new List<AccountBedrijf>()
         };
 
@@ -143,8 +146,8 @@ public class EmailControllerTest
 
         var accountBedrijf = new AccountBedrijf
         {
-            account_id = 4,
-            bedrijf_id = 5,
+            Account_id = Guid.NewGuid(),
+            Bedrijf_id = 5,
             Account = account,
             Bedrijf = bedrijf
         };

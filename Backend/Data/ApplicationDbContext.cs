@@ -24,17 +24,17 @@ namespace Backend.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<AccountBedrijf>()
-                .HasKey(ab => new { ab.account_id, ab.bedrijf_id });
+                .HasKey(ab => new { ab.Account_id, ab.Bedrijf_id });
 
             modelBuilder.Entity<AccountBedrijf>()
                 .HasOne(ab => ab.Account)
                 .WithMany(a => a.AccountBedrijven)
-                .HasForeignKey(ab => ab.account_id);
+                .HasForeignKey(ab => ab.Account_id);
 
             modelBuilder.Entity<AccountBedrijf>()
                 .HasOne(ab => ab.Bedrijf)
                 .WithMany(b => b.AccountBedrijven)
-                .HasForeignKey(ab => ab.bedrijf_id);
+                .HasForeignKey(ab => ab.Bedrijf_id);
 
             modelBuilder.Entity<Voertuig>().ToTable("Voertuig");
             modelBuilder.Entity<Voertuig>().HasKey(v => v.VoertuigID);

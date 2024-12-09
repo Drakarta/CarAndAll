@@ -85,14 +85,16 @@ namespace Backend.Controllers
 
                 var accountEmails = await _emailDbContext.Accounts
                     .Join(_emailDbContext.AccountBedrijven,
-                          a => a.Id,
-                          ab => ab.account_id,
-                          (a, ab) => new { a.Email, ab.bedrijf_id })
-                    .Where(result => result.bedrijf_id == BedrijfEigenaar_id)
+                        a => a.Id,
+                        ab => ab.Account_id,
+                        (a, ab) => new { a.Email, ab.Bedrijf_id })
+                    .Where(result => result.Bedrijf_id == BedrijfEigenaar_id)  // Convert BedrijfEigenaar_id to Guid
                     .Select(result => result.Email)
                     .ToListAsync();
 
                 return Ok(accountEmails);
+
+
             }
             catch (Exception ex)
             {
@@ -140,7 +142,7 @@ namespace Backend.Controllers
                     .Select(b => b.Abbonement)
                     .FirstOrDefaultAsync();
                 var CountAccountBedrijf = await _emailDbContext.AccountBedrijven
-                    .Where(ab => ab.bedrijf_id == bedrijf_id)
+                    .Where(ab => ab.Bedrijf_id == bedrijf_id)
                     .CountAsync();
 
                 var domein = await _emailDbContext.Bedrijf
@@ -177,8 +179,8 @@ namespace Backend.Controllers
 
                 var accountBedrijf = new AccountBedrijf
                 {
-                    account_id = account.Id,
-                    bedrijf_id = bedrijf_id,
+                    Account_id = account.Id,
+                    Bedrijf_id = bedrijf_id,
                     Account = account,
                     Bedrijf = bedrijf ?? throw new InvalidOperationException("Bedrijf not found")
                 };
@@ -242,7 +244,7 @@ namespace Backend.Controllers
                 }
 
                 var accountBedrijf = await _emailDbContext.AccountBedrijven
-                    .FirstOrDefaultAsync(ab => ab.account_id == account.Id && ab.bedrijf_id == bedrijf_id);
+                    .FirstOrDefaultAsync(ab => ab.Account_id == account.Id && ab.Bedrijf_id == bedrijf_id);
 
                 if (accountBedrijf == null)
                 {
