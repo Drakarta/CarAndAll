@@ -27,7 +27,7 @@ namespace Backend.Controllers
          private Boolean CheckAmountAllowedToAddToCompany(int abbonement, int Emails)
     {
         Console.WriteLine(abbonement);
-        if(abbonement == 1 && Emails >= 1)
+        if(abbonement == 1 && Emails >= 2)
         {
             return false;
         }
@@ -227,9 +227,9 @@ namespace Backend.Controllers
                 }
 
                 var account_id = _userService.GetAccount_Id();  // Get logged-in user's AccountId
-                var bedrijf_id = await _emailDbContext.AccountBedrijven
-                    .Where(ab => ab.account_id == account_id)
-                    .Select(ab => ab.bedrijf_id)
+                var bedrijf_id = await _emailDbContext.Bedrijf
+                    .Where(b => b.Eigenaar == account_id)
+                    .Select(b => b.Id)
                     .FirstOrDefaultAsync();
 
                 if (bedrijf_id == 0)
@@ -269,4 +269,3 @@ namespace Backend.Controllers
         }
     }
 }
-
