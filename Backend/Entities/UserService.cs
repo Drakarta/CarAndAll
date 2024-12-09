@@ -10,7 +10,7 @@ namespace Backend.Entities
         public int Account_Id { get; set; }
     }
 
-    public class UserService : IUserService
+    public class UserService  : IUserService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<ApplicationUser> _userManager;
