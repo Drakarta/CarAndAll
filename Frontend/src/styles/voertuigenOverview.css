@@ -1,0 +1,33 @@
+.overviewSection {
+  border: 1px solid black;
+  border-radius: 15px;
+  padding: 1rem;
+  margin-top: 5rem;
+  height: 100%;
+}
+.voertuigenTabel{
+    width: 100%;
+    border: 1px solid gray;
+    border-collapse: collapse;
+}
+.voertuigenTabel th{
+    padding: 5px;
+}
+.voertuigenTabel tr{
+    border-bottom: 2px solid black;
+}
+.voertuigenTabel td{
+    border-right: 1px solid gray;
+}
+.voertuigenTabel td button{
+    color: black;
+    background-color: white;
+    border: 0;
+    height: 100%;
+    width: 100%;
+    padding: 5px;
+    cursor: pointer;
+}
+.voertuigenTabel td button:hover{
+    background-color: lightgray;
+}
