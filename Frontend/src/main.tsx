@@ -9,6 +9,7 @@ import EmailManager from './pages/klant/underOverview' // Ensure this line is co
 
 import "./styles/index.css";
 import NavBar from "./components/navBar";
+import LoginRegister from './pages/loginRegister';
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -16,8 +17,9 @@ createRoot(document.getElementById("root")!).render(
       <Routes>
         <Route path="/" element={<NavBar />}>
           <Route index element={<Index />} />
-        <Route path="/email-manager" element={<EmailManager />} />
+          <Route path="/email-manager" element={<EmailManager />} />
           <Route path="/voertuigenOverview" element={<VoertuigenOverview />} />
+          <Route path="/auth" element={<LoginRegister />} />
         </Route>
       </Routes>
     </BrowserRouter>

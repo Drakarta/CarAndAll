@@ -13,15 +13,15 @@ export default function NavBar() {
           <NavLink to="/voertuigenOverview" className={"navBarLink"}>
             Voertuigen
           </NavLink>
-          <NavLink to="/" className={"navBarLink"}>
-            Link1
+          <NavLink to="/email-manager" className={"navBarLink"}>
+            Email manager
           </NavLink>
           <NavLink to="/" className={"navBarLink"}>
             Link2
           </NavLink>
         </div>
         <img className="navBarImage" src={Logo} alt="CarAndAll logo"></img>
-        <button className="button login-button">Login</button>
+        <NavLink to="/auth" className={"login-button"}>Login</NavLink>
       </nav>
       <Outlet />
     </>
