@@ -15,6 +15,9 @@ namespace Backend.Data
         public DbSet<Bedrijf> Bedrijf { get; set; }
         public DbSet<AccountBedrijf> AccountBedrijven { get; set; }
         public DbSet<Email> Emails { get; set; }
+        public DbSet<Voertuig> Voertuigen { get; set; }
+        public DbSet<VerhuurAanvraag> VerhuurAanvragen { get; set; }
+        public DbSet<VoertuigCategorie> VoertuigCategorie { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,29 +35,6 @@ namespace Backend.Data
                 .HasOne(ab => ab.Bedrijf)
                 .WithMany(b => b.AccountBedrijven)
                 .HasForeignKey(ab => ab.bedrijf_id);
-        }
-    }
-}
-
-using Microsoft.EntityFrameworkCore;
-using Backend.Entities;
-
-namespace Backend.Data
-{
-    public class ApplicationDbContext : DbContext
-    {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        {
-        }
-
-        public DbSet<Voertuig> Voertuigen { get; set; }
-        public DbSet<VerhuurAanvraag> VerhuurAanvragen { get; set; }
-        public DbSet<VoertuigCategorie> VoertuigCategorie { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Voertuig>().ToTable("Voertuig");
             modelBuilder.Entity<Voertuig>().HasKey(v => v.VoertuigID);
