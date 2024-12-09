@@ -1,7 +1,14 @@
 using Microsoft.OpenApi.Models;
+using Backend.Data;
 
 public class Startup
 {
+    public IConfiguration Configuration { get; }
+
+    public Startup(IConfiguration configuration)
+    {
+        Configuration = configuration;
+    }
 
     public void ConfigureServices(IServiceCollection services)
     {
@@ -9,6 +16,8 @@ public class Startup
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "OutlookSMTP API", Version = "v1" });
         });
+        services.AddTransient<EmailSencer>();
+        services.AddSingleton<IConfiguration>(Configuration); // Ensure configuration is registered
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

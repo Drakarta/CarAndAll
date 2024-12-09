@@ -8,7 +8,6 @@ using Backend.Entities;
 using Backend.Interface;
 using Microsoft.Extensions.Options;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure services
@@ -36,6 +35,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddSwaggerGen();
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration); // Ensure configuration is registered
 
 var app = builder.Build();
 

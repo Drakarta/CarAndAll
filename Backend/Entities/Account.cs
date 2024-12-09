@@ -1,9 +1,10 @@
 namespace Backend.Entities {
  public class Account
     {
-      public required int Id { get; set; }
+      public Guid Id { get; set; }
         public required string Email { get; set; }
+        public string wachtwoord { get; set; }
         // Other properties like username, password, etc.
-        public required ICollection<AccountBedrijf> AccountBedrijven { get; set; } // Update this line
+        public ICollection<AccountBedrijf>? AccountBedrijven { get; set; } // Correct table name
     }
 }

@@ -8,6 +8,7 @@ using System.Text.RegularExpressions; // Add this import
 using Backend.Data;
 using Backend.Entities;
 using Backend.Interface;
+using Backend.ConceptFiles;
 
 namespace Backend.Controllers
 {
@@ -17,11 +18,13 @@ namespace Backend.Controllers
     {
         private readonly ApplicationDbContext _emailDbContext;
         private readonly IUserService _userService;
+        private readonly EmailSencer _emailSencer;
 
-        public EmailController(ApplicationDbContext context, IUserService userService)
+        public EmailController(ApplicationDbContext context, IUserService userService, EmailSencer emailSencer)
         {
             _emailDbContext = context;
             _userService = userService;
+            _emailSencer = emailSencer;
         }
 
          private Boolean CheckAmountAllowedToAddToCompany(int abbonement, int Emails)
@@ -114,24 +117,46 @@ namespace Backend.Controllers
                     };
                     return BadRequest(errorDetails);
                 }
+                 var account_id = _userService.GetAccount_Id();  // Get logged-in user's AccountId
+                var bedrijf_id = await _emailDbContext.Bedrijf
+                    .Where(b => b.Eigenaar == account_id)
+                    .Select(b => b.Id)
+                    .FirstOrDefaultAsync();
+
+                var domein = await _emailDbContext.Bedrijf
+                    .Where(b => b.Id == bedrijf_id)
+                    .Select(b => b.Domein)
+                    .FirstOrDefaultAsync();
+                 if (domein == null || CheckDomeinAllowToAddToCompany(model.Email, domein) == false)
+                {
+                    var errorDetails = new {
+                        message = "FalseDomein",
+                        statusCode = 400
+                    };
+                    return BadRequest(errorDetails);
+                }
 
                 var account = await _emailDbContext.Accounts
                     .FirstOrDefaultAsync(a => a.Email == model.Email);
 
                 if (account == null)
                 {
-                    var errorDetails = new {
-                        message = "NonExEmail",
-                        statusCode = 404
+                    var password = Password.CreatePassword(8);
+                    var newAccount = new Account
+                    {
+                        Id = Guid.NewGuid(),
+                        Email = model.Email,
+                        wachtwoord = password // Assuming the Account entity has a Password property
                     };
-                    return NotFound(errorDetails);
+                    _emailDbContext.Accounts.Add(newAccount);
+                    await _emailDbContext.SaveChangesAsync();
+                    account = await _emailDbContext.Accounts
+                        .FirstOrDefaultAsync(a => a.Email == model.Email);
+                    string context = (model.Email + " " + password + "Dit zijn uw loggin gegevens");
+                    _emailSencer.SendEmail("pbt05@hotmail.nl", "Account gegevens", context);
                 }
 
-                var account_id = _userService.GetAccount_Id();  // Get logged-in user's AccountId
-                var bedrijf_id = await _emailDbContext.Bedrijf
-                    .Where(b => b.Eigenaar == account_id)
-                    .Select(b => b.Id)
-                    .FirstOrDefaultAsync();
+               
 
                 var bedrijf = await _emailDbContext.Bedrijf.FindAsync(bedrijf_id);
 
@@ -143,10 +168,7 @@ namespace Backend.Controllers
                     .Where(ab => ab.bedrijf_id == bedrijf_id)
                     .CountAsync();
 
-                var domein = await _emailDbContext.Bedrijf
-                    .Where(b => b.Id == bedrijf_id)
-                    .Select(b => b.Domein)
-                    .FirstOrDefaultAsync();
+                
                 Console.WriteLine(domein);
 
                 if (CheckAmountAllowedToAddToCompany(Abbonement, CountAccountBedrijf) == false)
@@ -157,14 +179,7 @@ namespace Backend.Controllers
                     };
                     return BadRequest(errorDetails);
                 }
-                if (domein == null || CheckDomeinAllowToAddToCompany(model.Email, domein) == false)
-                {
-                    var errorDetails = new {
-                        message = "FalseDomein",
-                        statusCode = 400
-                    };
-                    return BadRequest(errorDetails);
-                }
+               
 
                 if (bedrijf_id == 0)
                 {

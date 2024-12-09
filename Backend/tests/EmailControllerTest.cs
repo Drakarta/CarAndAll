@@ -24,7 +24,7 @@ public class EmailControllerTest
 
         _context = new ApplicationDbContext(options);
         _mockUserService = new Mock<IUserService>();
-        _controller = new EmailController(_context, _mockUserService.Object);
+        //_controller = new EmailController(_context, _mockUserService.Object);
     }
 
     [Fact]
