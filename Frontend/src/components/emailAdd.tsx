@@ -7,7 +7,7 @@ interface EmailAddProps {
 const EmailAdd: React.FC<EmailAddProps> = ({ setEmails }) => {
     const [email, setEmail] = useState('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [responseMessage, setResponseMessage] = useState<string | null>(null); // New state variable
+    const [responseMessage, setResponseMessage] = useState<string | null>(null);
 
     const handleAddEmail = async () => {
         try {
@@ -23,7 +23,7 @@ const EmailAdd: React.FC<EmailAddProps> = ({ setEmails }) => {
             let responseData;
             const contentType = response.headers.get('Content-Type');
             if (contentType && contentType.includes('application/json')) {
-                responseData = await response.json(); // Save the response data
+                responseData = await response.json();
             } else {
                 responseData = { message: await response.text() };
             }
@@ -32,7 +32,7 @@ const EmailAdd: React.FC<EmailAddProps> = ({ setEmails }) => {
                 setEmails(prevEmails => [...prevEmails, email]);
                 setEmail('');
                 setErrorMessage(null);
-                setResponseMessage(responseData.message); // Save success message
+                setResponseMessage(responseData.message);
             } else {
                 setResponseMessage(null);
                 if (responseData.status === 404 && responseData.message === 'NonExEmail') {
@@ -47,7 +47,6 @@ const EmailAdd: React.FC<EmailAddProps> = ({ setEmails }) => {
                     setErrorMessage('An unexpected error occurred. Please try again.');
                 }
             }
-            //This email is not allowed to be added to the company.
         } catch (error) {
             console.error('Error adding email:', error);
             setErrorMessage('An unexpected error occurred. Please try again.');
@@ -57,7 +56,7 @@ const EmailAdd: React.FC<EmailAddProps> = ({ setEmails }) => {
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
-            handleAddEmail(); // Trigger form submit when Enter is pressed
+            handleAddEmail();
         }
     };
 
@@ -72,7 +71,7 @@ const EmailAdd: React.FC<EmailAddProps> = ({ setEmails }) => {
             />
             <button onClick={handleAddEmail}>Add Email</button>
             {errorMessage && <p>{errorMessage}</p>}
-            {responseMessage && <p>{responseMessage}</p>} {/* Display the response message */}
+            {responseMessage && <p>{responseMessage}</p>}
         </div>
     );
 };

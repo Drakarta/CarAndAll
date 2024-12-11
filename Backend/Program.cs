@@ -10,7 +10,8 @@ using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure services
+
+builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -18,13 +19,12 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddScoped<IUserService, UserService>(); // Register UserService
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<EmailSencer>();
 
-builder.Services.AddHttpContextAccessor(); // Ensure this line is present
+builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddControllers();
 
-// CORS, Swagger, etc.
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins", builder =>
@@ -36,16 +36,15 @@ builder.Services.AddCors(options =>
 builder.Services.AddSwaggerGen();
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddSingleton<IConfiguration>(builder.Configuration); // Ensure configuration is registered
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure middleware
+
 app.UseCors("AllowAllOrigins");
-app.UseSwagger(); // Ensure this line is present
+app.UseSwagger(); 
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CarAndAll API V1"));
 
-// Ensure authentication and authorization middleware are present
 app.UseAuthentication();
 app.UseAuthorization();
 

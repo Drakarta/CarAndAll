@@ -27,18 +27,18 @@ namespace Backend.Controllers
             _emailSencer = emailSencer;
         }
 
-         private Boolean CheckAmountAllowedToAddToCompany(int abbonement, int Emails)
+         private Boolean CheckAmountAllowedToAddToCompany(string abbonement, int Emails)
     {
         Console.WriteLine(abbonement);
-        if(abbonement == 1 && Emails >= 2)
+        if(abbonement == "kleinste" && Emails >= 2)
         {
             return false;
         }
-        else if(abbonement == 2 && Emails >= 5)
+        else if(abbonement == "middel" && Emails >= 5)
         {
             return false;
         }
-        else if(abbonement == 3 && Emails >= 10)
+        else if(abbonement == "groot" && Emails >= 10)
         {
             return false;
         }
@@ -67,12 +67,12 @@ namespace Backend.Controllers
             public required string Email { get; set; }
         }
 
-        [HttpGet("emails")] // Ensure this matches the frontend request
+        [HttpGet("emails")]
         public async Task<IActionResult> GetEmails()
         {
             try
             {
-                var account_id = _userService.GetAccount_Id();  // Get logged-in user's AccountId
+                var account_id = _userService.GetAccount_Id();
                 Console.WriteLine($"Logged-in user's AccountId: {account_id}");
 
                 var BedrijfEigenaar_id = await _emailDbContext.Bedrijf
@@ -81,13 +81,13 @@ namespace Backend.Controllers
                     .FirstOrDefaultAsync();
                 Console.WriteLine($"Retrieved bedrijf_id: {BedrijfEigenaar_id}");
 
-                if (BedrijfEigenaar_id == 0)
+                if (BedrijfEigenaar_id == null)
                 {
                     return Unauthorized("User is not associated with any company.");
                 }
 
-                var accountEmails = await _emailDbContext.Accounts
-                    .Join(_emailDbContext.AccountBedrijven,
+                var accountEmails = await _emailDbContext.Account
+                    .Join(_emailDbContext.BedrijfAccounts,
                           a => a.Id,
                           ab => ab.account_id,
                           (a, ab) => new { a.Email, ab.bedrijf_id })
@@ -117,7 +117,7 @@ namespace Backend.Controllers
                     };
                     return BadRequest(errorDetails);
                 }
-                 var account_id = _userService.GetAccount_Id();  // Get logged-in user's AccountId
+                 var account_id = _userService.GetAccount_Id();
                 var bedrijf_id = await _emailDbContext.Bedrijf
                     .Where(b => b.Eigenaar == account_id)
                     .Select(b => b.Id)
@@ -136,7 +136,7 @@ namespace Backend.Controllers
                     return BadRequest(errorDetails);
                 }
 
-                var account = await _emailDbContext.Accounts
+                var account = await _emailDbContext.Account
                     .FirstOrDefaultAsync(a => a.Email == model.Email);
 
                 if (account == null)
@@ -146,14 +146,14 @@ namespace Backend.Controllers
                     {
                         Id = Guid.NewGuid(),
                         Email = model.Email,
-                        wachtwoord = password // Assuming the Account entity has a Password property
+                        wachtwoord = password 
                     };
-                    _emailDbContext.Accounts.Add(newAccount);
+                    _emailDbContext.Account.Add(newAccount);
                     await _emailDbContext.SaveChangesAsync();
-                    account = await _emailDbContext.Accounts
+                    account = await _emailDbContext.Account
                         .FirstOrDefaultAsync(a => a.Email == model.Email);
-                    string context = (model.Email + " " + password + "Dit zijn uw loggin gegevens");
-                    _emailSencer.SendEmail("pbt05@hotmail.nl", "Account gegevens", context);
+                    // string context = $"{model.Email} {password} Dit zijn uw loggin gegevens";
+                    // _emailSencer.SendEmail("pbt05@hotmail.nl", "Account gegevens", context);
                 }
 
                
@@ -164,7 +164,7 @@ namespace Backend.Controllers
                     .Where(b => b.Id == bedrijf_id)
                     .Select(b => b.Abbonement)
                     .FirstOrDefaultAsync();
-                var CountAccountBedrijf = await _emailDbContext.AccountBedrijven
+                var CountAccountBedrijf = await _emailDbContext.BedrijfAccounts
                     .Where(ab => ab.bedrijf_id == bedrijf_id)
                     .CountAsync();
 
@@ -181,7 +181,7 @@ namespace Backend.Controllers
                 }
                
 
-                if (bedrijf_id == 0)
+                if (bedrijf_id == null)
                 {
                     var errorDetails = new {
                         message = "User is not associated with any company.",
@@ -190,7 +190,7 @@ namespace Backend.Controllers
                     return Unauthorized(errorDetails);
                 }
 
-                var accountBedrijf = new AccountBedrijf
+                var accountBedrijf = new BedrijfAccounts
                 {
                     account_id = account.Id,
                     bedrijf_id = bedrijf_id,
@@ -198,7 +198,7 @@ namespace Backend.Controllers
                     Bedrijf = bedrijf ?? throw new InvalidOperationException("Bedrijf not found")
                 };
 
-                _emailDbContext.AccountBedrijven.Add(accountBedrijf);
+                _emailDbContext.BedrijfAccounts.Add(accountBedrijf);
                 await _emailDbContext.SaveChangesAsync();
 
                 var succesDetails = new {
@@ -229,7 +229,7 @@ namespace Backend.Controllers
                     return BadRequest(errorDetails);
                 }
 
-                var account = await _emailDbContext.Accounts
+                var account = await _emailDbContext.Account
                     .FirstOrDefaultAsync(a => a.Email == model.Email);
 
                 if (account == null)
@@ -241,13 +241,18 @@ namespace Backend.Controllers
                     return NotFound(errorDetails);
                 }
 
-                var account_id = _userService.GetAccount_Id();  // Get logged-in user's AccountId
+                var account_id = _userService.GetAccount_Id();
                 var bedrijf_id = await _emailDbContext.Bedrijf
                     .Where(b => b.Eigenaar == account_id)
                     .Select(b => b.Id)
                     .FirstOrDefaultAsync();
 
-                if (bedrijf_id == 0)
+                var BedrijfNaam = await _emailDbContext.Bedrijf
+                    .Where(b => b.Id == bedrijf_id)
+                    .Select(b => b.naam)
+                    .FirstOrDefaultAsync();
+
+                if (bedrijf_id == null)
                 {
                     var errorDetails = new {
                         message = "User is not associated with any company.",
@@ -256,7 +261,7 @@ namespace Backend.Controllers
                     return Unauthorized(errorDetails);
                 }
 
-                var accountBedrijf = await _emailDbContext.AccountBedrijven
+                var accountBedrijf = await _emailDbContext.BedrijfAccounts
                     .FirstOrDefaultAsync(ab => ab.account_id == account.Id && ab.bedrijf_id == bedrijf_id);
 
                 if (accountBedrijf == null)
@@ -267,8 +272,10 @@ namespace Backend.Controllers
                     };
                     return NotFound(errorDetails);
                 }
+                    // string context = $"{model.Email} U bent verwijderd van het bedrijf:{BedrijfNaam}  ";
+                    //  _emailSencer.SendEmail("pbt05@hotmail.nl", "Account verwijderd", context);
 
-                _emailDbContext.AccountBedrijven.Remove(accountBedrijf);
+                _emailDbContext.BedrijfAccounts.Remove(accountBedrijf);
                 await _emailDbContext.SaveChangesAsync();
                 var succesDetails = new {
                         message = "User removed from the company successfully.",

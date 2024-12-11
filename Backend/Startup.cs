@@ -16,8 +16,7 @@ public class Startup
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "OutlookSMTP API", Version = "v1" });
         });
-        services.AddTransient<EmailSencer>();
-        services.AddSingleton<IConfiguration>(Configuration); // Ensure configuration is registered
+        services.AddSingleton<IConfiguration>(Configuration); 
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -27,7 +26,7 @@ public class Startup
         {
             if (!context.Request.Headers.TryGetValue("Authorization", out var extractedApiKey))
             {
-                context.Response.StatusCode = 401; // Unauthorized
+                context.Response.StatusCode = 401; 
                 await context.Response.WriteAsync("API Key was not provided.");
                 return;
             }
@@ -37,7 +36,7 @@ public class Startup
 
              if (apiKey == null || !apiKey.Equals(extractedApiKey.ToString().Replace("Bearer ", "")))
                 {
-                    context.Response.StatusCode = 401; // Unauthorized
+                    context.Response.StatusCode = 401; 
                     await context.Response.WriteAsync("Unauthorized client.");
                     return;
                 }

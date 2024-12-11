@@ -18,23 +18,22 @@ namespace Backend.Data
         {
             try
             {
-                // Pull Gmail credentials from appsettings.json
+                
                 string fromEmail = _configuration["GMAIL:Email"];
                 string appPassword = _configuration["GMAIL:Password"];
                 string smtpServer = _configuration["GMAIL:SmtpServer"];
-                int smtpPort = int.Parse(_configuration["GMAIL:SmtpPort"]); // Ensure correct key
+                int smtpPort = int.Parse(_configuration["GMAIL:SmtpPort"]);
 
-                // Configure SMTP client
+                
                 SmtpClient smtpClient = new SmtpClient(smtpServer, smtpPort)
                 {
                     Credentials = new NetworkCredential(fromEmail, appPassword),
                     EnableSsl = true
                 };
 
-                // Create the MailMessage object
+              
                 MailMessage mailMessage = new MailMessage(fromEmail, toEmail, subject, body);
 
-                // Send the email
                 smtpClient.Send(mailMessage);
 
                 Console.WriteLine("Email sent successfully!");

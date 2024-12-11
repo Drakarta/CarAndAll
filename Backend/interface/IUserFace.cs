@@ -2,6 +2,6 @@ namespace Backend.Interface
 {
     public interface IUserService
     {
-        int GetAccount_Id();  
+        Guid GetAccount_Id();  
     }
 }

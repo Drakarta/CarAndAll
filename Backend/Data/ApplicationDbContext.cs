@@ -11,9 +11,9 @@ namespace Backend.Data
         {
         }
 
-        public DbSet<Account> Accounts { get; set; }
+        public DbSet<Account> Account { get; set; }
         public DbSet<Bedrijf> Bedrijf { get; set; }
-        public DbSet<AccountBedrijf> AccountBedrijven { get; set; }
+        public DbSet<BedrijfAccounts> BedrijfAccounts { get; set; }
         public DbSet<Email> Emails { get; set; }
         public DbSet<Voertuig> Voertuigen { get; set; }
         public DbSet<VerhuurAanvraag> VerhuurAanvragen { get; set; }
@@ -23,17 +23,17 @@ namespace Backend.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<AccountBedrijf>()
+            modelBuilder.Entity<BedrijfAccounts>()
                 .HasKey(ab => new { ab.account_id, ab.bedrijf_id });
 
-            modelBuilder.Entity<AccountBedrijf>()
+            modelBuilder.Entity<BedrijfAccounts>()
                 .HasOne(ab => ab.Account)
-                .WithMany(a => a.AccountBedrijven)
+                .WithMany(a => a.BedrijfAccounts)
                 .HasForeignKey(ab => ab.account_id);
 
-            modelBuilder.Entity<AccountBedrijf>()
+            modelBuilder.Entity<BedrijfAccounts>()
                 .HasOne(ab => ab.Bedrijf)
-                .WithMany(b => b.AccountBedrijven)
+                .WithMany(b => b.BedrijfAccounts)
                 .HasForeignKey(ab => ab.bedrijf_id);
 
             modelBuilder.Entity<Voertuig>().ToTable("Voertuig");
