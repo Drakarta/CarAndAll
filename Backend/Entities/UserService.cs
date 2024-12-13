@@ -6,8 +6,7 @@ namespace Backend.Entities
 
     public class ApplicationUser : IdentityUser
     {
-        // Add any additional properties you want to store about the user
-        public int Account_Id { get; set; }
+        public Guid Account_Id { get; set; }
     }
 
     public class UserService  : IUserService
@@ -21,10 +20,11 @@ namespace Backend.Entities
             _userManager = userManager;
         }
 
-        public int GetAccount_Id()
+        public Guid GetAccount_Id()
         {
-            // Hardcode the account ID to 1
-            return 1;
+            var guidString = "B27E650B-9C9F-424E-BACB-003C9EEB7A8E";
+            Guid guid = Guid.Parse(guidString);
+            return guid;
         }
     }
 }

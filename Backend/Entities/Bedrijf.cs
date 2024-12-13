@@ -3,11 +3,11 @@ namespace Backend.Entities
         public class Bedrijf
         {
 
-                public int Id { get; set; }
-                // public string? Name { get; set; }
-                public required int Abbonement { get; set; }
+                public Guid Id { get; set; }
+                public required string Abbonement { get; set; }
                 public string? Domein { get; set; }
-                public required int Eigenaar {get; set; }
-                public required ICollection<AccountBedrijf> AccountBedrijven { get; set; } // Add this line
+                public required Guid Eigenaar {get; set; }
+                public required ICollection<BedrijfAccounts> BedrijfAccounts { get; set; } // Add this line
+                public string? naam { get; set; }
         }
 }

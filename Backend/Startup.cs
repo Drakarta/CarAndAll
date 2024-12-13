@@ -1,7 +1,14 @@
 using Microsoft.OpenApi.Models;
+using Backend.Data;
 
 public class Startup
 {
+    public IConfiguration Configuration { get; }
+
+    public Startup(IConfiguration configuration)
+    {
+        Configuration = configuration;
+    }
 
     public void ConfigureServices(IServiceCollection services)
     {
@@ -9,6 +16,7 @@ public class Startup
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "OutlookSMTP API", Version = "v1" });
         });
+        services.AddSingleton<IConfiguration>(Configuration); 
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -18,7 +26,7 @@ public class Startup
         {
             if (!context.Request.Headers.TryGetValue("Authorization", out var extractedApiKey))
             {
-                context.Response.StatusCode = 401; // Unauthorized
+                context.Response.StatusCode = 401; 
                 await context.Response.WriteAsync("API Key was not provided.");
                 return;
             }
@@ -28,7 +36,7 @@ public class Startup
 
              if (apiKey == null || !apiKey.Equals(extractedApiKey.ToString().Replace("Bearer ", "")))
                 {
-                    context.Response.StatusCode = 401; // Unauthorized
+                    context.Response.StatusCode = 401; 
                     await context.Response.WriteAsync("Unauthorized client.");
                     return;
                 }
