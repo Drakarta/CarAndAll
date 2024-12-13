@@ -9,6 +9,7 @@ using Backend.Data;
 using Backend.Entities;
 using Backend.Interface;
 using Backend.ConceptFiles;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace Backend.Controllers
 {
@@ -146,7 +147,7 @@ namespace Backend.Controllers
                     {
                         Id = Guid.NewGuid(),
                         Email = model.Email,
-                        wachtwoord = password 
+                        wachtwoord = password
                     };
                     _emailDbContext.Account.Add(newAccount);
                     await _emailDbContext.SaveChangesAsync();
@@ -156,7 +157,6 @@ namespace Backend.Controllers
                     // _emailSencer.SendEmail("pbt05@hotmail.nl", "Account gegevens", context);
                 }
 
-               
 
                 var bedrijf = await _emailDbContext.Bedrijf.FindAsync(bedrijf_id);
 
@@ -168,7 +168,6 @@ namespace Backend.Controllers
                     .Where(ab => ab.bedrijf_id == bedrijf_id)
                     .CountAsync();
 
-                
                 Console.WriteLine(domein);
 
                 if (CheckAmountAllowedToAddToCompany(Abbonement, CountAccountBedrijf) == false)
@@ -179,7 +178,6 @@ namespace Backend.Controllers
                     };
                     return BadRequest(errorDetails);
                 }
-               
 
                 if (bedrijf_id == null)
                 {
@@ -213,7 +211,6 @@ namespace Backend.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
         [HttpPost("removeUserFromCompany")]
         public async Task<IActionResult> RemoveUserFromCompany([FromBody] EmailModel model)
         {
