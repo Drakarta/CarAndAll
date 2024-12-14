@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using Backend.Data;
 using Backend.Entities;
+using BC = BCrypt.Net.BCrypt;
 
 namespace Backend.Controllers
 {
@@ -30,7 +31,7 @@ namespace Backend.Controllers
             {
                 return Unauthorized(new { message = "Invalid email or password." });
             }
-            if (model.Password != user.Wachtwoord)
+            if (!BC.EnhancedVerify(model.Password, user.Wachtwoord))
             {
                 return Unauthorized(new { message = "Invalid email or password." });
             }
@@ -60,14 +61,22 @@ namespace Backend.Controllers
             {
                 // Id = Guid.NewGuid(),
                 Email = model.Email,
-                Wachtwoord = model.Password // Ideally, you should hash the password before storing it.
+                Wachtwoord = BC.EnhancedHashPassword(model.Password)
             };
 
             // Save user to database
             _accountDbContext.Account.Add(newUser);
             await _accountDbContext.SaveChangesAsync();
+            
+            var userId = _accountDbContext.Account
+                .Where(account => account.Email == model.Email)
+                .Select(account => account.Id)
+                .FirstOrDefault();
 
-            return Ok(new { message = "User registered successfully." });
+            return Ok(new { 
+                message = "User registered successfully.",
+                userId = userId
+            });
         }
         catch (Exception ex)
         {
