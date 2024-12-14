@@ -7,7 +7,7 @@ namespace Backend.Entities {
         public string? Naam { get; set; }
         public string? Adres { get; set; }
         public string? TelefoonNummer { get; set; }
-        public string? Roles { get; set; }
+        public string? Rol { get; set; }
         public ICollection<AccountBedrijf>? AccountBedrijven { get; set; } // Update this line
     }
 }
