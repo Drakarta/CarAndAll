@@ -7,13 +7,13 @@ interface TokenStore {
 }
 
 export const useTokenStore = create<TokenStore>((set) => ({
-    token: localStorage.getItem("token") || null,
+    token: sessionStorage.getItem("token") || null,
     setToken: (token: string) => {
-        set({token})
-        window.sessionStorage.setItem("token", token)
+        set({ token });
+        sessionStorage.setItem("token", token);
     },
     deleteToken: () => {
-        set({token: null})
-        window.sessionStorage.removeItem("token")
+        set({ token: null });
+        sessionStorage.removeItem("token");
     }
 }));

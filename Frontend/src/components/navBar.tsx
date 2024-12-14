@@ -1,8 +1,11 @@
 import { NavLink, Outlet } from "react-router-dom";
 import "../styles/navBar.css";
 import Logo from "../assets/CarAndAllLogo.svg";
+import { useTokenStore } from "../stores";
+import LogOutButton from "./logOutButton";
 
 export default function NavBar() {
+  const token = useTokenStore((state) => state.token)
   return (
     <>
       <nav className="nav">
@@ -21,7 +24,13 @@ export default function NavBar() {
           </NavLink>
         </div>
         <img className="navBarImage" src={Logo} alt="CarAndAll logo"></img>
-        <NavLink to="/auth" className={"login-button"}>Login</NavLink>
+        {token ? (
+          <LogOutButton />
+        ) : (
+          <NavLink to="/auth" className="login-button">
+            Login
+          </NavLink>
+        )}
       </nav>
       <Outlet />
     </>
