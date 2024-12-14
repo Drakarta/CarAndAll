@@ -14,11 +14,12 @@ namespace Backend.Controllers
     [Route("api/[controller]")]
     public class VoertuigController : ControllerBase
     {
-        private readonly ApplicationDbContext _voertuigDbContext;
+        private readonly ApplicationDbContext _applicationDbContext;
+        private readonly ApplicationDbContext _verhuurAanvraagDbContext;
 
         public VoertuigController(ApplicationDbContext context)
         {
-            _voertuigDbContext = context;
+            _applicationDbContext = context;
         }
 
         [HttpGet("Voertuigen")]
@@ -26,7 +27,21 @@ namespace Backend.Controllers
         {
             try
             {
-            var voertuigIds = await _voertuigDbContext.Voertuigen.Select(v => new{ naam = (v.Merk + ' ' + v.Type), categorie = v.Categorie}).ToListAsync();
+            var voertuigIds = await _applicationDbContext.Voertuigen.Select(v => new 
+                                    {
+                                        naam = v.Merk + " " + v.Type,
+                                        categorie = v.Categorie,
+                                        prijs_per_dag = v.Prijs_per_dag,
+                                        verhuur_perioden = _applicationDbContext.VerhuurAanvragen
+                                            .Where(va => va.VoertuigID == v.VoertuigID)
+                                            .Select(va => new 
+                                            {
+                                                verhuur_start = va.Startdatum,
+                                                verhuur_eind = va.Einddatum
+                                            }).ToList()
+                                    })
+                                    .ToListAsync();
+
             return Ok (voertuigIds);
             }
             catch (Exception ex)
