@@ -24,7 +24,7 @@ namespace Backend.Controllers
             {
                 return BadRequest(new { message = "Invalid login request." });
             }
-            var user = await _accountDbContext.Accounts
+            var user = await _accountDbContext.Account
                 .FirstOrDefaultAsync(u => u.Email == model.Email);
             if (user == null)
             {
@@ -36,6 +36,7 @@ namespace Backend.Controllers
             }
             return Ok(new { UserId = user.Id });
         }
+
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] LoginRegisterModel model)
     {
@@ -47,7 +48,7 @@ namespace Backend.Controllers
             }
 
             // Check if email is already in use
-            var existingUser = await _accountDbContext.Accounts
+            var existingUser = await _accountDbContext.Account
                 .FirstOrDefaultAsync(u => u.Email == model.Email);
 
             if (existingUser != null)
@@ -57,13 +58,13 @@ namespace Backend.Controllers
 
             var newUser = new Account
             {
-                Id = Guid.NewGuid(),
+                // Id = Guid.NewGuid(),
                 Email = model.Email,
                 Wachtwoord = model.Password // Ideally, you should hash the password before storing it.
             };
 
             // Save user to database
-            _accountDbContext.Accounts.Add(newUser);
+            _accountDbContext.Account.Add(newUser);
             await _accountDbContext.SaveChangesAsync();
 
             return Ok(new { message = "User registered successfully." });

@@ -10,10 +10,10 @@ export const useTokenStore = create<TokenStore>((set) => ({
     token: localStorage.getItem("token") || null,
     setToken: (token: string) => {
         set({token})
-        window.localStorage.setItem("token", token)
+        window.sessionStorage.setItem("token", token)
     },
     deleteToken: () => {
         set({token: null})
-        window.localStorage.removeItem("token")
+        window.sessionStorage.removeItem("token")
     }
 }));

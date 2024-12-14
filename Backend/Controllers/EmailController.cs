@@ -83,7 +83,7 @@ namespace Backend.Controllers
                     return Unauthorized("User is not associated with any company.");
                 }
 
-                var accountEmails = await _emailDbContext.Accounts
+                var accountEmails = await _emailDbContext.Account
                     .Join(_emailDbContext.AccountBedrijven,
                         a => a.Id,
                         ab => ab.Account_id,
@@ -117,7 +117,7 @@ namespace Backend.Controllers
                     return BadRequest(errorDetails);
                 }
 
-                var account = await _emailDbContext.Accounts
+                var account = await _emailDbContext.Account
                     .FirstOrDefaultAsync(a => a.Email == model.Email);
 
                 if (account == null)
@@ -179,7 +179,7 @@ namespace Backend.Controllers
 
                 var accountBedrijf = new AccountBedrijf
                 {
-                    Account_id = account.Id,
+                    // Account_id = account.Id,
                     Bedrijf_id = bedrijf_id,
                     Account = account,
                     Bedrijf = bedrijf ?? throw new InvalidOperationException("Bedrijf not found")
@@ -216,7 +216,7 @@ namespace Backend.Controllers
                     return BadRequest(errorDetails);
                 }
 
-                var account = await _emailDbContext.Accounts
+                var account = await _emailDbContext.Account
                     .FirstOrDefaultAsync(a => a.Email == model.Email);
 
                 if (account == null)

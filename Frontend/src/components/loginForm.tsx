@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 import { useTokenStore } from "../stores";
-import bcrypt from "bcryptjs";
 
 import "../styles/loginRegisterForm.css";
 
@@ -11,29 +10,30 @@ export default function LoginForm() {
   const handleChange = (e: { target: { name: any; value: any } }) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
-
-
-  const handleSubmit = async () => {
-    const password = bcrypt.hashSync(input.password, import.meta.env.SALT)
-
-
-    const response = await fetch(`${import.meta.env.VITE_REACT_APP_EMAIL_API_URL}/Login`, {
+  
+  const handleSubmit = async (event: any) => {
+    event.preventDefault()
+    const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}account/login`, {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${import.meta.env.VITE_REACT_APP_EMAIL_API_KEY}`
       },
-      body: JSON.stringify({ email: input.email, password })
+      body: JSON.stringify({ email: input.email, password: input.password })
     })
 
-    response.json
+    if (response.status == 200) {
+      const data = await response.json()
+      setToken(data.userId)
+      window.location.href = "/"
+    } else if (response.status == 400) {
+      alert("Check if all fields are filled in.")
+    } else if (response.status == 401) {
+      alert("Wrong credetials please try again.")
+    }
 
-    // setToken("Token");
-
-    // window.location.href = "/";
+    alert("Successfully logged in!")
   }
-
-
 
   return (
     <div>

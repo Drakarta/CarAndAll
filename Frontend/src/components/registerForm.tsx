@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react"
-import bcrypt from "bcryptjs"
+import { useState } from "react"
 import "../styles/loginRegisterForm.css"
+import { useTokenStore } from "../stores"
 
 export default function RegisterForm() {
+  const setToken = useTokenStore((state) => state.setToken);
   const [input, setInput] = useState({ email: "", password: "", repeatPassword: "" })
   const [isEmailValid, setIsEmailValid] = useState(true)
 
@@ -11,13 +12,13 @@ export default function RegisterForm() {
   const handleChange = (e: { target: { name: any; value: any } }) => {
     setInput({ ...input, [e.target.name]: e.target.value })
 
-    // Validate the email format on every change
     if (e.target.name === "email") {
       setIsEmailValid(emailRegex.test(e.target.value))
     }
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event: any) => {
+    event.preventDefault()
     if (input.password !== input.repeatPassword) {
       alert("Passwords do not match")
       return
@@ -35,36 +36,30 @@ export default function RegisterForm() {
       return
     }
 
-    const password = bcrypt.hashSync(input.password, import.meta.env.SALT)
-    const response = await fetch(`${import.meta.env.VITE_REACT_APP_EMAIL_API_URL}/register`, {
+    const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}account/register`, {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_REACT_APP_EMAIL_API_KEY}`
+          'Authorization': `Bearer ${import.meta.env.VITE_REACT_APP_API_URL}`
       },
-      body: JSON.stringify({ email: input.email, password })
+      body: JSON.stringify({ email: input.email, password: input.password })
     })
 
-    
+    if (response.status == 200) {
+      const data = await response.json()
+      setToken(data.userId)
+      // window.location.href = "/auth"
+    } else if (response.status == 400) {
+      alert("Check if all fields are filled in.")
+    } else if (response.status == 409) {
+      alert("Email has already been used.")
+    }
 
-    // window.location.href = "/auth"
+    alert("Successfully registered in!")
   }
-  
-  useEffect(() => {
-    const res =  fetch(`${import.meta.env.VITE_REACT_APP_API_URL}account/register`, {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_REACT_APP_API_KEY}`
-      },
-      body: JSON.stringify({ Email: "test@test.nl", Password: "test" })
-    })
-    console.log(res)
-  })
-  
 
   return (
-    <form className={"auth-form"}>
+    <form className={"auth-form"} onSubmit={handleSubmit}>
       <h1>Register</h1>
       <input 
         className={"input"} 
@@ -94,7 +89,7 @@ export default function RegisterForm() {
       />
       <button 
         className={"button"} 
-        onClick={handleSubmit}
+        type="submit"
       >
         Register
       </button>

@@ -50,7 +50,7 @@ public class EmailControllerTest
             AccountBedrijven = new List<AccountBedrijf>()
         };
 
-        _context.Accounts.Add(account);
+        _context.Account.Add(account);
         _context.Bedrijf.Add(bedrijf);
         await _context.SaveChangesAsync();
 
@@ -102,7 +102,7 @@ public class EmailControllerTest
             Bedrijf = bedrijf
         };
 
-        _context.Accounts.Add(account);
+        _context.Account.Add(account);
         _context.Bedrijf.Add(bedrijf);
         _context.AccountBedrijven.Add(accountBedrijf);
         await _context.SaveChangesAsync();
@@ -152,7 +152,7 @@ public class EmailControllerTest
             Bedrijf = bedrijf
         };
 
-        _context.Accounts.Add(account);
+        _context.Account.Add(account);
         _context.Bedrijf.Add(bedrijf);
         _context.AccountBedrijven.Add(accountBedrijf);
         await _context.SaveChangesAsync();
