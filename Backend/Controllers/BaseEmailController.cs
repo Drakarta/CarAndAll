@@ -4,76 +4,36 @@ using System;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 using System.Linq;
-using System.Text.RegularExpressions; // Add this import
+using System.Text.RegularExpressions;
 using Backend.Data;
 using Backend.Entities;
-using Backend.Interface;
-using Backend.ConceptFiles;
-using Microsoft.AspNetCore.Mvc.Routing;
+using Backend.Interfaces;
+using Backend.Helpers;
+using Backend.Models;
 
 namespace Backend.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class EmailController : ControllerBase
+    public abstract class BaseEmailController : ControllerBase
     {
-        private readonly ApplicationDbContext _emailDbContext;
-        private readonly IUserService _userService;
-        private readonly EmailSencer _emailSencer;
+        protected readonly ApplicationDbContext _emailDbContext;
+        protected readonly IUserService _userService;
+        protected readonly IEmailSender _emailSender;
 
-        public EmailController(ApplicationDbContext context, IUserService userService, EmailSencer emailSencer)
+        protected BaseEmailController(ApplicationDbContext context, IUserService userService, IEmailSender emailSender)
         {
             _emailDbContext = context;
             _userService = userService;
-            _emailSencer = emailSencer;
-        }
-
-         private Boolean CheckAmountAllowedToAddToCompany(string abbonement, int Emails)
-    {
-        Console.WriteLine(abbonement);
-        if(abbonement == "kleinste" && Emails >= 2)
-        {
-            return false;
-        }
-        else if(abbonement == "middel" && Emails >= 5)
-        {
-            return false;
-        }
-        else if(abbonement == "groot" && Emails >= 10)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-
-    private Boolean CheckDomeinAllowToAddToCompany(string email, string domein){
-
-        string[] emailSplit = email.Split('@');
-        Console.WriteLine(emailSplit[1]);
-        Console.WriteLine(domein);
-        if(emailSplit[1] != domein)
-        {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-        public class EmailModel
-        {
-            [JsonProperty("email")]
-            public required string Email { get; set; }
+            _emailSender = emailSender;
         }
 
         [HttpGet("emails")]
-        public async Task<IActionResult> GetEmails()
+        public virtual async Task<IActionResult> GetEmails()
         {
             try
             {
-                var account_id = _userService.GetAccount_Id();
+                var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                var account_id = _userService.GetAccount_Id(token);
                 Console.WriteLine($"Logged-in user's AccountId: {account_id}");
 
                 var BedrijfEigenaar_id = await _emailDbContext.Bedrijf
@@ -82,7 +42,7 @@ namespace Backend.Controllers
                     .FirstOrDefaultAsync();
                 Console.WriteLine($"Retrieved bedrijf_id: {BedrijfEigenaar_id}");
 
-                if (BedrijfEigenaar_id == null)
+                if (BedrijfEigenaar_id == Guid.Empty)
                 {
                     return Unauthorized("User is not associated with any company.");
                 }
@@ -105,7 +65,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost("addUserToCompany")]
-        public async Task<IActionResult> AddUserToCompany([FromBody] EmailModel model)
+        public virtual async Task<IActionResult> AddUserToCompany([FromBody] EmailModel model)
         {
             try
             {
@@ -118,17 +78,27 @@ namespace Backend.Controllers
                     };
                     return BadRequest(errorDetails);
                 }
-                 var account_id = _userService.GetAccount_Id();
+                var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                var account_id = _userService.GetAccount_Id(token);
                 var bedrijf_id = await _emailDbContext.Bedrijf
                     .Where(b => b.Eigenaar == account_id)
                     .Select(b => b.Id)
                     .FirstOrDefaultAsync();
 
+                if (bedrijf_id == Guid.Empty)
+                {
+                    var errorDetails = new {
+                        message = "User is not associated with any company.",
+                        statusCode = 401
+                    };
+                    return Unauthorized(errorDetails);
+                }
+
                 var domein = await _emailDbContext.Bedrijf
                     .Where(b => b.Id == bedrijf_id)
                     .Select(b => b.Domein)
                     .FirstOrDefaultAsync();
-                 if (domein == null || CheckDomeinAllowToAddToCompany(model.Email, domein) == false)
+                if (domein == null || !EmailHelper.CheckDomeinAllowToAddToCompany(model.Email, domein))
                 {
                     var errorDetails = new {
                         message = "FalseDomein",
@@ -157,7 +127,6 @@ namespace Backend.Controllers
                     // _emailSencer.SendEmail("pbt05@hotmail.nl", "Account gegevens", context);
                 }
 
-
                 var bedrijf = await _emailDbContext.Bedrijf.FindAsync(bedrijf_id);
 
                 var Abbonement = await _emailDbContext.Bedrijf
@@ -168,24 +137,13 @@ namespace Backend.Controllers
                     .Where(ab => ab.bedrijf_id == bedrijf_id)
                     .CountAsync();
 
-                Console.WriteLine(domein);
-
-                if (CheckAmountAllowedToAddToCompany(Abbonement, CountAccountBedrijf) == false)
+                if (!EmailHelper.CheckAmountAllowedToAddToCompany(Abbonement, CountAccountBedrijf))
                 {
                     var errorDetails = new {
                         message = "MaxNumber",
                         statusCode = 400
                     };
                     return BadRequest(errorDetails);
-                }
-
-                if (bedrijf_id == null)
-                {
-                    var errorDetails = new {
-                        message = "User is not associated with any company.",
-                        statusCode = 401
-                    };
-                    return Unauthorized(errorDetails);
                 }
 
                 var accountBedrijf = new BedrijfAccounts
@@ -200,9 +158,9 @@ namespace Backend.Controllers
                 await _emailDbContext.SaveChangesAsync();
 
                 var succesDetails = new {
-                        message = "User added to the company successfully.",
-                        statusCode = 200
-                    };
+                    message = "User added to the company successfully.",
+                    statusCode = 200
+                };
 
                 return Ok(succesDetails);
             }
@@ -211,12 +169,12 @@ namespace Backend.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
         [HttpPost("removeUserFromCompany")]
-        public async Task<IActionResult> RemoveUserFromCompany([FromBody] EmailModel model)
+        public virtual async Task<IActionResult> RemoveUserFromCompany([FromBody] EmailModel model)
         {
             try
             {
-                // Validate email format
                 if (!Regex.IsMatch(model.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
                 {
                     var errorDetails = new {
@@ -238,7 +196,8 @@ namespace Backend.Controllers
                     return NotFound(errorDetails);
                 }
 
-                var account_id = _userService.GetAccount_Id();
+                var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                var account_id = _userService.GetAccount_Id(token);
                 var bedrijf_id = await _emailDbContext.Bedrijf
                     .Where(b => b.Eigenaar == account_id)
                     .Select(b => b.Id)
@@ -249,7 +208,7 @@ namespace Backend.Controllers
                     .Select(b => b.naam)
                     .FirstOrDefaultAsync();
 
-                if (bedrijf_id == null)
+                if (bedrijf_id == Guid.Empty)
                 {
                     var errorDetails = new {
                         message = "User is not associated with any company.",
@@ -269,15 +228,15 @@ namespace Backend.Controllers
                     };
                     return NotFound(errorDetails);
                 }
-                    // string context = $"{model.Email} U bent verwijderd van het bedrijf:{BedrijfNaam}  ";
-                    //  _emailSencer.SendEmail("pbt05@hotmail.nl", "Account verwijderd", context);
+                // string context = $"{model.Email} U bent verwijderd van het bedrijf:{BedrijfNaam}  ";
+                //  _emailSencer.SendEmail("pbt05@hotmail.nl", "Account verwijderd", context);
 
                 _emailDbContext.BedrijfAccounts.Remove(accountBedrijf);
                 await _emailDbContext.SaveChangesAsync();
                 var succesDetails = new {
-                        message = "User removed from the company successfully.",
-                        statusCode = 200
-                    };
+                    message = "User removed from the company successfully.",
+                    statusCode = 200
+                };
 
                 return Ok(succesDetails);
             }
@@ -286,5 +245,6 @@ namespace Backend.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
     }
 }

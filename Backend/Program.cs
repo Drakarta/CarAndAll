@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Backend.Data;
 using Microsoft.AspNetCore.Identity;
 using Backend.Entities;
-using Backend.Interface;
+using Backend.Interfaces;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +21,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<EmailSencer>();
+builder.Services.AddScoped<IEmailSender, EmailSencer>();
 
 builder.Services.AddHttpContextAccessor();
 
