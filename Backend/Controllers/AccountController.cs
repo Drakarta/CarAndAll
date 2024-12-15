@@ -35,56 +35,105 @@ namespace Backend.Controllers
             {
                 return Unauthorized(new { message = "Invalid email or password." });
             }
-            return Ok(new { UserId = user.Id });
-        }
-
-    [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] LoginRegisterModel model)
-    {
-        try
-        {
-            if (model == null || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
-            {
-                return BadRequest(new { message = "Invalid registration request." });
-            }
-
-            // Check if email is already in use
-            var existingUser = await _accountDbContext.Account
-                .FirstOrDefaultAsync(u => u.Email == model.Email);
-
-            if (existingUser != null)
-            {
-                return Conflict(new { message = "Email is already in use." });
-            }
-
-            var newUser = new Account
-            {
-                // Id = Guid.NewGuid(),
-                Email = model.Email,
-                Wachtwoord = BC.EnhancedHashPassword(model.Password)
-            };
-
-            // Save user to database
-            _accountDbContext.Account.Add(newUser);
-            await _accountDbContext.SaveChangesAsync();
-            
-            var userId = _accountDbContext.Account
-                .Where(account => account.Email == model.Email)
-                .Select(account => account.Id)
-                .FirstOrDefault();
-
             return Ok(new { 
-                message = "User registered successfully.",
-                userId = userId
+                UserId = user.Id,
+                Role = user.Rol
             });
         }
-        catch (Exception ex)
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] LoginRegisterModel model)
         {
-            // Log the exception for debugging (use your logger here)
-            Console.WriteLine($"Error occurred during registration: {ex.Message}");
-            
-            // Return the error message
-            return StatusCode(500, new { message = "Internal Server Error: " + ex.Message });
+            try
+            {
+                if (model == null || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
+                {
+                    return BadRequest(new { message = "Invalid registration request." });
+                }
+
+                var existingUser = await _accountDbContext.Account
+                    .FirstOrDefaultAsync(u => u.Email == model.Email);
+
+                if (existingUser != null)
+                {
+                    return Conflict(new { message = "Email is already in use." });
+                }
+
+                var newUser = new Account
+                {
+                    Email = model.Email,
+                    Wachtwoord = BC.EnhancedHashPassword(model.Password),
+                    Rol = "Particuliere huurder"
+                };
+
+                _accountDbContext.Account.Add(newUser);
+                await _accountDbContext.SaveChangesAsync();
+                
+                var user = _accountDbContext.Account
+                    .Where(account => account.Email == model.Email)
+                    .Select(account => new 
+                    { 
+                        account.Id, 
+                        account.Rol 
+                    })
+                    .FirstOrDefault();
+
+                return Ok(new { 
+                    Message = "User registered successfully.",
+                    UserId = user.Id,
+                    Role = user.Rol
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error occurred during registration: {ex.Message}");
+                return StatusCode(500, new { message = "Internal Server Error: " + ex.Message });
+            }
         }
-    }}
+
+        public class IdModel
+        {
+            public required string Id { get; set; }
+        }
+
+        [HttpPost("getuserbyid")]
+        public async Task<IActionResult> GetUserById([FromBody] IdModel model)
+        {
+            if (model == null || string.IsNullOrWhiteSpace(model.Id))
+            {
+                return BadRequest(new { message = "Invalid request: Id is required." });
+            }
+
+            if (!Guid.TryParse(model.Id, out var userId))
+            {
+                return BadRequest(new { message = "Invalid request: Id must be a valid GUID." });
+            }
+
+            try
+            {
+                var user = await _accountDbContext.Account
+                    .FirstOrDefaultAsync(u => u.Id == userId);
+
+                if (user == null)
+                {
+                    return NotFound(new { message = "User not found." });
+                }
+
+                return Ok(new
+                {
+                    UserId = user.Id,
+                    Email = user.Email,
+                    Name = user.Naam,
+                    Address = user.Adres,
+                    PhoneNumber = user.TelefoonNummer,
+                    Role = user.Rol
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching user by ID: {ex.Message}");
+                return StatusCode(500, new { message = "An unexpected error occurred. Please try again later." });
+            }
+        }
+    }
 }
