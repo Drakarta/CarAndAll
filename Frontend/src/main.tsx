@@ -9,6 +9,7 @@ import EmailManager from "./pages/klant/underOverview"; // Ensure this line is c
 import "./styles/index.css";
 import NavBar from "./components/navBar";
 import LoginRegister from "./pages/loginRegister";
+import Abonnementen from "./pages/abonnementen";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -19,6 +20,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/email-manager" element={<EmailManager />} />
           <Route path="/voertuigenOverview" element={<VoertuigenOverview />} />
           <Route path="/auth" element={<LoginRegister />} />
+          <Route path="/abonnementen" element={<Abonnementen />} />
         </Route>
       </Routes>
     </BrowserRouter>
