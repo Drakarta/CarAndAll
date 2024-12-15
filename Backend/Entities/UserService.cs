@@ -1,4 +1,4 @@
-using Backend.Interface;
+using Backend.Interfaces;
 
 namespace Backend.Entities
 {
@@ -20,11 +20,13 @@ namespace Backend.Entities
             _userManager = userManager;
         }
 
-        public Guid GetAccount_Id()
+        public Guid GetAccount_Id(string token)
         {
-            var guidString = "B27E650B-9C9F-424E-BACB-003C9EEB7A8E";
-            Guid guid = Guid.Parse(guidString);
-            return guid;
+            if (Guid.TryParse(token, out Guid guid))
+            {
+                return guid;
+            }
+            throw new ArgumentException("Invalid token format");
         }
     }
 }

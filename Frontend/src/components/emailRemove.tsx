@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTokenStore } from "../stores";
 
 interface EmailRemoveProps {
     setEmails: React.Dispatch<React.SetStateAction<string[]>>;
@@ -6,14 +7,15 @@ interface EmailRemoveProps {
 
 const EmailRemove: React.FC<EmailRemoveProps> = ({ setEmails }) => {
     const [email, setEmail] = useState('');
-
+    const token = useTokenStore((state) => state.token);
+    const role = useTokenStore((state) => state.role);
     const handleRemoveEmail = async () => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_EMAIL_API_URL}/removeUserFromCompany`, {
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/${role}Email/removeUserFromCompany`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${import.meta.env.VITE_REACT_APP_API_KEY}`
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({ email }),
             });

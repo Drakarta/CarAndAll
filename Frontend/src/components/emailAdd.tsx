@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTokenStore } from '../stores';
 
 interface EmailAddProps {
     setEmails: React.Dispatch<React.SetStateAction<string[]>>;
@@ -8,14 +9,16 @@ const EmailAdd: React.FC<EmailAddProps> = ({ setEmails }) => {
     const [email, setEmail] = useState('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [responseMessage, setResponseMessage] = useState<string | null>(null);
+    const token = useTokenStore((state) => state.token);
+    const role = useTokenStore((state) => state.role);
 
     const handleAddEmail = async () => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_EMAIL_API_URL}/addUserToCompany`, {
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/${role}Email/addUserToCompany`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${import.meta.env.VITE_REACT_APP_API_KEY}`
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({ email }),
             });
