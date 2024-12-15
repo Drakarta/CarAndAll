@@ -16,8 +16,8 @@ export default function NavBar() {
           <NavLink to="/email-manager" className={"navBarLink"}>
             Email manager
           </NavLink>
-          <NavLink to="/" className={"navBarLink"}>
-            Link2
+          <NavLink to="/abonnementen" className={"navBarLink"}>
+            Abonnementen
           </NavLink>
         </div>
         <img className="navBarImage" src={Logo} alt="CarAndAll logo"></img>
