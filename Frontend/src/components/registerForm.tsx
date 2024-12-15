@@ -47,15 +47,14 @@ export default function RegisterForm() {
 
     if (response.status == 200) {
       const data = await response.json()
-      setToken(data.userId)
+      setToken(data.userId, data.role)
+      alert("Successfully registered in!")
       // window.location.href = "/auth"
     } else if (response.status == 400) {
       alert("Check if all fields are filled in.")
     } else if (response.status == 409) {
       alert("Email has already been used.")
     }
-
-    alert("Successfully registered in!")
   }
 
   return (
