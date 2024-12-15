@@ -1,25 +1,34 @@
 .overviewSection {
-  border: 1px solid black;
-  border-radius: 15px;
-  padding: 1rem;
-  margin-top: 5rem;
-  height: 100%;
-}
-.voertuigenTabel{
+    border: 1px solid black;
+    border-radius: 15px;
+    padding: 1rem;
+    margin-top: 5rem;
+    height: 100%;
+  }
+  .voertuigenTabel {
     width: 100%;
     border: 1px solid gray;
     border-collapse: collapse;
-}
-.voertuigenTabel th{
+  }
+  .voertuigenTabel th {
     padding: 5px;
-}
-.voertuigenTabel tr{
+  }
+  .voertuigenTabel tr {
     border-bottom: 2px solid black;
-}
-.voertuigenTabel td{
+  }
+  .voertuigenTabel td {
     border-right: 1px solid gray;
-}
-.voertuigenTabel td button{
+    padding-left: 1rem;
+  }
+  .voertuigenTabel td button:hover {
+    background-color: lightgray;
+  }
+  
+  .datumButtonVoertuigen {
+    padding: 0 !important;
+  }
+
+  .datepicker button{
     color: black;
     background-color: white;
     border: 0;
@@ -27,7 +36,9 @@
     width: 100%;
     padding: 5px;
     cursor: pointer;
-}
-.voertuigenTabel td button:hover{
-    background-color: lightgray;
-}
+  }
+
+  .headerFilter{
+    display: flex;
+    justify-content:space-between;
+  }

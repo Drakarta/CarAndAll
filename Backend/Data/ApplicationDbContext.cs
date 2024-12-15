@@ -40,6 +40,7 @@ namespace Backend.Data
             modelBuilder.Entity<Voertuig>().HasKey(v => v.VoertuigID);
             modelBuilder.Entity<VoertuigCategorie>().HasKey(v => v.Categorie);
             modelBuilder.Entity<VerhuurAanvraag>().HasKey(v => v.AanvraagID);
+            modelBuilder.Entity<VerhuurAanvraag>().ToTable("VerhuurAanvraag");
 
             modelBuilder.Entity<Voertuig>()
                 .HasOne<VoertuigCategorie>(v => v.VoertuigCategorie)
