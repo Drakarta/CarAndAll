@@ -3,19 +3,23 @@ import '../../styles/EmailManager.css';
 import EmailList from '../../components/emailList';
 import EmailAdd from '../../components/emailAdd';
 import EmailRemove from '../../components/emailRemove';
+import { useTokenStore } from '../../stores';
 
 const UnderOverview: React.FC = () => {
     const [emails, setEmails] = useState<string[]>([]);
+    const token = useTokenStore((state) => state.token);
+    const role = useTokenStore((state) => state.role);
 
     useEffect(() => {
         fetchEmails();
+    
     }, []);
 
     const fetchEmails = async () => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_EMAIL_API_URL}/emails`, {
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/${role}Email/emails`, {
                 headers: {
-                    'Authorization': `Bearer ${import.meta.env.VITE_REACT_APP_EMAIL_API_KEY}`
+                    'Authorization': `Bearer ${token}`
                 }
             });
             if (!response.ok) {
@@ -28,9 +32,11 @@ const UnderOverview: React.FC = () => {
         }
     };
 
-    return (
+     return (
         <div className="email-manager">
-            <div className="header">Email Manager</div>
+            <div className="header">
+                Email Manager for {role === 'Wagenparkbeheerder' ? 'Wagenparkbeheerder' : 'Zakelijkeklant'}
+            </div>
             <div className="content">
                 <div className="email-list">
                     <EmailList emails={emails} />
