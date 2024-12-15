@@ -4,10 +4,10 @@ export default function LogOutButton() {
   const deleteToken = useTokenStore(state => state.deleteToken)
   function logOut() {
     deleteToken()
-    window.location.href = "/"
+    window.location.href = "/";
   }
 
   return (
-    <button onClick={() => logOut} className={"button"}>Log out</button>
+    <button onClick={() => logOut()} className={"login-button"}>Log out</button>
   )
 }
