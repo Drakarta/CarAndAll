@@ -8,7 +8,11 @@ export default function VoertuigenOverview() {
   useEffect(() => {
     const fetchVoertuigen = async () => {
       try {
-        const response = await fetch("http://localhost:5016/api/Voertuig/Voertuigen");
+        const response = await fetch(`${import.meta.env.VITE_REACT_APP_VOERTUIGEN_API_URL}`, {
+          headers: {
+              'Authorization': `Bearer ${import.meta.env.VITE_REACT_APP_API_KEY}`
+          }
+      });
         const data = await response.json();
         setVoertuigen(data);
       } catch (error) {
