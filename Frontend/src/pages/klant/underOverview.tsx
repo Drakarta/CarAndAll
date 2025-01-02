@@ -7,7 +7,7 @@ import { useTokenStore } from '../../stores';
 
 const UnderOverview: React.FC = () => {
     const [emails, setEmails] = useState<string[]>([]);
-    const token = useTokenStore((state) => state.token);
+    //const token = useTokenStore((state) => state.token);
     const role = useTokenStore((state) => state.role);
 
     useEffect(() => {
@@ -18,9 +18,8 @@ const UnderOverview: React.FC = () => {
     const fetchEmails = async () => {
         try {
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/${role}Email/emails`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                method: 'GET',
+                credentials: 'include',
             });
             if (!response.ok) {
                 throw new Error('Network response was not ok');

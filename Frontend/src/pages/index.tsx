@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useTokenStore } from "../stores";
 
 // Define the user object type
 interface User {
@@ -12,7 +11,6 @@ interface User {
 }
 
 export default function Index() {
-  const token = useTokenStore((state) => state.token);
   const [user, setUser] = useState<User | null>(null); // Initialize as null for "no data" state
   const [loading, setLoading] = useState<boolean>(true); // Track loading state
   const [error, setError] = useState<string | null>(null); // Track errors
@@ -21,12 +19,11 @@ export default function Index() {
     const fetchUserData = async () => {
       try {
         const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/account/getuserbyid`, {
-          method: "POST",
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${import.meta.env.VITE_REACT_APP_EMAIL_API_KEY}`,
           },
-          body: JSON.stringify({ id: token }),
+          credentials: 'include',
         });
 
         if (response.status === 200) {
@@ -51,13 +48,10 @@ export default function Index() {
       }
     };
 
-    if (token) {
+    
       fetchUserData();
-    } else {
-      setError("Token is missing or invalid.");
-      setLoading(false);
-    }
-  }, [token]);
+    
+  }, []);
 
   return (
     <div>
