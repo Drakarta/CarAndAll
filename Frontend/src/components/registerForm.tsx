@@ -1,9 +1,7 @@
 import { useState } from "react"
 import "../styles/loginRegisterForm.css"
-import { useTokenStore } from "../stores"
 
 export default function RegisterForm() {
-  const setToken = useTokenStore((state) => state.setToken);
   const [input, setInput] = useState({ email: "", password: "", repeatPassword: "" })
   const [isEmailValid, setIsEmailValid] = useState(true)
 
@@ -40,14 +38,11 @@ export default function RegisterForm() {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_REACT_APP_API_URL}`
       },
       body: JSON.stringify({ email: input.email, password: input.password })
     })
 
     if (response.status == 200) {
-      const data = await response.json()
-      setToken(data.userId, data.role)
       alert("Successfully registered in!")
       // window.location.href = "/auth"
     } else if (response.status == 400) {

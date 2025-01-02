@@ -10,6 +10,10 @@ using Backend.Entities;
 using Backend.Interfaces;
 using Backend.Helpers;
 using Backend.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Backend.Controllers
 {
@@ -27,13 +31,17 @@ namespace Backend.Controllers
             _emailSender = emailSender;
         }
 
+       
         [HttpGet("emails")]
         public virtual async Task<IActionResult> GetEmails()
         {
             try
             {
-                var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-                var account_id = _userService.GetAccount_Id(token);
+                var accountEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+                var account_id = await _emailDbContext.Account
+                    .Where(a => a.Email == accountEmail.Value)
+                    .Select(a => a.Id)
+                    .FirstOrDefaultAsync();
                 Console.WriteLine($"Logged-in user's AccountId: {account_id}");
 
                 var BedrijfEigenaar_id = await _emailDbContext.Bedrijf
@@ -63,13 +71,12 @@ namespace Backend.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
         [HttpPost("addUserToCompany")]
         public virtual async Task<IActionResult> AddUserToCompany([FromBody] EmailModel model)
         {
             try
             {
-                // Validate email format
+               
                 if (!Regex.IsMatch(model.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
                 {
                     var errorDetails = new {
@@ -78,8 +85,11 @@ namespace Backend.Controllers
                     };
                     return BadRequest(errorDetails);
                 }
-                var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-                var account_id = _userService.GetAccount_Id(token);
+              var accountEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+                var account_id = await _emailDbContext.Account
+                    .Where(a => a.Email == accountEmail.Value)
+                    .Select(a => a.Id)
+                    .FirstOrDefaultAsync();;
                 var bedrijf_id = await _emailDbContext.Bedrijf
                     .Where(b => b.Eigenaar == account_id)
                     .Select(b => b.Id)
@@ -166,10 +176,11 @@ namespace Backend.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error occurred: {ex.Message}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
+ 
         [HttpPost("removeUserFromCompany")]
         public virtual async Task<IActionResult> RemoveUserFromCompany([FromBody] EmailModel model)
         {
@@ -196,8 +207,11 @@ namespace Backend.Controllers
                     return NotFound(errorDetails);
                 }
 
-                var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-                var account_id = _userService.GetAccount_Id(token);
+               var accountEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+                var account_id = await _emailDbContext.Account
+                    .Where(a => a.Email == accountEmail.Value)
+                    .Select(a => a.Id)
+                    .FirstOrDefaultAsync();
                 var bedrijf_id = await _emailDbContext.Bedrijf
                     .Where(b => b.Eigenaar == account_id)
                     .Select(b => b.Id)

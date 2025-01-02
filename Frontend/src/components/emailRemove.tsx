@@ -7,7 +7,6 @@ interface EmailRemoveProps {
 
 const EmailRemove: React.FC<EmailRemoveProps> = ({ setEmails }) => {
     const [email, setEmail] = useState('');
-    const token = useTokenStore((state) => state.token);
     const role = useTokenStore((state) => state.role);
     const handleRemoveEmail = async () => {
         try {
@@ -15,8 +14,8 @@ const EmailRemove: React.FC<EmailRemoveProps> = ({ setEmails }) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
                 },
+                credentials: 'include',
                 body: JSON.stringify({ email }),
             });
             if (response.ok) {

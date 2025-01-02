@@ -9,7 +9,6 @@ const EmailAdd: React.FC<EmailAddProps> = ({ setEmails }) => {
     const [email, setEmail] = useState('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [responseMessage, setResponseMessage] = useState<string | null>(null);
-    const token = useTokenStore((state) => state.token);
     const role = useTokenStore((state) => state.role);
 
     const handleAddEmail = async () => {
@@ -18,8 +17,8 @@ const EmailAdd: React.FC<EmailAddProps> = ({ setEmails }) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
                 },
+                credentials: 'include',
                 body: JSON.stringify({ email }),
             });
 
