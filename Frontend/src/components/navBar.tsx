@@ -4,26 +4,80 @@ import Logo from "../assets/CarAndAllLogo.svg";
 import { useTokenStore } from "../stores";
 import LogOutButton from "./logOutButton";
 
+const BaseNavBar: React.FC = () => (
+  <>
+    <NavLink to="/" className="navBarLink">
+      Home
+    </NavLink>
+    <NavLink to="/profile" className="navBarLink">
+      Profile
+    </NavLink>
+  </>
+);
+
+const AdminNavBar: React.FC = () => (
+  <>
+    <BaseNavBar />
+    <NavLink to="/voertuigenOverview" className="navBarLink">
+      Voertuigen
+    </NavLink>
+    <NavLink to="/email-manager" className="navBarLink">
+      Email Manager
+    </NavLink>
+    <NavLink to="/abonnementen" className="navBarLink">
+      Abonnementen
+    </NavLink>
+  </>
+);
+
+const BeheerderNavBar : React.FC = () => (
+  <>
+          <BaseNavBar />
+          <NavLink to="/voertuigenOverview" className="navBarLink">
+            Voertuigen
+          </NavLink>
+          <NavLink to="/email-manager" className="navBarLink">
+            Email Manager
+          </NavLink>
+          <NavLink to="/abonnementen" className="navBarLink">
+            Abonnementen
+          </NavLink>
+        </>
+)
+
+const BackOfficeNavBar : React.FC = () => (
+  <>
+          <BaseNavBar />
+          <NavLink to="/voertuigenOverview" className="navBarLink">
+            Voertuigen
+          </NavLink>
+        </>
+)
+const RoleNavBar: React.FC<{ role: string }> = ({ role }) => {
+  switch (role) {
+    case "Admin":
+      return <AdminNavBar />;
+    case "Wagenparkbeheerder":
+    case "Zakelijkeklant":
+      return <BeheerderNavBar />;
+      case "Backofficemedewerker":
+        return <BackOfficeNavBar />;
+    default:
+      return <BaseNavBar />;
+  }
+};
+
 export default function NavBar() {
-  const token = useTokenStore((state) => state.token)
+  const token = useTokenStore((state) => state.token);
+  const role = useTokenStore((state) => state.role) || "";
+
   return (
     <>
       <nav className="nav">
         <div className="navLinkContainer">
-          <NavLink to="/" className={"navBarLink"}>
-            Home
-          </NavLink>
-          <NavLink to="/voertuigenOverview" className={"navBarLink"}>
-            Voertuigen
-          </NavLink>
-          <NavLink to="/email-manager" className={"navBarLink"}>
-            Email manager
-          </NavLink>
-          <NavLink to="/abonnementen" className={"navBarLink"}>
-            Abonnementen
-          </NavLink>
+          <RoleNavBar role={role} />
         </div>
-        <img className="navBarImage" src={Logo} alt="CarAndAll logo"></img>
+        <img className="navBarImage" src={Logo} alt="CarAndAll logo" />
         {token ? (
           <LogOutButton />
         ) : (
