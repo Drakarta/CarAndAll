@@ -14,37 +14,35 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using System.Collections.Generic;
 
 namespace Backend.Controllers
 {
     [ApiController]
     public abstract class BaseEmailController : ControllerBase
     {
-        protected readonly ApplicationDbContext _emailDbContext;
-        protected readonly IUserService _userService;
+        protected readonly ApplicationDbContext _context;
         protected readonly IEmailSender _emailSender;
 
-        protected BaseEmailController(ApplicationDbContext context, IUserService userService, IEmailSender emailSender)
+        protected BaseEmailController(ApplicationDbContext context, IEmailSender emailSender)
         {
-            _emailDbContext = context;
-            _userService = userService;
+            _context = context;
             _emailSender = emailSender;
         }
 
-       
         [HttpGet("emails")]
         public virtual async Task<IActionResult> GetEmails()
         {
             try
             {
                 var accountEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
-                var account_id = await _emailDbContext.Account
+                var account_id = await _context.Account
                     .Where(a => a.Email == accountEmail.Value)
                     .Select(a => a.Id)
                     .FirstOrDefaultAsync();
                 Console.WriteLine($"Logged-in user's AccountId: {account_id}");
 
-                var BedrijfEigenaar_id = await _emailDbContext.Bedrijf
+                var BedrijfEigenaar_id = await _context.Bedrijf
                     .Where(b => b.Eigenaar == account_id)
                     .Select(b => b.Id)
                     .FirstOrDefaultAsync();
@@ -55,15 +53,14 @@ namespace Backend.Controllers
                     return Unauthorized("User is not associated with any company.");
                 }
 
-                var accountEmails = await _emailDbContext.Account
-                    .Join(_emailDbContext.BedrijfAccounts,
+                var accountEmails = await _context.Account
+                    .Join(_context.BedrijfAccounts,
                           a => a.Id,
                           ab => ab.account_id,
                           (a, ab) => new { a.Email, ab.bedrijf_id })
                     .Where(result => result.bedrijf_id == BedrijfEigenaar_id)
                     .Select(result => result.Email)
                     .ToListAsync();
-
                 return Ok(accountEmails);
             }
             catch (Exception ex)
@@ -71,12 +68,12 @@ namespace Backend.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
         [HttpPost("addUserToCompany")]
         public virtual async Task<IActionResult> AddUserToCompany([FromBody] EmailModel model)
         {
             try
             {
-               
                 if (!Regex.IsMatch(model.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
                 {
                     var errorDetails = new {
@@ -85,12 +82,23 @@ namespace Backend.Controllers
                     };
                     return BadRequest(errorDetails);
                 }
-              var accountEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
-                var account_id = await _emailDbContext.Account
+                var accountEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+                var reqeustEmailToLower = model.Email.ToLower();
+                var lowerAccountEmail = accountEmail.Value.ToLower();
+                if (lowerAccountEmail == reqeustEmailToLower)
+                {
+                    var errorDetails = new {
+                        message = "User cannot add himself/herself to the company.",
+                        statusCode = 400
+                    };
+                    return BadRequest(errorDetails);
+                }
+
+                var account_id = await _context.Account
                     .Where(a => a.Email == accountEmail.Value)
                     .Select(a => a.Id)
                     .FirstOrDefaultAsync();;
-                var bedrijf_id = await _emailDbContext.Bedrijf
+                var bedrijf_id = await _context.Bedrijf
                     .Where(b => b.Eigenaar == account_id)
                     .Select(b => b.Id)
                     .FirstOrDefaultAsync();
@@ -104,11 +112,11 @@ namespace Backend.Controllers
                     return Unauthorized(errorDetails);
                 }
 
-                var domein = await _emailDbContext.Bedrijf
+                var domein = await _context.Bedrijf
                     .Where(b => b.Id == bedrijf_id)
-                    .Select(b => b.Domein)
+                    .Select(b => b.Domein.ToLower())
                     .FirstOrDefaultAsync();
-                if (domein == null || !EmailHelper.CheckDomeinAllowToAddToCompany(model.Email, domein))
+                if (domein == null || !EmailHelper.CheckDomeinAllowToAddToCompany(reqeustEmailToLower, domein))
                 {
                     var errorDetails = new {
                         message = "FalseDomein",
@@ -117,8 +125,8 @@ namespace Backend.Controllers
                     return BadRequest(errorDetails);
                 }
 
-                var account = await _emailDbContext.Account
-                    .FirstOrDefaultAsync(a => a.Email == model.Email);
+                var account = await _context.Account
+                    .FirstOrDefaultAsync(a => a.Email.ToLower() == reqeustEmailToLower);
 
                 if (account == null)
                 {
@@ -126,24 +134,24 @@ namespace Backend.Controllers
                     var newAccount = new Account
                     {
                         Id = Guid.NewGuid(),
-                        Email = model.Email,
+                        Email = reqeustEmailToLower,
                         wachtwoord = password
                     };
-                    _emailDbContext.Account.Add(newAccount);
-                    await _emailDbContext.SaveChangesAsync();
-                    account = await _emailDbContext.Account
-                        .FirstOrDefaultAsync(a => a.Email == model.Email);
+                    _context.Account.Add(newAccount);
+                    await _context.SaveChangesAsync();
+                    account = await _context.Account
+                        .FirstOrDefaultAsync(a => string.Equals(a.Email, model.Email, StringComparison.OrdinalIgnoreCase));
                     // string context = $"{model.Email} {password} Dit zijn uw loggin gegevens";
                     // _emailSencer.SendEmail("pbt05@hotmail.nl", "Account gegevens", context);
                 }
 
-                var bedrijf = await _emailDbContext.Bedrijf.FindAsync(bedrijf_id);
+                var bedrijf = await _context.Bedrijf.FindAsync(bedrijf_id);
 
-                var Abbonement = await _emailDbContext.Bedrijf
+                var Abbonement = await _context.Bedrijf
                     .Where(b => b.Id == bedrijf_id)
                     .Select(b => b.Abbonement)
                     .FirstOrDefaultAsync();
-                var CountAccountBedrijf = await _emailDbContext.BedrijfAccounts
+                var CountAccountBedrijf = await _context.BedrijfAccounts
                     .Where(ab => ab.bedrijf_id == bedrijf_id)
                     .CountAsync();
 
@@ -164,8 +172,8 @@ namespace Backend.Controllers
                     Bedrijf = bedrijf ?? throw new InvalidOperationException("Bedrijf not found")
                 };
 
-                _emailDbContext.BedrijfAccounts.Add(accountBedrijf);
-                await _emailDbContext.SaveChangesAsync();
+                _context.BedrijfAccounts.Add(accountBedrijf);
+                await _context.SaveChangesAsync();
 
                 var succesDetails = new {
                     message = "User added to the company successfully.",
@@ -180,7 +188,7 @@ namespace Backend.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
- 
+
         [HttpPost("removeUserFromCompany")]
         public virtual async Task<IActionResult> RemoveUserFromCompany([FromBody] EmailModel model)
         {
@@ -195,8 +203,8 @@ namespace Backend.Controllers
                     return BadRequest(errorDetails);
                 }
 
-                var account = await _emailDbContext.Account
-                    .FirstOrDefaultAsync(a => a.Email == model.Email);
+                var account = await _context.Account
+                    .FirstOrDefaultAsync(a => a.Email.ToLower() == model.Email.ToLower());
 
                 if (account == null)
                 {
@@ -207,17 +215,17 @@ namespace Backend.Controllers
                     return NotFound(errorDetails);
                 }
 
-               var accountEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
-                var account_id = await _emailDbContext.Account
+                var accountEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+                var account_id = await _context.Account
                     .Where(a => a.Email == accountEmail.Value)
                     .Select(a => a.Id)
                     .FirstOrDefaultAsync();
-                var bedrijf_id = await _emailDbContext.Bedrijf
+                var bedrijf_id = await _context.Bedrijf
                     .Where(b => b.Eigenaar == account_id)
                     .Select(b => b.Id)
                     .FirstOrDefaultAsync();
 
-                var BedrijfNaam = await _emailDbContext.Bedrijf
+                var BedrijfNaam = await _context.Bedrijf
                     .Where(b => b.Id == bedrijf_id)
                     .Select(b => b.naam)
                     .FirstOrDefaultAsync();
@@ -231,7 +239,7 @@ namespace Backend.Controllers
                     return Unauthorized(errorDetails);
                 }
 
-                var accountBedrijf = await _emailDbContext.BedrijfAccounts
+                var accountBedrijf = await _context.BedrijfAccounts
                     .FirstOrDefaultAsync(ab => ab.account_id == account.Id && ab.bedrijf_id == bedrijf_id);
 
                 if (accountBedrijf == null)
@@ -245,8 +253,8 @@ namespace Backend.Controllers
                 // string context = $"{model.Email} U bent verwijderd van het bedrijf:{BedrijfNaam}  ";
                 //  _emailSencer.SendEmail("pbt05@hotmail.nl", "Account verwijderd", context);
 
-                _emailDbContext.BedrijfAccounts.Remove(accountBedrijf);
-                await _emailDbContext.SaveChangesAsync();
+                _context.BedrijfAccounts.Remove(accountBedrijf);
+                await _context.SaveChangesAsync();
                 var succesDetails = new {
                     message = "User removed from the company successfully.",
                     statusCode = 200
@@ -259,6 +267,5 @@ namespace Backend.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
     }
 }
