@@ -74,6 +74,12 @@ builder.Services.AddAuthorization(options =>
         policy.RequireAuthenticatedUser();
         policy.RequireRole("Particuliere huurder", "Admin");
     });
+     options.AddPolicy("FrontOffice", policy =>
+    {
+    policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
+    policy.RequireAuthenticatedUser();
+    policy.RequireRole("Frontofficemedewerker", "Admin");
+    });
 });
 
 

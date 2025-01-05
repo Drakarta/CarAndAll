@@ -53,6 +53,15 @@ const BackOfficeNavBar : React.FC = () => (
           </NavLink>
         </>
 )
+
+const FrontOfficeNavBar: React.FC = () => (
+  <>
+    <BaseNavBar />
+    <NavLink to="/frontofficedashboard" className="navBarLink">
+      front office Dashboard
+    </NavLink>
+  </>
+);
 const RoleNavBar: React.FC<{ role: string }> = ({ role }) => {
   switch (role) {
     case "Admin":
@@ -62,6 +71,8 @@ const RoleNavBar: React.FC<{ role: string }> = ({ role }) => {
       return <BeheerderNavBar />;
       case "Backofficemedewerker":
         return <BackOfficeNavBar />;
+    case "Frontofficemedewerker":
+      return <FrontOfficeNavBar />;
     default:
       return <BaseNavBar />;
   }
