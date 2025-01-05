@@ -16,11 +16,6 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
-
-builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmailSender, EmailSencer>();
 builder.Services.AddScoped<EmailSencer>();
 
@@ -54,16 +49,39 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminPolicy", policy =>
-        policy.RequireRole("Admin"));
+    {
+        policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
+        policy.RequireAuthenticatedUser();
+        policy.RequireRole("Admin");
+});
     options.AddPolicy("Wagenparkbeheerder", policy =>
     {
     policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
     policy.RequireAuthenticatedUser();
-    policy.RequireRole("Wagenparkbeheerder");
+    policy.RequireRole("Wagenparkbeheerder", "Admin");
+    });
+    options.AddPolicy("Zakelijkeklant", policy =>
+    {
+    policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
+    policy.RequireAuthenticatedUser();
+    policy.RequireRole("Zakelijkeklant", "Admin");
+    });
+    options.AddPolicy("Particuliere huurder", policy =>
+    {
+        policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
+        policy.RequireAuthenticatedUser();
+        policy.RequireRole("Particuliere huurder", "Admin");
+    });
+     options.AddPolicy("FrontOffice", policy =>
+    {
+    policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
+    policy.RequireAuthenticatedUser();
+    policy.RequireRole("Frontofficemedewerker", "Admin");
     });
 });
 
-Console.WriteLine("Authorization policies configured: AdminPolicy, Wagenparkbeheerder");
+
+Console.WriteLine("Authorization policies configured: AdminPolicy, Wagenparkbeheerder, Zakelijkeklant");
 
 var app = builder.Build();
 

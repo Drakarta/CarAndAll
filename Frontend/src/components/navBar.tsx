@@ -6,6 +6,7 @@ import LogOutButton from "./logOutButton";
 
 export default function NavBar() {
   const token = useTokenStore((state) => state.token)
+  const role = useTokenStore((state) => state.role)
   return (
     <>
       <nav className="nav">
@@ -22,8 +23,13 @@ export default function NavBar() {
           <NavLink to="/abonnementen" className={"navBarLink"}>
             Abonnementen
           </NavLink>
+          {role === "Admin" && (
+            <NavLink to="/admin" className={"navBarLink"}>
+              Admin
+            </NavLink>
+          )}
         </div>
-        <img className="navBarImage" src={Logo} alt="CarAndAll logo"></img>
+        <a href="/"><img className="navBarImage" src={Logo} alt="CarAndAll logo"></img></a>
         {token ? (
           <LogOutButton />
         ) : (
