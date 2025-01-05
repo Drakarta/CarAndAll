@@ -41,7 +41,7 @@ public virtual async Task<IActionResult> ChangeStatus([FromBody] Request model) 
     }
 
 
-    var validStatuses = new[] { "innemen", "uitgeven", "in reparatie" }; 
+    var validStatuses = new[] { "ingenomen", "uitgegeven", "in reparatie" }; 
     if (!validStatuses.Contains(newStatus.ToLower())) {
         return BadRequest("Invalid status");
     }
@@ -68,7 +68,7 @@ public virtual async Task<IActionResult> ChangeStatus([FromBody] Request model) 
         {
             var requests = await _context.VerhuurAanvragen
                 .Select(r => new { r.AanvraagID, r.Status})
-                .Where(r => r.Status == "In behandeling" || r.Status == "Uitgeven")
+                .Where(r => r.Status == "geaccepteerd")
                 .ToListAsync();
             return Ok(requests);
         }

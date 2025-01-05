@@ -110,8 +110,8 @@ const VerhuurAanvragen: React.FC = () => {
                   onChange={(e) => setAanvraagStatuses(new Map(aanvraagStatuses).set(aanvraag.AanvraagID, e.target.value))}
                 >
                     <option value="">Kies een status</option>
-                  <option value="innemen">Innemen</option>
-                  <option value="uitgeven">Uitgeven</option>
+                  <option value="ingenomen">Innemen</option>
+                  <option value="uitgegeven">Uitgeven</option>
                   <option value="in reparatie">In reparatie</option>
                 </select>
               </label>
