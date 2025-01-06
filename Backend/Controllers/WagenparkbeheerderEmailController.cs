@@ -21,8 +21,8 @@ namespace Backend.Controllers
     [Route("api/[controller]")]
     public class WagenparkbeheerderEmailController : BaseEmailController
     {
-        public WagenparkbeheerderEmailController(ApplicationDbContext context, IUserService userService, IEmailSender emailSender)
-            : base(context, userService, emailSender)
+        public WagenparkbeheerderEmailController(ApplicationDbContext context, IEmailSender emailSender)
+            : base(context, emailSender)
         {
         }
 

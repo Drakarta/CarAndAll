@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState} from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../styles/voertuigenOverview.css";
@@ -15,9 +15,8 @@ export default function VoertuigenOverview() {
     const fetchVoertuigen = async () => {
       try {
         const response = await fetch(`${import.meta.env.VITE_REACT_APP_VOERTUIGEN_API_URL}`, {
-          headers: {
-              'Authorization': `Bearer ${import.meta.env.VITE_REACT_APP_API_KEY}`
-          }
+          method: "GET",
+          credentials: "include",
       });
         const data = await response.json();
         setVoertuigen(data);

@@ -4,6 +4,7 @@ using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250104143424_NewMigrationName")]
+    partial class NewMigrationName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,28 +125,6 @@ namespace Backend.Migrations
                     b.ToTable("Emails");
                 });
 
-            modelBuilder.Entity("Backend.Entities.Schade", b =>
-                {
-                    b.Property<int>("SchadeID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SchadeID"));
-
-                    b.Property<int>("VoertuigID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("schade")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("SchadeID");
-
-                    b.HasIndex("VoertuigID");
-
-                    b.ToTable("Schades");
-                });
-
             modelBuilder.Entity("Backend.Entities.VerhuurAanvraag", b =>
                 {
                     b.Property<int>("AanvraagID")
@@ -158,6 +139,9 @@ namespace Backend.Migrations
 
                     b.Property<DateTime>("Einddatum")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid>("GebuikerID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Kilometers")
                         .HasColumnType("int");
@@ -470,17 +454,6 @@ namespace Backend.Migrations
                     b.Navigation("Account");
 
                     b.Navigation("Bedrijf");
-                });
-
-            modelBuilder.Entity("Backend.Entities.Schade", b =>
-                {
-                    b.HasOne("Backend.Entities.Voertuig", "Voertuig")
-                        .WithMany()
-                        .HasForeignKey("VoertuigID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Voertuig");
                 });
 
             modelBuilder.Entity("Backend.Entities.VerhuurAanvraag", b =>

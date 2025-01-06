@@ -4,7 +4,7 @@ using Backend.Entities;
 
 namespace Backend.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -18,6 +18,7 @@ namespace Backend.Data
         public DbSet<Voertuig> Voertuigen { get; set; }
         public DbSet<VerhuurAanvraag> VerhuurAanvragen { get; set; }
         public DbSet<VoertuigCategorie> VoertuigCategorie { get; set; }
+        public DbSet<Schade> Schades { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

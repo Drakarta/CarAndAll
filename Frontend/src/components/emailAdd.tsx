@@ -31,7 +31,7 @@ const EmailAdd: React.FC<EmailAddProps> = ({ setEmails }) => {
             }
 
             if (response.ok) {
-                setEmails(prevEmails => [...prevEmails, email]);
+                setEmails((emails) => [...emails, email.toLowerCase()]);
                 setEmail('');
                 setErrorMessage(null);
                 setResponseMessage(responseData.message);

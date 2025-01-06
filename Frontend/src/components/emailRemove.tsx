@@ -19,7 +19,7 @@ const EmailRemove: React.FC<EmailRemoveProps> = ({ setEmails }) => {
                 body: JSON.stringify({ email }),
             });
             if (response.ok) {
-                setEmails(prevEmails => prevEmails.filter(e => e !== email));
+                setEmails((Emails) => Emails.filter(e => e !== email));
                 setEmail('');
             } else {
                 console.error('Error removing email:', response.statusText);
