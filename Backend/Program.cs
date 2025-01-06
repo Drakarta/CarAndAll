@@ -79,7 +79,7 @@ builder.Services.AddAuthorization(options =>
         policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
         policy.RequireAuthenticatedUser();
         policy.RequireRole("Particuliere huurder", "Zakelijkeklant", "Admin");
-
+    });
      options.AddPolicy("FrontOffice", policy =>
     {
     policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -88,9 +88,6 @@ builder.Services.AddAuthorization(options =>
 
     });
 });
-
-
-Console.WriteLine("Authorization policies configured: AdminPolicy, Wagenparkbeheerder, Zakelijkeklant, ParticuliereHuurder");
 
 var app = builder.Build();
 

@@ -55,11 +55,6 @@ namespace Backend.Data
                 .HasForeignKey(v => v.VoertuigID)
                 .IsRequired();
 
-            modelBuilder.Entity<VerhuurAanvraag>()
-                .HasOne(v => v.Account)
-                .WithMany(v => v.VerhuurAanvragen)
-                .HasForeignKey(v => v.GebruikerID)
-                .IsRequired();
         }
     }
 }

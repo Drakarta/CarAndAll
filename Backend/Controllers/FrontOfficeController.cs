@@ -75,5 +75,11 @@ namespace Backend.Controllers
             return Ok(requests);
         }
     }
+      public class Request
+    {
+        public int AanvraagID { get; set; }
+        public string NewStatus { get; set; } = string.Empty; 
+        public string? SchadeInfo { get; set; }
+    }
 
 }

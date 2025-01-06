@@ -68,7 +68,7 @@ namespace Backend.Controllers
             {
                 var verhuurAanvraag = await _context.VerhuurAanvragen
                     .FirstOrDefaultAsync(v => v.AanvraagID == model.AanvraagID);
-
+Console.WriteLine(model.AanvraagID);
                 if(verhuurAanvraag != null){
                      verhuurAanvraag.Status = model.Status;
                      await _context.SaveChangesAsync();

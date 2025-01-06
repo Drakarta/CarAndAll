@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import Index from "./pages/index";
 import VoertuigenOverview from "./pages/voertuigenOverview";
-import EmailManager from "./pages/klant/underOverview"; // Ensure this line is correct
+import EmailManager from "./pages/klant/underOverview"; 
 
 import "./styles/index.css";
 import NavBar from "./components/navBar";
@@ -16,6 +16,7 @@ import BackOfficeVerhuurAanvragen from "./pages/backOfficeVerhuurAanvragen";
 
 import AdminPanel from "./pages/admin";
 import FrontOfficeDashboard from "./pages/frontofficedashboard";
+import Profile from "./pages/GegevensPagina";
 
 
 createRoot(document.getElementById("root")!).render(
@@ -32,6 +33,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/abonnementen" element={<Abonnementen />} />
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="/frontofficedashboard" element={<FrontOfficeDashboard />} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
       </Routes>
     </BrowserRouter>

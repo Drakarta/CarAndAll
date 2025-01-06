@@ -4,7 +4,7 @@ import "../styles/voertuigenOverview.css";
 export default function VoertuigenOverview() {
   const [verhuurAanvragen, setVerhuurAanvragen] = useState([]);
   const [status, setStatus] = useState('');
-  const [aanvraagID, setAanvraagID] = useState('');
+  const [AanvraagIDset, setAanvraagID] = useState('');
 
   useEffect(() => {
     const fetchVerhuurAanvragen= async () => {
@@ -13,7 +13,14 @@ export default function VoertuigenOverview() {
           credentials: "include"
       });
         const data = await response.json();
-        setVerhuurAanvragen(data);
+        setVerhuurAanvragen(data.map((item: any) => ({
+          AanvraagID: item.aanvraagID,
+          Status: item.status,
+          startdatum: item.startdatum,
+          einddatum: item.eindddatum,
+          bestemming: item.bestemming,
+          kilometers: item.kilometers
+        })));
       } catch (error) {
         console.error("Error fetching verhuur aanvragen:", error);
       }
@@ -30,7 +37,7 @@ export default function VoertuigenOverview() {
                 'Content-Type': 'application/json',
             },
             credentials: 'include',
-            body: JSON.stringify({ aanvraagID: aanvraagID, status: status }),
+            body: JSON.stringify({ AanvraagID: AanvraagIDset, status: status }),
         });
 
         if (!response.ok) {
@@ -61,6 +68,7 @@ export default function VoertuigenOverview() {
         <table className="voertuigenTabel">
             <thead>
             <tr>
+              <th>AanvraagID</th>
               <th>Start datum</th>
               <th>Eind datum</th>
               <th>Bestemming</th>
@@ -71,6 +79,7 @@ export default function VoertuigenOverview() {
           <tbody>
           {verhuurAanvragen.map((verhuuraanvraag, index) => (
               <tr key={index}>
+                <td>{verhuuraanvraag.AanvraagID}</td>
                 <td>{verhuuraanvraag.startdatum}</td>
                 <td>{verhuuraanvraag.einddatum}</td>
                 <td>{verhuuraanvraag.bestemming}</td>
@@ -78,13 +87,13 @@ export default function VoertuigenOverview() {
                 <td>
                     <button onClick={ () => {
                         setStatus("Geaccepteerd");
-                        setAanvraagID(verhuuraanvraag.aanvraagID);
+                        setAanvraagID(verhuuraanvraag.AanvraagID);
                         handleVerhuurAanvraagStatusChange();
                     }
                          }>Accepteren</button>
                     <button onClick={ () => {
                         setStatus("Afgewezen");
-                        setAanvraagID(verhuuraanvraag.aanvraagID);
+                        setAanvraagID(verhuuraanvraag.AanvraagID);
                         handleVerhuurAanvraagStatusChange();
                     }
                          }>Afwijzen</button>

@@ -4,17 +4,8 @@ import Logo from "../assets/CarAndAllLogo.svg";
 import { useTokenStore } from "../stores";
 import LogOutButton from "./logOutButton";
 
-export default function NavBar() {
-  const token = useTokenStore((state) => state.token)
-  const role = useTokenStore((state) => state.role)
-  return (
-    <>
-      <nav className="nav">
-        <div className="navLinkContainer">
-          <NavLink to="/" className={"navBarLink"}>
-            Home
-          </NavLink>
-          <NavLink to="/voertuigenOverview" className={"navBarLink"}>
+
+
 const BaseNavBar: React.FC = () => (
   <>
     <NavLink to="/" className="navBarLink">
@@ -52,10 +43,14 @@ const AdminNavBar: React.FC = () => (
     <NavLink to="/abonnementen" className="navBarLink">
       Abonnementen
     </NavLink>
+    <NavLink to="/admin" className="NarBarLink">
+    admin
+    </NavLink>
   </>
 );
 
 const BeheerderNavBar : React.FC = () => (
+
   <>
           <BaseNavBar />
           <NavLink to="/voertuigenOverview" className="navBarLink">
@@ -67,15 +62,8 @@ const BeheerderNavBar : React.FC = () => (
           <NavLink to="/abonnementen" className="navBarLink">
             Abonnementen
           </NavLink>
-          {role === "Admin" && (
-            <NavLink to="/admin" className={"navBarLink"}>
-              Admin
-            </NavLink>
-          )}
-        </div>
-        <a href="/"><img className="navBarImage" src={Logo} alt="CarAndAll logo"></img></a>
         </>
-)
+);
 
 const BackOfficeNavBar : React.FC = () => (
   <>

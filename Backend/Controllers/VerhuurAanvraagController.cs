@@ -29,7 +29,7 @@ namespace Backend.Controllers
             _context = context;
         }
 
-        // [Authorize(Policy = "ParticuliereHuurder")]
+        [Authorize(Policy = "ParticuliereZakelijkeHuurder")]
         [HttpPost("createVerhuurAanvraag")]
         public async Task<IActionResult> CreateVerhuurAanvraag([FromBody] VerhuurAanvraagModel model)
         {
@@ -53,7 +53,6 @@ namespace Backend.Controllers
                     Kilometers = model.Kilometers,
                     VoertuigID = model.VoertuigID,
                     Voertuig = voertuig,
-                    GebruikerID = account_id,
                     Account = account,
                     Status = "In behandeling"
                 };
