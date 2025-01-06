@@ -19,6 +19,7 @@ namespace Backend.Data
         public DbSet<VerhuurAanvraag> VerhuurAanvragen { get; set; }
         public DbSet<VoertuigCategorie> VoertuigCategorie { get; set; }
         public DbSet<Schade> Schades { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
