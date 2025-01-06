@@ -10,6 +10,7 @@ import "./styles/index.css";
 import NavBar from "./components/navBar";
 import LoginRegister from "./pages/loginRegister";
 import Abonnementen from "./pages/abonnementen";
+import AdminPanel from "./pages/admin";
 import FrontOfficeDashboard from "./pages/frontofficedashboard";
 
 createRoot(document.getElementById("root")!).render(
@@ -22,6 +23,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/voertuigenOverview" element={<VoertuigenOverview />} />
           <Route path="/auth" element={<LoginRegister />} />
           <Route path="/abonnementen" element={<Abonnementen />} />
+          <Route path="/admin" element={<AdminPanel />} />
           <Route path="/frontofficedashboard" element={<FrontOfficeDashboard />} />
         </Route>
       </Routes>
