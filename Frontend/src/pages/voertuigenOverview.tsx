@@ -1,4 +1,5 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
+import {useNavigate } from 'react-router-dom';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../styles/voertuigenOverview.css";
@@ -10,14 +11,17 @@ export default function VoertuigenOverview() {
   const [selectedNameFilter, setSelectedNameFilter] = useState("");
   const [dateRange, setDateRange] = useState([null, null]);
   const [startDate, endDate] = dateRange;
+  const [verhuurAanvraagStartDate, setVerhuurAanvraagStartDate] = useState(null);
+  const [verhuurAanvraagEndDate, setVerhuurAanvraagEndDate] = useState(null);
+  const verhuurAanvraagDateRange = [verhuurAanvraagStartDate !== null ? new Date(verhuurAanvraagStartDate).toLocaleDateString("nl-NL"): null, 
+                                    verhuurAanvraagEndDate !== null ? new Date(verhuurAanvraagEndDate).toLocaleDateString("nl-NL"): null]
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchVoertuigen = async () => {
       try {
         const response = await fetch(`${import.meta.env.VITE_REACT_APP_VOERTUIGEN_API_URL}`, {
-          headers: {
-              'Authorization': `Bearer ${import.meta.env.VITE_REACT_APP_API_KEY}`
-          }
+          credentials: "include"
       });
         const data = await response.json();
         setVoertuigen(data);
@@ -28,6 +32,8 @@ export default function VoertuigenOverview() {
 
     fetchVoertuigen();
   }, []);
+
+
 
 // Op basis van (.filter() kopje): https://medium.com/poka-techblog/simplify-your-javascript-use-map-reduce-and-filter-bd02c593cc2d
 const filterResultaat = Voertuigen.filter((voertuig) => {
@@ -52,7 +58,6 @@ const filterResultaat = Voertuigen.filter((voertuig) => {
 }).filter((voertuig) => voertuig.naam.toLowerCase()
 .includes(selectedNameFilter.toLowerCase())).sort((a, b) => a.naam.localeCompare(b.naam));
 
-  //Het ophalen van de datums die niet open zijn
   const getExcludedDates = (verhuurPerioden) => {
     const excludedDates = [];
     verhuurPerioden.forEach(periode => {
@@ -73,8 +78,6 @@ const filterResultaat = Voertuigen.filter((voertuig) => {
   }else if(selectedPriceFilter == 'high'){
     filterResultaat.sort((a, b) => b.prijs_per_dag - a.prijs_per_dag);
   }
-
-    // filterResultaat
   
   return (
     <>
@@ -136,6 +139,17 @@ const filterResultaat = Voertuigen.filter((voertuig) => {
                 <td>{voertuig.prijs_per_dag}</td>
                 <td className="datumButtonVoertuigen">
                   <DatePicker
+                    selectsRange = {true}
+                    startDate={verhuurAanvraagStartDate}
+                    endDate={verhuurAanvraagEndDate}
+                    onChange={([nieuweVerhuurAanvraagStartDate, nieuweVerhuurAanvraagEndDate]) => {
+                      setVerhuurAanvraagStartDate(nieuweVerhuurAanvraagStartDate);
+                      setVerhuurAanvraagEndDate(nieuweVerhuurAanvraagEndDate);
+                      if(verhuurAanvraagDateRange[1] !== null){
+                        navigate('/verhuurAanvraag/' + voertuig.voertuigID + '/' + voertuig.naam + '/' + (new Date(verhuurAanvraagStartDate).toLocaleDateString("sv-SE")) + '/' + (new Date(verhuurAanvraagEndDate).toLocaleDateString("sv-SE")));
+                      }
+                    }
+                  }
                     className="datepicker"
                     calendarStartDay={1}
                     excludeDates={getExcludedDates(voertuig.verhuur_perioden)}

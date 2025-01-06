@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Backend.Data;
 using Backend.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.Controllers 
 {
@@ -15,13 +16,13 @@ namespace Backend.Controllers
     public class VoertuigController : ControllerBase
     {
         private readonly ApplicationDbContext _applicationDbContext;
-        private readonly ApplicationDbContext _verhuurAanvraagDbContext;
 
         public VoertuigController(ApplicationDbContext context)
         {
             _applicationDbContext = context;
         }
 
+        [Authorize(Policy = "ParticuliereZakelijkeHuurder")]
         [HttpGet("Voertuigen")]
         public async Task<IActionResult> GetVoertuigen()
         {
@@ -29,6 +30,7 @@ namespace Backend.Controllers
             {
             var voertuigIds = await _applicationDbContext.Voertuigen.Select(v => new 
                                     {
+                                        voertuigID = v.VoertuigID,
                                         naam = v.Merk + " " + v.Type,
                                         categorie = v.Categorie,
                                         prijs_per_dag = v.Prijs_per_dag,

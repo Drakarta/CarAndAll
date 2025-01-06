@@ -9,5 +9,6 @@ namespace Backend.Entities {
         public string? TelefoonNummer { get; set; }
         public string? Rol { get; set; } // "Particuliere huurder", "Zakelijke huurder", "Wagenparkbeheerder"
         public ICollection<BedrijfAccounts>? BedrijfAccounts { get; set; }
+        public ICollection<VerhuurAanvraag> VerhuurAanvragen { get; set;}
     }
 }

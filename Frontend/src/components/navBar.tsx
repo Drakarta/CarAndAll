@@ -15,6 +15,20 @@ const BaseNavBar: React.FC = () => (
   </>
 );
 
+const ParticuliereNavBar: React.FC = () => (
+  <>
+    <NavLink to="/" className="navBarLink">
+      Home
+    </NavLink>
+    <NavLink to="/voertuigenOverview" className="navBarLink">
+      Voertuigen
+    </NavLink>
+    <NavLink to="/profile" className="navBarLink">
+      Profile
+    </NavLink>
+  </>
+);
+
 const AdminNavBar: React.FC = () => (
   <>
     <BaseNavBar />
@@ -51,6 +65,9 @@ const BackOfficeNavBar : React.FC = () => (
           <NavLink to="/voertuigenOverview" className="navBarLink">
             Voertuigen
           </NavLink>
+          <NavLink to="/backOfficeVerhuurAanvragen" className="navBarLink">
+            Verhuur aanvragen
+          </NavLink>
         </>
 )
 const RoleNavBar: React.FC<{ role: string }> = ({ role }) => {
@@ -60,8 +77,10 @@ const RoleNavBar: React.FC<{ role: string }> = ({ role }) => {
     case "Wagenparkbeheerder":
     case "Zakelijkeklant":
       return <BeheerderNavBar />;
-      case "Backofficemedewerker":
-        return <BackOfficeNavBar />;
+    case "Backofficemedewerker":
+      return <BackOfficeNavBar />;
+    case "Particuliere huurder":
+      return <ParticuliereNavBar />;
     default:
       return <BaseNavBar />;
   }
