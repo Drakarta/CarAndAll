@@ -10,8 +10,13 @@ import "./styles/index.css";
 import NavBar from "./components/navBar";
 import LoginRegister from "./pages/loginRegister";
 import Abonnementen from "./pages/abonnementen";
+
+import VerhuurAanvraag from "./pages/verhuurAanvraag";
+import BackOfficeVerhuurAanvragen from "./pages/backOfficeVerhuurAanvragen";
+
 import AdminPanel from "./pages/admin";
 import FrontOfficeDashboard from "./pages/frontofficedashboard";
+
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -21,6 +26,8 @@ createRoot(document.getElementById("root")!).render(
           <Route index element={<Index />} />
           <Route path="/email-manager" element={<EmailManager />} />
           <Route path="/voertuigenOverview" element={<VoertuigenOverview />} />
+          <Route path="/verhuurAanvraag/:voertuigID/:voertuigNaam/:vastartdate/:vaenddate" element={<VerhuurAanvraag />} />
+          <Route path="/backOfficeVerhuurAanvragen" element={<BackOfficeVerhuurAanvragen />} />
           <Route path="/auth" element={<LoginRegister />} />
           <Route path="/abonnementen" element={<Abonnementen />} />
           <Route path="/admin" element={<AdminPanel />} />
