@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
 
 
 namespace Backend.Controllers
@@ -37,6 +38,23 @@ namespace Backend.Controllers
         {
             try
             {
+                 if (model.Bestemming.IsNullOrEmpty())
+                {
+                    var errorDetails = new {
+                        message = "The 'Bestemming'input is empty",
+                        statusCode = 400
+                    };
+                    return BadRequest(errorDetails);
+                }
+                if (model.Kilometers == 0)
+                {
+                    var errorDetails = new {
+                        message = "The 'Kilometers' input is empty",
+                        statusCode = 400
+                    };
+                    return BadRequest(errorDetails);
+                }
+                
                 var accountEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
                 var account_id = await _context.Account
                     .Where(a => a.Email == accountEmail.Value)
