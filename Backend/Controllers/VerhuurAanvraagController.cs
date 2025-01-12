@@ -29,6 +29,8 @@ namespace Backend.Controllers
             _context = context;
         }
 
+
+        //Methode voor het ophalen van de verhuuraanvraag data uit de frontend en daarna opslaan in de database.
         [Authorize(Policy = "ParticuliereZakelijkeHuurder")]
         [HttpPost("createVerhuurAanvraag")]
         public async Task<IActionResult> CreateVerhuurAanvraag([FromBody] VerhuurAanvraagModel model)
