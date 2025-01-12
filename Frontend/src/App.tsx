@@ -4,6 +4,7 @@ import LoginRegister from './pages/loginRegister'
 import Abonnementen from './pages/abonnementen';
 import AdminPanel from './pages/admin';
 import Frontofficedashboard from './pages/frontofficedashboard';
+import VerhuurAanvragenStatus from './pages/klantAanvragen';
 
 
 
@@ -18,6 +19,8 @@ export default function App() {
         <Route path="/abonnementen" element={<Abonnementen />} />
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/frontofficedashboard" element={<Frontofficedashboard />} />
+        <Route path="/verhuur-aanvraag-status" element={<VerhuurAanvragenStatus />} />
+
       </Routes>
     </BrowserRouter>
   )

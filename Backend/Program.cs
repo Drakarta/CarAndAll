@@ -22,6 +22,9 @@ builder.Services.AddScoped<EmailSencer>();
 
 builder.Services.AddHttpContextAccessor();
 
+
+
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins", policy =>

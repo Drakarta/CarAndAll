@@ -13,4 +13,13 @@ namespace Backend.Entities {
         public VoertuigCategorie VoertuigCategorie { get; set; } = null!;
         public ICollection<VerhuurAanvraag> VerhuurAanvragen { get; set;}
     }
+
+    public class VoertuigDTO
+{
+    public string Merk { get; set; }
+    public string Type { get; set; }
+    public string Kenteken { get; set; }
+    public string Kleur { get; set; }
+    public double Prijs_per_dag { get; set; }
+}
 }
