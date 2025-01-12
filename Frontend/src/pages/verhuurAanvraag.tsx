@@ -19,12 +19,19 @@ export default function VerhuurAanvraag() {
                 body: JSON.stringify({ startdatum: vastartdate, einddatum: vaenddate, bestemming: bestemming, kilometers: kilometers, voertuigID: voertuigID}),
             });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.log('Error response:' + response.status + errorText);
+            let responseData;
+            const contentType = response.headers.get('Content-Type');
+            if (contentType && contentType.includes('application/json')) {
+                responseData = await response.json();
             } else {
-                const data = await response.json();
-                console.log('Success:', data);
+                responseData = { message: await response.text() };
+            }
+
+            if (!response.ok) {
+                if(responseData.statusCode === 400){
+                    alert(responseData.message);
+                }
+            } else {
                 alert('Verhuur aanvraag succesvol ingediend.');
                 navigate('/voertuigenOverview');
             }
