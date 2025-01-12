@@ -6,9 +6,12 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../styles/voertuigenOverview.css";
 
+import { useTokenStore } from "../stores";
+
 export default function VoertuigenOverview() {
   const [Voertuigen, setVoertuigen] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("Alle");
+  const [isDisabled, setIsDisabled] = useState(false);
   const [selectedPriceFilter, setSelectedPriceFilter] = useState("none");
   const [selectedNameFilter, setSelectedNameFilter] = useState("");
   const [dateRange, setDateRange] = useState([null, null]);
@@ -18,6 +21,7 @@ export default function VoertuigenOverview() {
   const verhuurAanvraagDateRange = [verhuurAanvraagStartDate !== null ? new Date(verhuurAanvraagStartDate).toLocaleDateString("nl-NL"): null, 
                                     verhuurAanvraagEndDate !== null ? new Date(verhuurAanvraagEndDate).toLocaleDateString("nl-NL"): null]
   const navigate = useNavigate();
+  const role = useTokenStore((state) => state.role) || "";
 
   useEffect(() => {
     const fetchVoertuigen = async () => {
@@ -33,9 +37,8 @@ export default function VoertuigenOverview() {
     };
 
     fetchVoertuigen();
+
   }, []);
-
-
 
 // Op basis van (.filter() kopje): https://medium.com/poka-techblog/simplify-your-javascript-use-map-reduce-and-filter-bd02c593cc2d
 const filterResultaat = Voertuigen.filter((voertuig) => {
@@ -80,7 +83,12 @@ const filterResultaat = Voertuigen.filter((voertuig) => {
   }else if(selectedPriceFilter == 'high'){
     filterResultaat.sort((a, b) => b.prijs_per_dag - a.prijs_per_dag);
   }
-  
+
+  if (role == "Zakelijkeklant" && isDisabled == false) {
+    setIsDisabled(true);
+    setSelectedCategory('Auto');
+  }
+
   return (
     <>
       <div className="overviewSection">
@@ -99,7 +107,7 @@ const filterResultaat = Voertuigen.filter((voertuig) => {
         <div>
         <label htmlFor="categorieFilter">Soort voertuig: </label>
         <select id="categorieFilter" value={selectedCategory} 
-          onChange={(e) => setSelectedCategory(e.target.value)}>
+          onChange={(e) => setSelectedCategory(e.target.value)} disabled = {isDisabled}>
           <option value="Alle">Alle</option>
           <option value="Auto">Auto</option>
           <option value="Caravan">Caravan</option>

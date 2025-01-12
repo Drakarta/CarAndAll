@@ -70,7 +70,7 @@ namespace Backend.Controllers
         {
             var requests = await _context.VerhuurAanvragen
                 .Select(r => new { r.AanvraagID, r.Status})
-                .Where(r => r.Status == "geaccepteerd")
+                .Where(r => r.Status == "geaccepteerd" || r.Status == "uitgegeven")
                 .ToListAsync();
             return Ok(requests);
         }
