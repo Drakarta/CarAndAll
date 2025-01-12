@@ -1,7 +1,9 @@
 import { useState } from "react"
 import "../styles/loginRegisterForm.css"
+import { useTokenStore } from "../stores";
 
 export default function RegisterForm() {
+  const setToken = useTokenStore((state) => state.setToken);
   const [input, setInput] = useState({ email: "", password: "", repeatPassword: "" })
   const [isEmailValid, setIsEmailValid] = useState(true)
 
@@ -43,8 +45,18 @@ export default function RegisterForm() {
     })
 
     if (response.status == 200) {
+      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/account/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: input.email, password: input.password }),
+        credentials: 'include',
+      })
+      const data = await response.json()
+      setToken(data.userId, data.role)
       alert("Successfully registered in!")
-      // window.location.href = "/auth"
+      window.location.href = "/profile?newuser=true"
     } else if (response.status == 400) {
       alert("Check if all fields are filled in.")
     } else if (response.status == 409) {

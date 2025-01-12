@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import GegevensInput from "../components/gegevensInput";
 import GegevensShow from "../components/gegevensShow";
 
+import "../styles/gegevens.css";
+import { useSearchParams } from "react-router-dom";
+
 // Define the user object type
 interface User {
   id: string;
@@ -14,10 +17,12 @@ interface User {
 
 
 export default function GegevensPagina() {
+    const [searchParams] = useSearchParams();
+    const newuser = searchParams.get("newuser");
     const [user, setUser] = useState<User | null>(null); // Initialize as null for "no data" state
     const [loading, setLoading] = useState<boolean>(true); // Track loading state
     const [error, setError] = useState<string | null>(null); // Track errors
-    const [edit, setEdit] = useState<boolean>(false);
+    const [edit, setEdit] = useState<boolean>(newuser === "true" ? true : false);
   
     useEffect(() => {
       const fetchUserData = async () => {
@@ -62,8 +67,9 @@ export default function GegevensPagina() {
         <p style={{ color: "red" }}>{error}</p>
       ) : user ? (
         <>
-          {edit ? <GegevensShow user={user} /> : <GegevensInput user={user} />}
-          <button onClick={() => setEdit(!edit)}>Edit</button>
+        <div className={"userinfo"}> 
+          {edit ? <GegevensShow user={user} edit={() => setEdit(!edit)} /> : <GegevensInput user={user} edit={() => setEdit(!edit)}/>}
+        </div>
         </>
       ) : (<p>No user data available.</p>)
       }
