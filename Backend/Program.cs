@@ -17,7 +17,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
-
 builder.Services.AddScoped<IEmailSender, EmailSencer>();
 builder.Services.AddScoped<EmailSencer>();
 
@@ -71,22 +70,27 @@ builder.Services.AddAuthorization(options =>
     policy.RequireAuthenticatedUser();
     policy.RequireRole("Zakelijkeklant", "Admin");
     });
-    options.AddPolicy("Particuliere huurder", policy =>
+    options.AddPolicy("ParticuliereHuurder", policy =>
     {
         policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
         policy.RequireAuthenticatedUser();
         policy.RequireRole("Particuliere huurder", "Admin");
+    });
+
+    options.AddPolicy("ParticuliereZakelijkeHuurder", policy =>
+    {
+        policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
+        policy.RequireAuthenticatedUser();
+        policy.RequireRole("Particuliere huurder", "Zakelijkeklant", "Admin");
     });
      options.AddPolicy("FrontOffice", policy =>
     {
     policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
     policy.RequireAuthenticatedUser();
     policy.RequireRole("Frontofficemedewerker", "Admin");
+
     });
 });
-
-
-Console.WriteLine("Authorization policies configured: AdminPolicy, Wagenparkbeheerder, Zakelijkeklant");
 
 var app = builder.Build();
 

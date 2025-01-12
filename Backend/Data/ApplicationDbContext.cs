@@ -54,6 +54,7 @@ namespace Backend.Data
                 .WithMany(v => v.VerhuurAanvragen)
                 .HasForeignKey(v => v.VoertuigID)
                 .IsRequired();
+
         }
     }
 }

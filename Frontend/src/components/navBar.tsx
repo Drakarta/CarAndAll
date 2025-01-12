@@ -4,6 +4,8 @@ import Logo from "../assets/CarAndAllLogo.svg";
 import { useTokenStore } from "../stores";
 import LogOutButton from "./logOutButton";
 
+
+
 const BaseNavBar: React.FC = () => (
   <>
     <NavLink to="/" className="navBarLink">
@@ -14,6 +16,20 @@ const BaseNavBar: React.FC = () => (
     </NavLink>
     <NavLink to ="/verhuur-aanvraag-status" className="navBarLink">
       Verhuur Aanvraag Status
+    </NavLink>
+  </>
+);
+
+const ParticuliereNavBar: React.FC = () => (
+  <>
+    <NavLink to="/" className="navBarLink">
+      Home
+    </NavLink>
+    <NavLink to="/voertuigenOverview" className="navBarLink">
+      Voertuigen
+    </NavLink>
+    <NavLink to="/profile" className="navBarLink">
+      Profile
     </NavLink>
   </>
 );
@@ -30,10 +46,14 @@ const AdminNavBar: React.FC = () => (
     <NavLink to="/abonnementen" className="navBarLink">
       Abonnementen
     </NavLink>
+    <NavLink to="/admin" className="NarBarLink">
+    admin
+    </NavLink>
   </>
 );
 
 const BeheerderNavBar : React.FC = () => (
+
   <>
           <BaseNavBar />
           <NavLink to="/voertuigenOverview" className="navBarLink">
@@ -46,13 +66,16 @@ const BeheerderNavBar : React.FC = () => (
             Abonnementen
           </NavLink>
         </>
-)
+);
 
 const BackOfficeNavBar : React.FC = () => (
   <>
           <BaseNavBar />
           <NavLink to="/voertuigenOverview" className="navBarLink">
             Voertuigen
+          </NavLink>
+          <NavLink to="/backOfficeVerhuurAanvragen" className="navBarLink">
+            Verhuur aanvragen
           </NavLink>
         </>
 )
@@ -72,6 +95,10 @@ const RoleNavBar: React.FC<{ role: string }> = ({ role }) => {
     case "Wagenparkbeheerder":
     case "Zakelijkeklant":
       return <BeheerderNavBar />;
+    case "Backofficemedewerker":
+      return <BackOfficeNavBar />;
+    case "Particuliere huurder":
+      return <ParticuliereNavBar />;
       case "Backofficemedewerker":
         return <BackOfficeNavBar />;
     case "Frontofficemedewerker":

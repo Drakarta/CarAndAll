@@ -29,55 +29,47 @@ namespace Backend.Controllers
             _context = context;
         }
 
-       [HttpPost("ChangeStatus")]
-public virtual async Task<IActionResult> ChangeStatus([FromBody] Request model) {
-    var id = model.AanvraagID;
-    var newStatus = model.NewStatus;
-    var schade = model.SchadeInfo;
-
-    var aanvraag = await _context.VerhuurAanvragen.FindAsync(id);
-    if (aanvraag == null) {
-        return NotFound("Aanvraag not found");
-    }
-
-
-    var validStatuses = new[] { "ingenomen", "uitgegeven", "in reparatie" }; 
-    if (!validStatuses.Contains(newStatus.ToLower())) {
-        return BadRequest("Invalid status");
-    }
-
-    var voertuigId = aanvraag.VoertuigID;
-    if (!string.IsNullOrEmpty(schade)) {
-        var newSchade = new Schade { VoertuigID = voertuigId, schade = schade };
-        _context.Schades.Add(newSchade);
-    }
-
-    aanvraag.Status = newStatus;
-    
-    try {
-        await _context.SaveChangesAsync();
-    } catch (Exception ex) {
-        return StatusCode(500, $"Internal server error: {ex.Message}");
-    }
-
-    return Ok(new { message = "Status updated successfully" });
-}
-
-        [HttpGet("GetVerhuurAanvragenWithStatus")]
-        public virtual async Task<IActionResult> GetVerhuurAanvragenWithStatus()
+        [Authorize(Policy = "ParticuliereZakelijkeHuurder")]
+        [HttpPost("createVerhuurAanvraag")]
+        public async Task<IActionResult> CreateVerhuurAanvraag([FromBody] VerhuurAanvraagModel model)
         {
-            var requests = await _context.VerhuurAanvragen
-                .Select(r => new { r.AanvraagID, r.Status})
-                .Where(r => r.Status == "geaccepteerd")
-                .ToListAsync();
-            return Ok(requests);
-        }
-    }
+            try
+            {
+                var accountEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+                var account_id = await _context.Account
+                    .Where(a => a.Email == accountEmail.Value)
+                    .Select(a => a.Id)
+                    .FirstOrDefaultAsync();
 
-    public class Request
-    {
-        public int AanvraagID { get; set; }
-        public string NewStatus { get; set; } = string.Empty; 
-        public string? SchadeInfo { get; set; }
+                var account = await _context.Account.FindAsync(account_id);
+
+                var voertuig = await _context.Voertuigen.FindAsync(model.VoertuigID);                
+
+                var verhuurAanvraag = new VerhuurAanvraag
+                {
+                    Startdatum = model.Startdatum,
+                    Einddatum = model.Einddatum,
+                    Bestemming = model.Bestemming,
+                    Kilometers = model.Kilometers,
+                    VoertuigID = model.VoertuigID,
+                    Voertuig = voertuig,
+                    Account = account,
+                    Status = "In behandeling"
+                };
+
+                _context.VerhuurAanvragen.Add(verhuurAanvraag);
+                await _context.SaveChangesAsync();
+
+                var succes = new {
+                    message = "Verhuur aanvraag succesvol ingediend.",
+                    statusCode = 200
+                };
+                return Ok (succes);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

@@ -18,7 +18,7 @@ namespace Backend.Entities {
         public int Kilometers { get; set; }
         public int VoertuigID { get; set; }
         public Voertuig Voertuig { get; set; } = null!;
-        public Account account { get; set; } = null!;
+        public Account Account { get; set; } = null!;
         public string Status { get; set; }
 }
 
