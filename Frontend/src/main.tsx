@@ -11,6 +11,7 @@ import NavBar from "./components/navBar";
 import LoginRegister from "./pages/loginRegister";
 import Abonnementen from "./pages/abonnementen";
 import FrontOfficeDashboard from "./pages/frontofficedashboard";
+import VerhuurAanvragenStatus from './pages/klantAanvragen';
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -23,6 +24,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/auth" element={<LoginRegister />} />
           <Route path="/abonnementen" element={<Abonnementen />} />
           <Route path="/frontofficedashboard" element={<FrontOfficeDashboard />} />
+          <Route path="/verhuur-aanvraag-status" element={<VerhuurAanvragenStatus />} />
         </Route>
       </Routes>
     </BrowserRouter>

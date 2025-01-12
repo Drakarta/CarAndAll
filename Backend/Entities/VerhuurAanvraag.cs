@@ -21,4 +21,16 @@ namespace Backend.Entities {
         public Account account { get; set; } = null!;
         public string Status { get; set; }
 }
+
+public class VerhuurAanvraagDTO
+{
+    public int AanvraagID { get; set; }
+    public DateTime Startdatum { get; set; }
+    public DateTime Einddatum { get; set; }
+    public string Bestemming { get; set; }
+    public int Kilometers { get; set; }
+    public VoertuigDTO Voertuig { get; set; }
+    public string Status { get; set; }
+    public Guid accountID { get; set; }
+}
 }

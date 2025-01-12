@@ -109,10 +109,18 @@ const VerhuurAanvragen: React.FC = () => {
                   value={aanvraagStatuses.get(aanvraag.AanvraagID) ?? aanvraag.Status}
                   onChange={(e) => setAanvraagStatuses(new Map(aanvraagStatuses).set(aanvraag.AanvraagID, e.target.value))}
                 >
-                    <option value="">Kies een status</option>
-                  <option value="ingenomen">Innemen</option>
-                  <option value="uitgegeven">Uitgeven</option>
-                  <option value="in reparatie">In reparatie</option>
+                  {aanvraag.Status === "uitgegeven" ? (
+                    <>
+                    <option value="">Selecteer een status</option>
+                      <option value="ingenomen">Innemen</option>
+                      <option value="in reparatie">In reparatie</option>
+                    </>
+                  ) : (
+                    <>
+                    <option value="">Selecteer een status</option>
+                    <option value="uitgegeven">Uitgeven</option>
+                    </>
+                  )}
                 </select>
               </label>
               <br />

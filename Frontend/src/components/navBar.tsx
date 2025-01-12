@@ -12,6 +12,9 @@ const BaseNavBar: React.FC = () => (
     <NavLink to="/profile" className="navBarLink">
       Profile
     </NavLink>
+    <NavLink to ="/verhuur-aanvraag-status" className="navBarLink">
+      Verhuur Aanvraag Status
+    </NavLink>
   </>
 );
 
