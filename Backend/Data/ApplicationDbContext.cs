@@ -12,6 +12,7 @@ namespace Backend.Data
         }
 
         public DbSet<Account> Account { get; set; }
+        public DbSet<Abonnement> Abonnement { get; set; }
         public DbSet<Bedrijf> Bedrijf { get; set; }
         public DbSet<BedrijfAccounts> BedrijfAccounts { get; set; }
         public DbSet<Email> Emails { get; set; }
