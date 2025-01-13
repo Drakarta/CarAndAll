@@ -42,7 +42,7 @@ public class KlantAanvraagControllerTests
         _context.VerhuurAanvragen.RemoveRange(_context.VerhuurAanvragen);
         _context.SaveChanges();
         _context.VerhuurAanvragen.AddRange(
-            new VerhuurAanvraag { AanvraagID = 1, Status = "geaccepteerd", VoertuigID = 101, Bestemming = "Rotterdam", account = new Account{Id = Guid.NewGuid(),
+            new VerhuurAanvraag { AanvraagID = 1, Status = "geaccepteerd", VoertuigID = 101, Bestemming = "Rotterdam", Account = new Account{Id = Guid.NewGuid(),
                 Email = "frontoffice@example.com",
                 wachtwoord = "hashed_password",
                 Rol = "Wagenparkbeheerder"}}
