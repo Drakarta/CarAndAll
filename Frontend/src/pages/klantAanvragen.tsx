@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
-
-const KlantAanvragen: React.FC = () => {
+export default function KlantAanvragen() {
     const [klantAanvragen, setKlantAanvragen] = useState<any[]>([]);
 
 
@@ -42,5 +41,3 @@ const KlantAanvragen: React.FC = () => {
         </div>
     );
 };
-
-export default KlantAanvragen;

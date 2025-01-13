@@ -4,8 +4,7 @@ import { useTokenStore } from "../stores";
 interface EmailRemoveProps {
     setEmails: React.Dispatch<React.SetStateAction<string[]>>;
 }
-
-const EmailRemove: React.FC<EmailRemoveProps> = ({ setEmails }) => {
+export default function EmailRemove({ setEmails }: EmailRemoveProps) {
     const [email, setEmail] = useState('');
     const role = useTokenStore((state) => state.role);
     const handleRemoveEmail = async () => {
@@ -42,5 +41,3 @@ const EmailRemove: React.FC<EmailRemoveProps> = ({ setEmails }) => {
         </div>
     );
 };
-
-export default EmailRemove;

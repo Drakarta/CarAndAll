@@ -5,7 +5,7 @@ interface EmailAddProps {
     setEmails: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const EmailAdd: React.FC<EmailAddProps> = ({ setEmails }) => {
+export default function EmailAdd({ setEmails }: EmailAddProps) {
     const [email, setEmail] = useState('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [responseMessage, setResponseMessage] = useState<string | null>(null);
@@ -78,4 +78,3 @@ const EmailAdd: React.FC<EmailAddProps> = ({ setEmails }) => {
     );
 };
 
-export default EmailAdd;

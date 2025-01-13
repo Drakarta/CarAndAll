@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface VerhuurAanvraag {
   AanvraagID: number;
   Status: string;
 }
 
-const VerhuurAanvragen: React.FC = () => {
+export default function VerhuurAanvragen() {
   const [aanvragen, setAanvragen] = useState<VerhuurAanvraag[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -157,5 +157,3 @@ const VerhuurAanvragen: React.FC = () => {
     </div>
   );
 };
-
-export default VerhuurAanvragen;
