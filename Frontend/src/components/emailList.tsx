@@ -1,6 +1,8 @@
-import React from 'react';
+type EmailListProps = {
+    emails: string[];
+};
 
-const EmailList: React.FC<{ emails: string[] }> = ({ emails }) => {
+export default function EmailList({ emails }: EmailListProps) {
     return (
         <div className="email-list">
             <h2>Current Emails</h2>
@@ -11,6 +13,4 @@ const EmailList: React.FC<{ emails: string[] }> = ({ emails }) => {
             </ul>
         </div>
     );
-};
-
-export default EmailList;
+}

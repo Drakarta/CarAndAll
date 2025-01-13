@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import '../../styles/EmailManager.css';
 import EmailList from '../../components/emailList';
 import EmailAdd from '../../components/emailAdd';
 import EmailRemove from '../../components/emailRemove';
 import { useTokenStore } from '../../stores';
 
-const UnderOverview: React.FC = () => {
+export default function UnderOverview() {
     const [emails, setEmails] = useState<string[]>([]);
     //const token = useTokenStore((state) => state.token);
     const role = useTokenStore((state) => state.role);
@@ -48,5 +48,3 @@ const UnderOverview: React.FC = () => {
         </div>
     );
 };
-
-export default UnderOverview;

@@ -38,7 +38,7 @@ namespace Backend.Controllers
                 .Select(a => a.Id)
                 .FirstOrDefaultAsync();
            var aanvragen = await _context.VerhuurAanvragen
-    .Where(a => a.account.Id == account_id)
+    .Where(a => a.Account.Id == account_id)
     .Include(a => a.Voertuig)
     .Select(a => new VerhuurAanvraagDTO
     {

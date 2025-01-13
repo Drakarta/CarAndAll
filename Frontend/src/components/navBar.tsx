@@ -88,7 +88,7 @@ const FrontOfficeNavBar: React.FC = () => (
     </NavLink>
   </>
 );
-const RoleNavBar: React.FC<{ role: string }> = ({ role }) => {
+const RoleNavBar: React.FC<{ role: string }> = ({ role }) =>  {
   switch (role) {
     case "Admin":
       return <AdminNavBar />;
