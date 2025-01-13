@@ -26,7 +26,7 @@ export default function LoginForm() {
       const data = await response.json()
       setToken(data.userId, data.role)
       alert("Successfully logged in!")
-      //window.location.href = "/"
+      window.location.href = "/"
     } else if (response.status == 400) {
       alert("Check if all fields are filled in.")
     } else if (response.status == 401) {

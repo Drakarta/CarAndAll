@@ -1,0 +1,48 @@
+.userinfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.userinfo-form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px;
+  width: 20rem;
+  padding: .5rem;
+  border-radius: .5rem;
+  border: 1px solid #ccc;
+}
+
+.userinfo-form p {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.userinfo-form input {
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 0.2rem;  
+  margin: 0.4rem ;
+}
+
+.userinfo-form .role {
+  font-size: 1rem;
+  border-radius: 5px;
+  padding: 0.2rem;  
+  margin: 0.4rem ;
+  border: 1px solid #ccc;
+  width: fit-content;
+}
+
+.userinfo-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: .4rem;
+}
+
+.userinfo-buttons button {
+  width: 4rem;
+  margin: 0;
+}
