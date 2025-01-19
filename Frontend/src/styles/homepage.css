@@ -1,0 +1,48 @@
+.banner-text {
+    flex-direction: column;
+    gap: .5rem;
+    max-height: 65vh;
+    
+    color: white;
+
+    background-image: url("../assets/Porsche-911-992-2019.jpg");
+    background-size: 100% ;
+    background-position: center;
+}
+
+.banner-text h1 {
+    font-size: 6rem;
+    font-weight: 700;
+}
+
+.banner-text p {
+    font-size: 2rem;
+    font-weight: 500;
+}
+
+.image-courasel {
+    height: 80vh !important;
+}
+
+.image-courasel .image-in-courasel{
+    height: 60vh;
+    position: relative;
+    z-index: -1;
+}
+
+.image-courasel .courasel-buttons {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    z-index: 1;
+    gap: 50rem;
+}
+
+.image-courasel .courasel-buttons button {
+    padding: .5rem;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 5rem;
+    height: 5rem;
+    font-size: 2rem;
+}

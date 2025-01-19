@@ -1,0 +1,27 @@
+.footer {
+    display: flex;
+    flex-direction: column;
+    margin-top: 2rem;
+    gap: 2rem;
+}
+
+.footer .footer-top {
+    display: grid;
+    grid-template-columns: 1fr 3fr 3fr 3fr 1fr;
+}
+
+.footer .footer-top h1 {
+    grid-column: 2 / 2;
+}
+
+.footer .footer-top p {
+    grid-column: 3 / 5;
+}
+
+.footer .footer-bottom {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background-color: #f4eadc;
+    justify-items: center;
+    padding: 2rem 0;
+}
