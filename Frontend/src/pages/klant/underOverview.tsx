@@ -3,48 +3,68 @@ import '../../styles/EmailManager.css';
 import EmailList from '../../components/emailList';
 import EmailAdd from '../../components/emailAdd';
 import EmailRemove from '../../components/emailRemove';
-import { useTokenStore } from '../../stores';
+import { useNavigate } from "react-router-dom"; 
+import DisplayHistory from '../../components/displayHistory';
+
+
 
 export default function UnderOverview() {
     const [emails, setEmails] = useState<string[]>([]);
-    //const token = useTokenStore((state) => state.token);
-    const role = useTokenStore((state) => state.role);
+    const [aanvragen, setAanvragen] = useState<string[]>([]);
+    const navigate = useNavigate();
+
+
 
     useEffect(() => {
         fetchEmails();
     
     }, []);
 
+
+
     const fetchEmails = async () => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/${role}Email/emails`, {
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/Wagenparkbeheerder/emails`, {
                 method: 'GET',
                 credentials: 'include',
             });
+            if (response.status === 404) {
+                window.location.href = "/abonnementen";
+            }
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
             setEmails(data);
+            
         } catch (error) {
             console.error('Error fetching emails:', error);
         }
     };
 
      return (
+        <>
         <div className="email-manager">
             <div className="header">
-                Email Manager for {role === 'Wagenparkbeheerder' ? 'Wagenparkbeheerder' : 'Zakelijkeklant'}
+                Wagenparkbeheerder panel
+            </div>
+            <div>
+                <button id="abb" role="button" onClick={() => navigate('/abonnementen')}>Abonnement</button>
             </div>
             <div className="content">
                 <div className="email-list">
-                    <EmailList emails={emails} />
+                    <EmailList emails={emails} setAanvragen={setAanvragen}/>
                 </div>
                 <div className="email-actions">
                     <EmailAdd setEmails={setEmails} />
                     <EmailRemove setEmails={setEmails} />
                 </div>
-            </div>
         </div>
+        <div>
+                    <DisplayHistory aanvragen={aanvragen}/>
+                </div>
+        </div>
+        
+        </>
     );
 };

@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import Index from "./pages/index";
 import VoertuigenOverview from "./pages/voertuigenOverview";
-import EmailManager from "./pages/klant/underOverview"; 
+import WagenParkBeheerder from "./pages/klant/underOverview"; 
 
 import "./styles/index.css";
 import NavBar from "./components/navBar";
@@ -28,7 +28,7 @@ createRoot(document.getElementById("root")!).render(
       <Routes>
         <Route path="/" element={<NavBar />}>
           <Route index element={<Index />} />
-          <Route path="/email-manager" element={<EmailManager />} />
+          <Route path="/WagenParkBeheerder" element={<WagenParkBeheerder />} />
           <Route path="/voertuigenOverview" element={<VoertuigenOverview />} />
           <Route path="/verhuurAanvraag/:voertuigID/:voertuigNaam/:vastartdate/:vaenddate" element={<VerhuurAanvraag />} />
           <Route path="/backOfficeVerhuurAanvragen" element={<BackOfficeVerhuurAanvragen />} />

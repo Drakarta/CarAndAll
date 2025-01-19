@@ -20,6 +20,7 @@ namespace Backend.Data
         public DbSet<VerhuurAanvraag> VerhuurAanvragen { get; set; }
         public DbSet<VoertuigCategorie> VoertuigCategorie { get; set; }
         public DbSet<Schade> Schades { get; set; }
+        public DbSet<BedrijfWagenparkbeheerders> BedrijfWagenparkbeheerders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,6 +38,21 @@ namespace Backend.Data
                 .HasOne(ab => ab.Bedrijf)
                 .WithMany(b => b.BedrijfAccounts)
                 .HasForeignKey(ab => ab.bedrijf_id);
+
+            modelBuilder.Entity<BedrijfWagenparkbeheerders>()
+                .HasKey(ab => new { ab.account_id, ab.bedrijf_id });
+
+            modelBuilder.Entity<BedrijfWagenparkbeheerders>()
+                .HasOne(ab => ab.Account)
+                .WithMany(a => a.BedrijfWagenparkbeheerders)
+                .HasForeignKey(ab => ab.account_id);
+;
+
+            modelBuilder.Entity<BedrijfWagenparkbeheerders>()
+                .HasOne(ab => ab.Bedrijf)
+                .WithMany(b => b.BedrijfWagenparkbeheerders)
+                .HasForeignKey(ab => ab.bedrijf_id);
+
 
             modelBuilder.Entity<Voertuig>().ToTable("Voertuig");
             modelBuilder.Entity<Voertuig>().HasKey(v => v.VoertuigID);

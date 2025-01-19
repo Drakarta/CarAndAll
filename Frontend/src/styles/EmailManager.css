@@ -1,11 +1,26 @@
 .email-manager {
     font-family: Arial, sans-serif;
-    max-width: 800px;
+    max-width: 1100px;
     margin: 0 auto;
+    margin-top: 2rem;
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: #f9f9f9;
+}
+
+#abb {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 10%;
+    margin-bottom: 2rem; 
+}
+
+button#abb {
+    margin: 0 auto; /* Center the button horizontally */
+    margin-bottom: 2rem;
 }
 
 .header {
@@ -77,3 +92,10 @@ button:hover {
 .add-email {
     margin-bottom: 20px;
 }
+
+.aanvragenTabel {
+    width: 100%;
+    border: 1px solid gray;
+    border-collapse: collapse;
+    overflow-x: auto; /* Ensure it is scrollable on small screens */
+  }

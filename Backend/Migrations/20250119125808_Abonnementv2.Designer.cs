@@ -4,6 +4,7 @@ using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250119125808_Abonnementv2")]
+    partial class Abonnementv2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,7 +89,7 @@ namespace Backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("AbonnementId")
+                    b.Property<int>("AbonnementId")
                         .HasColumnType("int");
 
                     b.Property<string>("Domein")
@@ -118,21 +121,6 @@ namespace Backend.Migrations
                     b.HasIndex("bedrijf_id");
 
                     b.ToTable("BedrijfAccounts");
-                });
-
-            modelBuilder.Entity("Backend.Entities.BedrijfWagenparkbeheerders", b =>
-                {
-                    b.Property<Guid>("account_id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("bedrijf_id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("account_id", "bedrijf_id");
-
-                    b.HasIndex("bedrijf_id");
-
-                    b.ToTable("BedrijfWagenparkbeheerders");
                 });
 
             modelBuilder.Entity("Backend.Entities.Email", b =>
@@ -484,8 +472,10 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Entities.Bedrijf", b =>
                 {
                     b.HasOne("Backend.Entities.Abonnement", "abonnement")
-                        .WithMany()
-                        .HasForeignKey("AbonnementId");
+                        .WithMany("Bedrijven")
+                        .HasForeignKey("AbonnementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("abonnement");
                 });
@@ -500,25 +490,6 @@ namespace Backend.Migrations
 
                     b.HasOne("Backend.Entities.Bedrijf", "Bedrijf")
                         .WithMany("BedrijfAccounts")
-                        .HasForeignKey("bedrijf_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Account");
-
-                    b.Navigation("Bedrijf");
-                });
-
-            modelBuilder.Entity("Backend.Entities.BedrijfWagenparkbeheerders", b =>
-                {
-                    b.HasOne("Backend.Entities.Account", "Account")
-                        .WithMany("BedrijfWagenparkbeheerders")
-                        .HasForeignKey("account_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Backend.Entities.Bedrijf", "Bedrijf")
-                        .WithMany("BedrijfWagenparkbeheerders")
                         .HasForeignKey("bedrijf_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -635,11 +606,14 @@ namespace Backend.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Backend.Entities.Abonnement", b =>
+                {
+                    b.Navigation("Bedrijven");
+                });
+
             modelBuilder.Entity("Backend.Entities.Account", b =>
                 {
                     b.Navigation("BedrijfAccounts");
-
-                    b.Navigation("BedrijfWagenparkbeheerders");
 
                     b.Navigation("VerhuurAanvragen");
                 });
@@ -647,8 +621,6 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Entities.Bedrijf", b =>
                 {
                     b.Navigation("BedrijfAccounts");
-
-                    b.Navigation("BedrijfWagenparkbeheerders");
                 });
 
             modelBuilder.Entity("Backend.Entities.Voertuig", b =>
