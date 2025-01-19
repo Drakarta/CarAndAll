@@ -1,26 +1,18 @@
 using System;
 
+
 namespace Backend.Helpers
 {
     public static class EmailHelper
     {
-        public static bool CheckAmountAllowedToAddToCompany(string abbonement, int emails)
+       
+        public static bool CheckAmountAllowedToAddToCompany(int abonnementMaxNumbers, int emails)
         {
-            if (abbonement == "kleinste" && emails >= 2)
-            {
-                return false;
-            }
-            else if (abbonement == "middel" && emails >= 5)
-            {
-                return false;
-            }
-            else if (abbonement == "groot" && emails >= 10)
-            {
-                return false;
-            }
-            else
+            if (abonnementMaxNumbers >= emails)
             {
                 return true;
+            } else {
+                return false;
             }
         }
 
