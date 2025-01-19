@@ -16,14 +16,14 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.OpenApi.Models;
 
-public class WagenparkbeheerderEmailControllerTests
+public class WagenparkbeheerderControllerTests
 {
     private DbContextOptions<ApplicationDbContext> _options;
     private ApplicationDbContext _context;
     private Mock<IEmailSender> _mockEmailSender;
-    private WagenparkbeheerderEmailController _controller;
+    private WagenparkbeheerderController _controller;
 
-    public WagenparkbeheerderEmailControllerTests()
+    public WagenparkbeheerderControllerTests()
     {
         _options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase(databaseName: "TestDatabase")
@@ -31,7 +31,7 @@ public class WagenparkbeheerderEmailControllerTests
         _context = new ApplicationDbContext(_options);
 
         _mockEmailSender = new Mock<IEmailSender>();
-        _controller = new WagenparkbeheerderEmailController(_context, _mockEmailSender.Object);
+        _controller = new WagenparkbeheerderController(_context, _mockEmailSender.Object);
     }
 
     [Fact]
@@ -51,9 +51,10 @@ public class WagenparkbeheerderEmailControllerTests
         {   
             Id = bedrijfId,
             Eigenaar = accountId, 
-            Abbonement = "kleinste", 
+            // Abbonement = "kleinste", 
             Domein = "exmample.com",
-            BedrijfAccounts = new List<BedrijfAccounts>() 
+            BedrijfAccounts = new List<BedrijfAccounts>(),
+            BedrijfWagenparkbeheerders = new List<BedrijfWagenparkbeheerders>()
         };
 
         _context.Account.Add(account);
@@ -102,7 +103,7 @@ public class WagenparkbeheerderEmailControllerTests
         var account = new Account 
         {
             Id = accountId, 
-            Email = "wagenparkbeheerder@example.com", 
+            Email = "wagenparkbeheerder@example.com",
             wachtwoord = "securePassword123" ,
             Rol = "Wagenparkbeheerder"
         };
@@ -110,9 +111,10 @@ public class WagenparkbeheerderEmailControllerTests
         {  
             Id = bedrijfId,
             Eigenaar = accountId, 
-            Abbonement = "kleinste", 
+            // Abbonement = "kleinste", 
             Domein = "exmample.com",
-            BedrijfAccounts = new List<BedrijfAccounts>() 
+            BedrijfAccounts = new List<BedrijfAccounts>(),
+            BedrijfWagenparkbeheerders = new List<BedrijfWagenparkbeheerders>()
         };
 
         _context.Account.Add(account);
@@ -123,8 +125,8 @@ public class WagenparkbeheerderEmailControllerTests
         MockAuthentication(account.Email, account.Rol);
 
         // Act: Calling the controller method
-        var emailModel = new EmailModel { Email = "test@example.com" };
-        var result = await _controller.AddUserToCompany(emailModel);
+        var emailModelAdd = new EmailModelAdd { Email = "test@example.com", Role = "Zakelijke Klant" };
+        var result = await _controller.AddUserToCompany(emailModelAdd);
         Console.WriteLine($"Actual result: {result}");
 
         // Assert: Ensure the result is Ok
@@ -153,9 +155,10 @@ public class WagenparkbeheerderEmailControllerTests
         {  
             Id = bedrijfId,
             Eigenaar = accountId, 
-            Abbonement = "kleinste", 
+            // Abbonement = "kleinste", 
             Domein = "exmample.com",
-            BedrijfAccounts = new List<BedrijfAccounts>() 
+            BedrijfAccounts = new List<BedrijfAccounts>(), 
+            BedrijfWagenparkbeheerders = new List<BedrijfWagenparkbeheerders>()
         };
 
         _context.Account.Add(account);
@@ -166,7 +169,7 @@ public class WagenparkbeheerderEmailControllerTests
         MockAuthentication(account.Email, account.Rol);
 
         // Act: Calling the controller method with invalid email format
-        var emailModel = new EmailModel { Email = "invalid-email-format" };
+        var emailModel = new EmailModelAdd { Email = "invalid-email-format", Role = "Zakelijke Klant" };
         var result = await _controller.AddUserToCompany(emailModel);
         Console.WriteLine($"Actual result: {result}");
 
@@ -191,9 +194,10 @@ public class WagenparkbeheerderEmailControllerTests
         var bedrijf = new Bedrijf 
         { 
             Eigenaar = accountId, 
-            Abbonement = "kleinste", 
+            // Abbonement = "kleinste", 
             Domein = "exmample.com",
-            BedrijfAccounts = new List<BedrijfAccounts>() 
+            BedrijfAccounts = new List<BedrijfAccounts>(), 
+            BedrijfWagenparkbeheerders = new List<BedrijfWagenparkbeheerders>()
 
         };
 
@@ -205,7 +209,7 @@ public class WagenparkbeheerderEmailControllerTests
         MockAuthentication(account.Email, account.Rol);
 
         // Act
-        var emailModel = new EmailModel { Email = "wagenparkbeheerder@example.com" };
+        var emailModel = new EmailModelAdd { Email = "wagenparkbeheerder@example.com" };
         var result = await _controller.AddUserToCompany(emailModel);
         Console.WriteLine($"Actual result: {result}");
 
@@ -233,9 +237,10 @@ public class WagenparkbeheerderEmailControllerTests
         var bedrijf = new Bedrijf 
         { 
             Eigenaar = accountId, 
-            Abbonement = "kleinste", 
+            // Abbonement = "kleinste", 
             Domein = "example.com", // Set a specific domain
-            BedrijfAccounts = new List<BedrijfAccounts>() 
+            BedrijfAccounts = new List<BedrijfAccounts>(), 
+            BedrijfWagenparkbeheerders = new List<BedrijfWagenparkbeheerders>()
         };
 
         _context.Account.Add(account);
@@ -246,7 +251,7 @@ public class WagenparkbeheerderEmailControllerTests
         MockAuthentication(account.Email, account.Rol);
 
         // Act: Calling the controller method with an email that does not match the domain
-        var emailModel = new EmailModel { Email = "test@invalid.com" };
+        var emailModel = new EmailModelAdd { Email = "test@invalid.com" };
         var result = await _controller.AddUserToCompany(emailModel);
         Console.WriteLine($"Actual result: {result}");
 

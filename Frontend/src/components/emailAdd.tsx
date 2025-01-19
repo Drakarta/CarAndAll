@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useTokenStore } from '../stores';
 
 interface EmailAddProps {
     setEmails: React.Dispatch<React.SetStateAction<string[]>>;
@@ -7,19 +6,19 @@ interface EmailAddProps {
 
 export default function EmailAdd({ setEmails }: EmailAddProps) {
     const [email, setEmail] = useState('');
+    const [role, setRole] = useState('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [responseMessage, setResponseMessage] = useState<string | null>(null);
-    const role = useTokenStore((state) => state.role);
 
     const handleAddEmail = async () => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/${role}Email/addUserToCompany`, {
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/Wagenparkbeheerder/addUserToCompany`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 credentials: 'include',
-                body: JSON.stringify({ email }),
+                body: JSON.stringify({ email, role }),
             });
 
             let responseData;
@@ -33,6 +32,7 @@ export default function EmailAdd({ setEmails }: EmailAddProps) {
             if (response.ok) {
                 setEmails((emails) => [...emails, email.toLowerCase()]);
                 setEmail('');
+                setRole('');
                 setErrorMessage(null);
                 setResponseMessage(responseData.message);
             } else {
@@ -71,6 +71,11 @@ export default function EmailAdd({ setEmails }: EmailAddProps) {
                 placeholder="Enter email"
                 onKeyDown={handleKeyDown}
             />
+            <select value={role} onChange={(e) => setRole(e.target.value)}>
+                <option value="" disabled>Select a role</option>
+                <option value="Wagenparkbeheerder">Wagenparkbeheerder</option>
+                <option value="Zakelijkeklant">zakelijke klant</option>
+            </select>
             <button onClick={handleAddEmail}>Add Email</button>
             {errorMessage && <p>{errorMessage}</p>}
             {responseMessage && <p>{responseMessage}</p>}

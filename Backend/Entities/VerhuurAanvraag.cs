@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace Backend.Entities {
     public class VerhuurAanvraag {
         public int AanvraagID { get; set; }
@@ -22,6 +24,7 @@ namespace Backend.Entities {
         public string Status { get; set; }
 }
 
+[Keyless]
 public class VerhuurAanvraagDTO
 {
     public int AanvraagID { get; set; }
@@ -32,5 +35,19 @@ public class VerhuurAanvraagDTO
     public VoertuigDTO Voertuig { get; set; }
     public string Status { get; set; }
     public Guid accountID { get; set; }
+}
+
+[Keyless]
+public class VerhuurAanvraagDetailsDTO
+{
+    public int AanvraagID { get; set; }
+    public DateTime Startdatum { get; set; }
+    public DateTime Einddatum { get; set; }
+    public string Bestemming { get; set; }
+    public int Kilometers { get; set; }
+    public VoertuigDTO Voertuig { get; set; }
+    public string Status { get; set; }
+    public Guid AccountID { get; set; }
+    public string AccountEmail { get; set; }
 }
 }
