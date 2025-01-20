@@ -19,10 +19,12 @@ namespace Backend.Controllers
     public class AccountController : ControllerBase
     {
         private readonly ApplicationDbContext _accountDbContext;
+        private readonly bool _skipSignIn;
 
-        public AccountController(ApplicationDbContext context)
+        public AccountController(ApplicationDbContext context, bool skipSignIn = false)
         {
             _accountDbContext = context;
+            _skipSignIn = skipSignIn;
         }
 
         [HttpPost("login")]
@@ -55,12 +57,13 @@ namespace Backend.Controllers
                 new Claim(ClaimTypes.Role, user.Rol)
             };
 
-            Console.WriteLine($"Assigned Role: {user.Rol}");
-
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+            if (!_skipSignIn)
+            {
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+            }
 
 
             return Ok(new {
@@ -311,8 +314,8 @@ namespace Backend.Controllers
         {
             public string Email { get; set; }
             public string Naam { get; set; }
-            public string Address { get; set; }
-            public string PhoneNumber { get; set; }
+            public string Adres { get; set; }
+            public string TelefoonNummer { get; set; }
         }
 
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
@@ -322,7 +325,7 @@ namespace Backend.Controllers
             try
             {
                 var accountEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-                Console.WriteLine($"{model.Email} {model.Naam} {model.Address} {model.PhoneNumber}");
+                Console.WriteLine($"{model.Email} {model.Naam} {model.Adres} {model.TelefoonNummer}");
                 if (accountEmail == null)
                 {
                     return BadRequest(new { message = "Email claim not found." });
@@ -337,8 +340,8 @@ namespace Backend.Controllers
                 }
 
                 user.Naam = model.Naam;
-                user.Adres = model.Address;
-                user.TelefoonNummer = model.PhoneNumber;
+                user.Adres = model.Adres;
+                user.TelefoonNummer = model.TelefoonNummer;
 
                 await _accountDbContext.SaveChangesAsync();
 

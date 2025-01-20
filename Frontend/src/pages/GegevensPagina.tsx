@@ -3,7 +3,7 @@ import GegevensInput from "../components/gegevensInput";
 import GegevensShow from "../components/gegevensShow";
 
 import "../styles/gegevens.css";
-import { useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 // Define the user object type
 interface User {
@@ -17,12 +17,13 @@ interface User {
 
 
 export default function GegevensPagina() {
-    const [searchParams] = useSearchParams();
-    const newuser = searchParams.get("newuser");
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const newuser = queryParams.get('newuser');
     const [user, setUser] = useState<User | null>(null); // Initialize as null for "no data" state
     const [loading, setLoading] = useState<boolean>(true); // Track loading state
     const [error, setError] = useState<string | null>(null); // Track errors
-    const [edit, setEdit] = useState<boolean>(newuser === "true" ? true : false);
+    const [edit, setEdit] = useState<boolean>(newuser === "true" ? false : true);
   
     useEffect(() => {
       const fetchUserData = async () => {

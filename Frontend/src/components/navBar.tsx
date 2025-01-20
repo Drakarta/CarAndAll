@@ -1,9 +1,10 @@
 import { NavLink, Outlet } from "react-router-dom";
-import "../styles/navBar.css";
 import Logo from "../assets/CarAndAllLogo.svg";
 import { useTokenStore } from "../stores";
 import LogOutButton from "./logOutButton";
+import Footer from "./footer";
 
+import "../styles/navBar.css";
 
 
 const BaseNavBar: React.FC = () => (
@@ -129,6 +130,7 @@ export default function NavBar() {
         )}
       </nav>
       <Outlet />
+      <Footer />
     </>
   );
 }
