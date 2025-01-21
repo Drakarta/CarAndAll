@@ -15,6 +15,7 @@ import FrontOfficeDashboard from "./pages/frontofficedashboard";
 import VerhuurAanvragenStatus from './pages/klantAanvragen';
 import GegevensPagina from "./pages/GegevensPagina";
 import Privacy from "./pages/privacy";
+import PrivacyEdit from "./pages/privacyEdit";
 
 import "./styles/index.css";
 
@@ -35,6 +36,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/verhuur-aanvraag-status" element={<VerhuurAanvragenStatus />} />
           <Route path="/profile" element={<GegevensPagina />} />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="/privacy/edit" element={<PrivacyEdit />} />
         </Route>
       </Routes>
     </BrowserRouter>
