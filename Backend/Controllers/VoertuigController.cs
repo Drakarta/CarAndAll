@@ -32,7 +32,7 @@ namespace Backend.Controllers
                                     {
                                         voertuigID = v.VoertuigID,
                                         naam = v.Merk + " " + v.Type,
-                                        categorie = v.Categorie,
+                                        voertuig_categorie = v.voertuig_categorie,
                                         prijs_per_dag = v.Prijs_per_dag,
                                         verhuur_perioden = _applicationDbContext.VerhuurAanvragen
                                             .Where(va => va.VoertuigID == v.VoertuigID)

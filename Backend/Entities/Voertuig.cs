@@ -9,8 +9,8 @@ namespace Backend.Entities {
         public string Aanschafjaar{ get; set; }
         public string Status { get; set; }
         public double Prijs_per_dag { get; set; }
-        public string Categorie { get; set; }
-        public VoertuigCategorie VoertuigCategorie { get; set; } = null!;
+        public DateTime? Deleted_on { get; set; } = null;
+        public string voertuig_categorie { get; set; }
         public ICollection<VerhuurAanvraag> VerhuurAanvragen { get; set;}
     }
 

@@ -44,7 +44,7 @@ public class BackOfficeControllerTests
             Aanschafjaar = "2020",
             Status = "Beschikbaar",
             Prijs_per_dag = 76,
-            Categorie = "Auto"
+            // Categorie = "Auto"
         };
         _context.Voertuigen.Add(voertuig);
 
@@ -82,7 +82,7 @@ public class BackOfficeControllerTests
     [Fact]
     public async Task ChangeStatus_ReturnsOk_Geaccepteerd()
     {
-        var voertuig = new Voertuig 
+        var voertuig = new Auto 
         {
             Merk = "Toyota", 
             Type = "Corolla",
@@ -91,7 +91,8 @@ public class BackOfficeControllerTests
             Aanschafjaar = "2020",
             Status = "Beschikbaar",
             Prijs_per_dag = 76,
-            Categorie = "Auto"
+            Aantal_deuren = 4,
+            Elektrisch = false
         };
         _context.Voertuigen.Add(voertuig);
 

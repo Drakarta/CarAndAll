@@ -43,7 +43,7 @@ export default function VoertuigenOverview() {
 // Op basis van (.filter() kopje): https://medium.com/poka-techblog/simplify-your-javascript-use-map-reduce-and-filter-bd02c593cc2d
 const filterResultaat = Voertuigen.filter((voertuig) => {
 
-  const categoryFilter = selectedCategory === "Alle" || voertuig.categorie === selectedCategory;
+  const categoryFilter = selectedCategory === "Alle" || voertuig.voertuig_categorie === selectedCategory;
 
   if (!startDate || !endDate) {
     return categoryFilter;
@@ -144,7 +144,7 @@ const filterResultaat = Voertuigen.filter((voertuig) => {
           <tbody>
             {filterResultaat.map((voertuig, index) => (
               <tr key={index}>
-                <td>{voertuig.categorie}</td>
+                <td>{voertuig.voertuig_categorie}</td>
                 <td>{voertuig.naam}</td>
                 <td>{voertuig.prijs_per_dag}</td>
                 <td className="datumButtonVoertuigen">
