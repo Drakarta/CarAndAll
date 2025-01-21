@@ -1,0 +1,11 @@
+.markdown-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 3rem 0;
+}
+
+.markdown-container .markdown {
+    width: 700px
+}

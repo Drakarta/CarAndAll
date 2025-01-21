@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 import "../styles/footer.css";
 
 export default function Footer() {
@@ -26,7 +27,7 @@ export default function Footer() {
             <div>
             <h2>Policies</h2>
             <ul>
-                <li>Privacy</li>
+                <li><NavLink to={"/privacy"}>Privacy</NavLink></li>
             </ul>
             </div>
         </div>
