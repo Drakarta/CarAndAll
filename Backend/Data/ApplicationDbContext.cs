@@ -21,6 +21,7 @@ namespace Backend.Data
         public DbSet<VoertuigCategorie> VoertuigCategorie { get; set; }
         public DbSet<Schade> Schades { get; set; }
         public DbSet<BedrijfWagenparkbeheerders> BedrijfWagenparkbeheerders { get; set; }
+        public DbSet<Text> Text { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
