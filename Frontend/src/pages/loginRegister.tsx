@@ -9,7 +9,7 @@ export default function LoginRegister() {
   const [register, setRegister] = useState(false);
   const token = useTokenStore((state) => state.token);
   if (token) {
-    // window.location.href = "/";
+    window.location.href = "/";
   }
 
   return (

@@ -21,6 +21,7 @@ namespace Backend.Data
         public DbSet<VoertuigCategorie> VoertuigCategorie { get; set; }
         public DbSet<Schade> Schades { get; set; }
         public DbSet<BedrijfWagenparkbeheerders> BedrijfWagenparkbeheerders { get; set; }
+        public DbSet<Text> Texts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -71,7 +72,9 @@ namespace Backend.Data
                 .WithMany(v => v.VerhuurAanvragen)
                 .HasForeignKey(v => v.VoertuigID)
                 .IsRequired();
-
+                
+            modelBuilder.Entity<Text>()
+                .HasKey(t => t.Type);
         }
     }
 }

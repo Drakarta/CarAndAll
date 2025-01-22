@@ -20,9 +20,9 @@ export default function GegevensPagina() {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const newuser = queryParams.get('newuser');
-    const [user, setUser] = useState<User | null>(null); // Initialize as null for "no data" state
-    const [loading, setLoading] = useState<boolean>(true); // Track loading state
-    const [error, setError] = useState<string | null>(null); // Track errors
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
     const [edit, setEdit] = useState<boolean>(newuser === "true" ? false : true);
   
     useEffect(() => {

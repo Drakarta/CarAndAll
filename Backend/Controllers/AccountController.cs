@@ -325,7 +325,6 @@ namespace Backend.Controllers
             try
             {
                 var accountEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-                Console.WriteLine($"{model.Email} {model.Naam} {model.Adres} {model.TelefoonNummer}");
                 if (accountEmail == null)
                 {
                     return BadRequest(new { message = "Email claim not found." });
