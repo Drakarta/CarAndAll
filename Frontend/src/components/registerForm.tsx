@@ -2,7 +2,7 @@ import { useState } from "react"
 import "../styles/loginRegisterForm.css"
 import { useTokenStore } from "../stores";
 
-export default function RegisterForm() {
+export default function RegisterForm(props: { bussiness: boolean }) {
   const setToken = useTokenStore((state) => state.setToken);
   const [input, setInput] = useState({ email: "", password: "", repeatPassword: "" })
   const [isEmailValid, setIsEmailValid] = useState(true)
@@ -44,13 +44,22 @@ export default function RegisterForm() {
       body: JSON.stringify({ email: input.email, password: input.password })
     })
 
+    let role: string
+    if (props.bussiness) {
+      role = "Wagenparkbeheerder"
+      
+    } else {
+      role = "Particuliere huurder"
+    }
+
+
     if (response.status == 200) {
       const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/account/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email: input.email, password: input.password }),
+        body: JSON.stringify({ email: input.email, password: input.password, role: role }),
         credentials: 'include',
       })
       const data = await response.json()
@@ -66,7 +75,7 @@ export default function RegisterForm() {
 
   return (
     <form className={"auth-form"} onSubmit={handleSubmit}>
-      <h1>Register</h1>
+      <h1>Register {props.bussiness && "bussiness"}</h1>
       <input 
         className={"input"} 
         type="text" 

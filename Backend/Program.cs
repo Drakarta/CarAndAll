@@ -100,6 +100,12 @@ builder.Services.AddAuthorization(options =>
         policy.RequireAuthenticatedUser();
         policy.RequireRole("Backofficemedewerker", "Admin");
     });
+    options.AddPolicy("BackOffice", policy =>
+    {
+        policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
+        policy.RequireAuthenticatedUser();
+        policy.RequireRole("Backofficemedewerker", "Admin");
+    });
 });
 
 var app = builder.Build();

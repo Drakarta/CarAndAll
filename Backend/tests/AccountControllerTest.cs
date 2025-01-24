@@ -1,5 +1,6 @@
 using Backend.Controllers;
 using Backend.Data;
+using Backend.Models;
 using Xunit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -53,10 +54,11 @@ public class AccountControllerTest
     [Fact]
     public async Task RegisterTest()
     {
-        var account = new LoginRegisterModel
+        var account = new RegisterModel
         {
             Email = "bone.groe@email.com",
             Password = "test",
+            Role = "Particuliere huurder"
         };
 
         // Test if controller works
@@ -89,7 +91,7 @@ public class AccountControllerTest
         _context.Account.Add(account);
         await _context.SaveChangesAsync();
 
-        var loginModel = new LoginRegisterModel
+        var loginModel = new LoginModel
         {
             Email = account.Email,
             Password = "correctpassword"
@@ -117,7 +119,7 @@ public class AccountControllerTest
         _context.Account.Add(account);
         await _context.SaveChangesAsync();
 
-        var login = new LoginRegisterModel
+        var login = new LoginModel
         {
             Email = account.Email,
             Password = "AnotherPassword" // Incorrect password
@@ -130,7 +132,7 @@ public class AccountControllerTest
     }
 
     [Fact]
-    public async Task updateUserTest()
+    public async Task UpdateUserTest()
     {
         var account = new Account
         {

@@ -22,7 +22,7 @@ export default function GegevensInput(props: { user: User, edit: () => void }) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ naam: input.naam, email: input.email, address: input.address, phoneNumber: input.phoneNumber }),
+            body: JSON.stringify({ naam: input.naam, email: input.email, adres: input.address, telefoonNummer: input.phoneNumber }),
             credentials: 'include',
         });
 
