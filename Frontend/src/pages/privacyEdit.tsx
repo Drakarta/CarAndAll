@@ -26,7 +26,9 @@ export default function PrivacyEdit() {
             credentials: 'include',
           }
         );
-
+        if (response.status === 405) {
+          window.location.href = "/404";
+        } 
         if (response.ok) {
           const content = await response.text(); // API returns plain text
           setMarkdown(content);

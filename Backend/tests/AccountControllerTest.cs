@@ -1,23 +1,13 @@
 using Backend.Controllers;
 using Backend.Data;
 using Backend.Models;
-using Moq;
 using Xunit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
 using Backend.Entities;
-using Backend.Interfaces;
-using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.OpenApi.Models;
-using System.Threading.Tasks;
 using BC = BCrypt.Net.BCrypt;
-using Org.BouncyCastle.Crypto.Parameters;
 using static Backend.Controllers.AccountController;
 
 public class AccountControllerTest
@@ -64,10 +54,11 @@ public class AccountControllerTest
     [Fact]
     public async Task RegisterTest()
     {
-        var account = new LoginRegisterModel
+        var account = new RegisterModel
         {
             Email = "bone.groe@email.com",
             Password = "test",
+            Role = "Particuliere huurder"
         };
         
         // Test if controller works
@@ -100,7 +91,7 @@ public class AccountControllerTest
         _context.Account.Add(account);
         await _context.SaveChangesAsync();
 
-        var loginModel = new LoginRegisterModel
+        var loginModel = new LoginModel
         {
             Email = account.Email,
             Password = "correctpassword"
@@ -128,7 +119,7 @@ public class AccountControllerTest
         _context.Account.Add(account);
         await _context.SaveChangesAsync();
 
-        var login = new LoginRegisterModel
+        var login = new LoginModel
         {
             Email = account.Email,
             Password = "AnotherPassword" // Incorrect password
@@ -141,7 +132,7 @@ public class AccountControllerTest
     }
 
     [Fact]
-    public async Task updateUserTest()
+    public async Task UpdateUserTest()
     {
         var account = new Account
         {
