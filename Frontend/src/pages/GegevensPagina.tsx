@@ -35,6 +35,10 @@ export default function GegevensPagina() {
             },
             credentials: 'include',
           });
+
+          if (response.status === 405) {
+            window.location.href = "/404";
+          } 
   
           if (response.status === 200) {
             const data = await response.json();

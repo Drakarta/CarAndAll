@@ -1,15 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 using Backend.Data;
 using Backend.Entities;
 using BC = BCrypt.Net.BCrypt;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using BCrypt.Net;
 using System.Security.Claims;
-using System.Threading.Tasks;
+using Backend.Models;
 
 
 namespace Backend.Controllers
@@ -28,7 +26,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRegisterModel model)
+        public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             if (model == null || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
             {
@@ -73,11 +71,11 @@ namespace Backend.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] LoginRegisterModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             try
             {
-                if (model == null || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
+                if (model == null || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password) || string.IsNullOrWhiteSpace(model.Role))
                 {
                     return BadRequest(new { message = "Invalid registration request." });
                 }
@@ -94,7 +92,7 @@ namespace Backend.Controllers
                 {
                     Email = model.Email,
                     wachtwoord = BC.EnhancedHashPassword(model.Password),
-                    Rol = "Particuliere huurder"
+                    Rol = model.Role,
                 };
 
                 _accountDbContext.Account.Add(newUser);
