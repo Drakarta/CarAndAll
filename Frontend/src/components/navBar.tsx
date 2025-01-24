@@ -44,9 +44,6 @@ const AdminNavBar: React.FC = () => (
     <NavLink to="/WagenParkBeheerder" className="navBarLink">
             WagenParkBeheerder
     </NavLink>
-    <NavLink to="/abonnementen" className="navBarLink">
-      Abonnementen
-    </NavLink>
     <NavLink to="/admin" className="NarBarLink">
     admin
     </NavLink>
@@ -88,6 +85,9 @@ const BackOfficeNavBar : React.FC = () => (
           </NavLink>
           <NavLink to="/backOfficeVerhuurAanvragen" className="navBarLink">
             Verhuur aanvragen
+          </NavLink>
+          <NavLink to="/backOfficeAbonnementAanvragen" className="navBarLink">
+            Abonnement aanvragen
           </NavLink>
         </>
 )
