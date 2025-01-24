@@ -1,23 +1,12 @@
 using Backend.Controllers;
 using Backend.Data;
-using Backend.Models;
-using Moq;
 using Xunit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
 using Backend.Entities;
-using Backend.Interfaces;
-using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.OpenApi.Models;
-using System.Threading.Tasks;
 using BC = BCrypt.Net.BCrypt;
-using Org.BouncyCastle.Crypto.Parameters;
 using static Backend.Controllers.AccountController;
 
 public class AccountControllerTest
@@ -69,7 +58,7 @@ public class AccountControllerTest
             Email = "bone.groe@email.com",
             Password = "test",
         };
-        
+
         // Test if controller works
         var result = await _controller.Register(account);
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -156,7 +145,7 @@ public class AccountControllerTest
         _context.Account.Add(account);
         await _context.SaveChangesAsync();
 
-        var updatedAccount = new UpdateUserModel 
+        var updatedAccount = new UpdateUserModel
         {
             Email = "john.doe@email.com",
             Naam = "Jane Doe",
@@ -170,7 +159,7 @@ public class AccountControllerTest
         var result = await _controller.UpdateUser(updatedAccount);
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(200, okResult.StatusCode);
-        
+
         // Test if account is updated in database
         var updatedAccountInDB = _context.Account
             .FirstOrDefault(a => a.Email == updatedAccount.Email);
@@ -178,6 +167,6 @@ public class AccountControllerTest
         Assert.Equal(updatedAccount.Naam, updatedAccountInDB.Naam);
         Assert.Equal(updatedAccount.Adres, updatedAccountInDB.Adres);
         Assert.Equal(updatedAccount.TelefoonNummer, updatedAccountInDB.TelefoonNummer);
-        
+
     }
 }

@@ -1,8 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import '../styles/klantAanvragen.css';
 
 export default function KlantAanvragen() {
-    const [klantAanvragen, setKlantAanvragen] = useState<any[]>([]);
+    interface Voertuig {
+        type: string;
+        merk: string;
+    }
 
+    interface KlantAanvraag {
+        id: number;
+        startdatum: string;
+        einddatum: string;
+        bestemming: string;
+        kilometers: number;
+        voertuig: Voertuig;
+        status: string;
+    }
+
+    const [klantAanvragen, setKlantAanvragen] = useState<KlantAanvraag[]>([]);
 
     useEffect(() => {
         fetchAanvragen();
@@ -25,19 +40,26 @@ export default function KlantAanvragen() {
     };
 
     return (
-        <div className="klant-aanvragen">
-            <div className="header">
-                Klant Aanvragen
-            </div>
-            <div>
-                <ul>
-                    {klantAanvragen.map((aanvraag, index) => (
-                        <li key={index}>
-                            {aanvraag.begindatum} - {aanvraag.einddatum} - {aanvraag.bestemming} - {aanvraag.kilometers} - {aanvraag.voertuig.type} - {aanvraag.voertuig.merk} - {aanvraag.status}
+        <div className="klant-aanvragen-box">
+            <div className="klant-aanvragen">
+                <div className="header">
+                    Klant Aanvragen
+                </div>
+                <div className="content">
+                    {klantAanvragen.length === 0 ? (
+                        <p>No klant aanvragen found.</p>
+                    ) : (
+                        <ul>
+                        {klantAanvragen?.map((aanvraag) => (
+                            <li key={aanvraag.id} className="aanvraag-row">
+                                {aanvraag.startdatum} - {aanvraag.einddatum} - {aanvraag.bestemming} - {aanvraag.kilometers} - {aanvraag.voertuig.type} - {aanvraag.voertuig.merk} - {aanvraag.status}
                         </li>
-                    ))}
-                </ul>
+                        ))}
+                    </ul>
+                    )}
+                </div>
             </div>
         </div>
     );
 };
+

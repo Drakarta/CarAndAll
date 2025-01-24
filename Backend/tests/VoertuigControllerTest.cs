@@ -1,20 +1,9 @@
 using Backend.Controllers;
 using Backend.Data;
-using Backend.Models;
-using Moq;
 using Xunit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
 using Backend.Entities;
-using Backend.Interfaces;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.OpenApi.Models;
 
 public class VoertuigControllerTests
 {
@@ -32,12 +21,12 @@ public class VoertuigControllerTests
         _controller = new VoertuigController(_context);
     }
 
-     [Fact]
+    [Fact]
     public async Task GetVerhuurAanvragen_ReturnsOk_HasVerhuurAanvragen()
     {
-        var voertuig = new Voertuig 
+        var voertuig = new Voertuig
         {
-            Merk = "Toyota", 
+            Merk = "Toyota",
             Type = "Corolla",
             Kenteken = "12-345-67",
             Kleur = "Zwart",

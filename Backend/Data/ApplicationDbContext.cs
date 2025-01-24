@@ -21,57 +21,100 @@ namespace Backend.Data
         public DbSet<VoertuigCategorie> VoertuigCategorie { get; set; }
         public DbSet<Schade> Schades { get; set; }
         public DbSet<BedrijfWagenparkbeheerders> BedrijfWagenparkbeheerders { get; set; }
+        public DbSet<AbonnementAanvraag> AbonnementAanvragen { get; set; }
+        public DbSet<Text> Texts { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(builder);
 
-            modelBuilder.Entity<BedrijfAccounts>()
+            builder.Entity<BedrijfAccounts>()
                 .HasKey(ab => new { ab.account_id, ab.bedrijf_id });
 
-            modelBuilder.Entity<BedrijfAccounts>()
+            builder.Entity<BedrijfAccounts>()
                 .HasOne(ab => ab.Account)
                 .WithMany(a => a.BedrijfAccounts)
                 .HasForeignKey(ab => ab.account_id);
 
-            modelBuilder.Entity<BedrijfAccounts>()
+            builder.Entity<BedrijfAccounts>()
                 .HasOne(ab => ab.Bedrijf)
                 .WithMany(b => b.BedrijfAccounts)
                 .HasForeignKey(ab => ab.bedrijf_id);
 
-            modelBuilder.Entity<BedrijfWagenparkbeheerders>()
+            builder.Entity<BedrijfWagenparkbeheerders>()
                 .HasKey(ab => new { ab.account_id, ab.bedrijf_id });
 
-            modelBuilder.Entity<BedrijfWagenparkbeheerders>()
+            builder.Entity<BedrijfWagenparkbeheerders>()
                 .HasOne(ab => ab.Account)
                 .WithMany(a => a.BedrijfWagenparkbeheerders)
                 .HasForeignKey(ab => ab.account_id);
-;
 
-            modelBuilder.Entity<BedrijfWagenparkbeheerders>()
+            builder.Entity<BedrijfWagenparkbeheerders>()
                 .HasOne(ab => ab.Bedrijf)
                 .WithMany(b => b.BedrijfWagenparkbeheerders)
                 .HasForeignKey(ab => ab.bedrijf_id);
 
 
-            modelBuilder.Entity<Voertuig>().ToTable("Voertuig");
-            modelBuilder.Entity<Voertuig>().HasKey(v => v.VoertuigID);
-            modelBuilder.Entity<VoertuigCategorie>().HasKey(v => v.Categorie);
-            modelBuilder.Entity<VerhuurAanvraag>().HasKey(v => v.AanvraagID);
-            modelBuilder.Entity<VerhuurAanvraag>().ToTable("VerhuurAanvraag");
+            builder.Entity<Voertuig>().ToTable("Voertuig");
+            builder.Entity<Voertuig>().HasKey(v => v.VoertuigID);
+            builder.Entity<VoertuigCategorie>().HasKey(v => v.Categorie);
+            builder.Entity<VerhuurAanvraag>().HasKey(v => v.AanvraagID);
+            builder.Entity<VerhuurAanvraag>().ToTable("VerhuurAanvraag");
 
-            modelBuilder.Entity<Voertuig>()
+            builder.Entity<Voertuig>()
                 .HasOne<VoertuigCategorie>(v => v.VoertuigCategorie)
                 .WithMany(c => c.Voertuigen)
                 .HasForeignKey(v => v.Categorie)
                 .IsRequired();
 
-            modelBuilder.Entity<VerhuurAanvraag>()
+            builder.Entity<VerhuurAanvraag>()
                 .HasOne(v => v.Voertuig)
                 .WithMany(v => v.VerhuurAanvragen)
                 .HasForeignKey(v => v.VoertuigID)
                 .IsRequired();
+            builder.Entity<AbonnementAanvraag>()
+                           .ToTable("AbonnementAanvraag"); // Explicit table name
+            builder.Entity<AbonnementAanvraag>()
+                .HasKey(aa => aa.Id);
 
+            builder.Entity<AbonnementAanvraag>()
+                .Property(aa => aa.Naam)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            builder.Entity<AbonnementAanvraag>()
+                .Property(aa => aa.Beschrijving)
+                .HasMaxLength(500);
+
+            builder.Entity<AbonnementAanvraag>()
+                .Property(aa => aa.PrijsMultiplier)
+                .IsRequired();
+
+            builder.Entity<AbonnementAanvraag>()
+                .Property(aa => aa.MaxMedewerkers)
+                .IsRequired();
+
+            builder.Entity<AbonnementAanvraag>()
+                .Property(aa => aa.Status)
+                .HasDefaultValue("In behandeling");
+
+            builder.Entity<AbonnementAanvraag>()
+                .HasOne(aa => aa.Bedrijf)
+                .WithMany(b => b.AbonnementAanvragen)
+                .HasForeignKey(aa => aa.BedrijfId)
+                .IsRequired();
+
+            builder.Entity<Abonnement>()
+                .ToTable("Abonnement");
+
+            builder.Entity<Abonnement>()
+                .HasMany(a => a.Bedrijven)
+                .WithOne(b => b.abonnement)
+                .HasForeignKey(b => b.AbonnementId)
+                .IsRequired(false);
+
+            builder.Entity<Text>()
+                .HasKey(t => t.Type);
         }
     }
 }

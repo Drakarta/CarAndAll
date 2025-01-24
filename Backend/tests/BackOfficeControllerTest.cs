@@ -1,20 +1,10 @@
 using Backend.Controllers;
 using Backend.Data;
 using Backend.Models;
-using Moq;
 using Xunit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
 using Backend.Entities;
-using Backend.Interfaces;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.OpenApi.Models;
 
 public class BackOfficeControllerTests
 {
@@ -32,12 +22,12 @@ public class BackOfficeControllerTests
         _controller = new BackOfficeController(_context);
     }
 
-     [Fact]
+    [Fact]
     public async Task GetVerhuurAanvragen_ReturnsOk_HasVerhuurAanvragen()
     {
-        var voertuig = new Voertuig 
+        var voertuig = new Voertuig
         {
-            Merk = "Toyota", 
+            Merk = "Toyota",
             Type = "Corolla",
             Kenteken = "12-345-67",
             Kleur = "Zwart",
@@ -50,10 +40,10 @@ public class BackOfficeControllerTests
 
         var accountId = Guid.NewGuid();
 
-        var account = new Account 
+        var account = new Account
         {
-            Id = accountId, 
-            Email = "particulierehuurder@example.com", 
+            Id = accountId,
+            Email = "particulierehuurder@example.com",
             wachtwoord = "securePassword123",
             Rol = "Particuliere huurder"
         };
@@ -78,13 +68,13 @@ public class BackOfficeControllerTests
 
         Assert.Equal(200, okResult.StatusCode);
     }
-    
+
     [Fact]
     public async Task ChangeStatus_ReturnsOk_Geaccepteerd()
     {
-        var voertuig = new Voertuig 
+        var voertuig = new Voertuig
         {
-            Merk = "Toyota", 
+            Merk = "Toyota",
             Type = "Corolla",
             Kenteken = "12-345-67",
             Kleur = "Zwart",
@@ -97,10 +87,10 @@ public class BackOfficeControllerTests
 
         var accountId = Guid.NewGuid();
 
-        var account = new Account 
+        var account = new Account
         {
-            Id = accountId, 
-            Email = "particulierehuurder@example.com", 
+            Id = accountId,
+            Email = "particulierehuurder@example.com",
             wachtwoord = "securePassword123",
             Rol = "Particuliere huurder"
         };
@@ -119,7 +109,7 @@ public class BackOfficeControllerTests
         };
         await _context.SaveChangesAsync();
 
-        var backOfficeModel = new BackOfficeModel { AanvraagID = verhuurAanvraag1.AanvraagID, Status = "Geaccepteerd"};
+        var backOfficeModel = new BackOfficeModel { AanvraagID = verhuurAanvraag1.AanvraagID, Status = "Geaccepteerd" };
 
         var result = await _controller.ChangeStatus(backOfficeModel);
 

@@ -14,12 +14,12 @@
     justify-content: center;
     align-items: center;
     height: 100%;
-    width: 10%;
+    width: auto;
     margin-bottom: 2rem; 
 }
 
 button#abb {
-    margin: 0 auto; /* Center the button horizontally */
+    margin: 0 auto;
     margin-bottom: 2rem;
 }
 
@@ -43,8 +43,8 @@ button#abb {
     padding: 10px;
     background-color: #ffffff;
     display: flex;
-    flex-direction: column; /* Ensure items stack properly */
-    gap: 0; /* Remove unintended spacing between items */
+    flex-direction: column; 
+    gap: 0; 
 }
 
 .email-list ul {
@@ -72,14 +72,7 @@ button#abb {
     background-color: #ffffff;
 }
 
-button {
-    padding: 8px 12px;
-    background-color: #007BFF;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
+
 
 button:hover {
     background-color: #0056b3;
@@ -97,5 +90,12 @@ button:hover {
     width: 100%;
     border: 1px solid gray;
     border-collapse: collapse;
-    overflow-x: auto; /* Ensure it is scrollable on small screens */
+    overflow-x: auto;
   }
+
+.History {
+    width: 100%;
+    border: 1px solid gray;
+    border-collapse: collapse;
+    overflow-x: auto;
+}

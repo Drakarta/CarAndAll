@@ -20,14 +20,15 @@ import FrontOfficeDashboard from "./pages/frontofficedashboard";
 import VerhuurAanvragenStatus from './pages/klantAanvragen';
 
 import GegevensPagina from "./pages/GegevensPagina";
-
+import Footer from "./components/footer";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<NavBar />}>
-          <Route index element={<Index />} />
+      <div className="main-content">
+        <NavBar />
+        <Routes>
+          <Route path="/" element={<Index />} />
           <Route path="/WagenParkBeheerder" element={<WagenParkBeheerder />} />
           <Route path="/voertuigenOverview" element={<VoertuigenOverview />} />
           <Route path="/verhuurAanvraag/:voertuigID/:voertuigNaam/:vastartdate/:vaenddate" element={<VerhuurAanvraag />} />
@@ -38,8 +39,9 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/frontofficedashboard" element={<FrontOfficeDashboard />} />
           <Route path="/verhuur-aanvraag-status" element={<VerhuurAanvragenStatus />} />
           <Route path="/profile" element={<GegevensPagina />} />
-        </Route>
-      </Routes>
+        </Routes>
+      </div>
+      <Footer />
     </BrowserRouter>
   </StrictMode>
 );

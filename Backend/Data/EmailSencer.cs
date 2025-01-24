@@ -1,7 +1,6 @@
 using System;
 using System.Net;
 using System.Net.Mail;
-using Microsoft.Extensions.Configuration;
 using Backend.Interfaces;
 
 namespace Backend.Data
@@ -45,9 +44,9 @@ namespace Backend.Data
 }
 
 
-                    //copy dit in de controller waar je de email wilt versturen
-                    //  private readonly EmailSencer _emailSencer; boven aan de controller
-                    //  _emailSencer = emailSencer; in de constructor
-                    // dit waar je de email wilt versturen:
-                    // string context = $"{model.Email} {password} Dit zijn uw loggin gegevens";
-                    // _emailSencer.SendEmail("voeg het email dat verstuurd wordt hier", "Account gegevens", context);
+//copy dit in de controller waar je de email wilt versturen
+//  private readonly EmailSencer _emailSencer; boven aan de controller
+//  _emailSencer = emailSencer; in de constructor
+// dit waar je de email wilt versturen:
+// string context = $"{model.Email} {password} Dit zijn uw loggin gegevens";
+// _emailSencer.SendEmail("voeg het email dat verstuurd wordt hier", "Account gegevens", context);

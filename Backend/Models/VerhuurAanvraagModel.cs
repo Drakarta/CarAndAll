@@ -2,7 +2,7 @@ namespace Backend.Models
 {
     public class VerhuurAanvraagModel
     {
-         private DateTime _startdatum;
+        private DateTime _startdatum;
         public DateTime Startdatum
         {
             get => _startdatum.Date;
@@ -15,7 +15,7 @@ namespace Backend.Models
             set => _einddatum = value;
         }
         public string Bestemming { get; set; }
-        public int Kilometers{ get; set; }
+        public int Kilometers { get; set; }
 
         public int VoertuigID { get; set; }
     }

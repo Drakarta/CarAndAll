@@ -5,22 +5,16 @@ import EmailAdd from '../../components/emailAdd';
 import EmailRemove from '../../components/emailRemove';
 import { useNavigate } from "react-router-dom"; 
 import DisplayHistory from '../../components/displayHistory';
-
-
+import { useAanvragenState } from '../../state/aanvragenState';
 
 export default function UnderOverview() {
     const [emails, setEmails] = useState<string[]>([]);
-    const [aanvragen, setAanvragen] = useState<string[]>([]);
+    const { aanvragen, setAanvragen } = useAanvragenState();
     const navigate = useNavigate();
-
-
 
     useEffect(() => {
         fetchEmails();
-    
     }, []);
-
-
 
     const fetchEmails = async () => {
         try {
@@ -31,25 +25,26 @@ export default function UnderOverview() {
             if (response.status === 404) {
                 window.location.href = "/abonnementen";
             }
+            if (response.status === 405) {
+                window.location.href = "/404";
+            }
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
             setEmails(data);
-            
         } catch (error) {
             console.error('Error fetching emails:', error);
         }
     };
 
-     return (
-        <>
+    return (
         <div className="email-manager">
             <div className="header">
                 Wagenparkbeheerder panel
             </div>
             <div>
-                <button id="abb" role="button" onClick={() => navigate('/abonnementen')}>Abonnement</button>
+                <button id="abb" onClick={() => navigate('/abonnementen')}>Abonnement</button>
             </div>
             <div className="content">
                 <div className="email-list">
@@ -59,12 +54,10 @@ export default function UnderOverview() {
                     <EmailAdd setEmails={setEmails} />
                     <EmailRemove setEmails={setEmails} />
                 </div>
+            </div>
+            <div>
+                {aanvragen !== null && <DisplayHistory aanvragen={aanvragen} />}
+            </div>
         </div>
-        <div>
-                    <DisplayHistory aanvragen={aanvragen}/>
-                </div>
-        </div>
-        
-        </>
     );
 };
