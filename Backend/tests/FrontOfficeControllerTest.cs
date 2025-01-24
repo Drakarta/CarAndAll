@@ -1,14 +1,11 @@
 using Xunit;
-using Moq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.Controllers;
 using Backend.Data;
 using Backend.Entities;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Linq;
+
+namespace Backend.test{
 
 public class FrontOfficeControllerTests
 {
@@ -23,16 +20,15 @@ public class FrontOfficeControllerTests
 
         _context = new ApplicationDbContext(options);
 
-        // Seed in-memory database
         _context.VerhuurAanvragen.RemoveRange(_context.VerhuurAanvragen);
-_context.SaveChanges();
+        _context.SaveChanges();
 
-_context.VerhuurAanvragen.AddRange(
-    new VerhuurAanvraag { AanvraagID = 1, Status = "geaccepteerd", VoertuigID = 101, Bestemming = "Rotterdam" },
-    new VerhuurAanvraag { AanvraagID = 2, Status = "geweigerd", VoertuigID = 102, Bestemming = "Amsterdam" }
-);
+        _context.VerhuurAanvragen.AddRange(
+            new VerhuurAanvraag { AanvraagID = 1, Status = "geaccepteerd", VoertuigID = 101, Bestemming = "Rotterdam" },
+            new VerhuurAanvraag { AanvraagID = 2, Status = "geweigerd", VoertuigID = 102, Bestemming = "Amsterdam" }
+        );
 
-_context.SaveChanges();
+        _context.SaveChanges();
 
         _controller = new FrontOfficeController(_context);
     }
@@ -65,27 +61,29 @@ _context.SaveChanges();
         Assert.Equal("Invalid status", badRequestResult.Value);
     }
 
-   [Fact]
-public async Task GetVerhuurAanvragenWithStatus_ReturnsAcceptedRequests()
-{
-    // Act
-    var result = await _controller.GetVerhuurAanvragenWithStatus();
+    [Fact]
+    public async Task GetVerhuurAanvragenWithStatus_ReturnsAcceptedRequests()
+    {
+        // Act
+        var result = await _controller.GetVerhuurAanvragenWithStatus();
 
-    // Assert
-    var okResult = Assert.IsType<OkObjectResult>(result);
-    var requests = okResult.Value as IEnumerable<object>;
-    Assert.NotNull(requests);
-    Assert.Single(requests);
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var requests = okResult.Value as IEnumerable<object>;
+        Assert.NotNull(requests);
+        Assert.Single(requests);
 
-    // Use reflection to check the properties of the anonymous type
-    var request = requests.First();
-    var type = request.GetType();
 
-    var aanvraagID = type.GetProperty("AanvraagID")?.GetValue(request, null);
-    var status = type.GetProperty("Status")?.GetValue(request, null);
+        var request = requests.First();
+        var type = request.GetType();
 
-    Assert.Equal(1, aanvraagID);
-    Assert.Equal("geaccepteerd", status);
+        var aanvraagID = type.GetProperty("AanvraagID")?.GetValue(request, null);
+        var status = type.GetProperty("Status")?.GetValue(request, null);
+
+
+        Assert.Equal(1, aanvraagID);
+        Assert.Equal("geaccepteerd", status);
+    }
+
 }
-
 }

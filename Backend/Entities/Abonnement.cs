@@ -9,5 +9,7 @@ namespace Backend.Entities
 
         public int Max_medewerkers { get; set; }
 
+        public ICollection<Bedrijf> Bedrijven { get; set; } = new List<Bedrijf>();
+
     }
 }

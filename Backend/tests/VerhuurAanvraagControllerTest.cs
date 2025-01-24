@@ -1,20 +1,12 @@
 using Backend.Controllers;
 using Backend.Data;
 using Backend.Models;
-using Moq;
 using Xunit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
 using Backend.Entities;
-using Backend.Interfaces;
-using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.OpenApi.Models;
 
 public class VerhuurAanvraagControllerTests
 {
@@ -57,17 +49,17 @@ public class VerhuurAanvraagControllerTests
     {
         var accountId = Guid.NewGuid();
 
-        var account = new Account 
+        var account = new Account
         {
-            Id = accountId, 
-            Email = "particulierehuurder@example.com", 
+            Id = accountId,
+            Email = "particulierehuurder@example.com",
             wachtwoord = "securePassword123",
             Rol = "Particuliere huurder"
         };
         _context.Account.Add(account);
-        var voertuig = new Voertuig 
+        var voertuig = new Voertuig
         {
-            Merk = "Toyota", 
+            Merk = "Toyota",
             Type = "Corolla",
             Kenteken = "12-345-67",
             Kleur = "Zwart",
@@ -82,13 +74,14 @@ public class VerhuurAanvraagControllerTests
 
         MockAuthentication(account.Email, account.Rol);
 
-        var verhuurAanvraagModel = new VerhuurAanvraagModel { 
-                    Startdatum = DateTime.Today,
-                    Einddatum = DateTime.Today.AddDays(14),
-                    Bestemming = "Spanje",
-                    Kilometers = 500,
-                    VoertuigID = voertuig.VoertuigID,
-                 };
+        var verhuurAanvraagModel = new VerhuurAanvraagModel
+        {
+            Startdatum = DateTime.Today,
+            Einddatum = DateTime.Today.AddDays(14),
+            Bestemming = "Spanje",
+            Kilometers = 500,
+            VoertuigID = voertuig.VoertuigID,
+        };
 
         var result = await _controller.CreateVerhuurAanvraag(verhuurAanvraagModel);
 

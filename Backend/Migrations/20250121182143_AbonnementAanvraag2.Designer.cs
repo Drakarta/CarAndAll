@@ -4,6 +4,7 @@ using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250121182143_AbonnementAanvraag2")]
+    partial class AbonnementAanvraag2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -225,20 +228,6 @@ namespace Backend.Migrations
                     b.HasIndex("VoertuigID");
 
                     b.ToTable("Schades");
-                });
-
-            modelBuilder.Entity("Backend.Entities.Text", b =>
-                {
-                    b.Property<string>("Type")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Type");
-
-                    b.ToTable("Texts");
                 });
 
             modelBuilder.Entity("Backend.Entities.VerhuurAanvraag", b =>
@@ -549,7 +538,7 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Entities.Bedrijf", b =>
                 {
                     b.HasOne("Backend.Entities.Abonnement", "abonnement")
-                        .WithMany("Bedrijven")
+                        .WithMany("Bedrijf")
                         .HasForeignKey("AbonnementId");
 
                     b.Navigation("abonnement");
@@ -702,7 +691,7 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Entities.Abonnement", b =>
                 {
-                    b.Navigation("Bedrijven");
+                    b.Navigation("Bedrijf");
                 });
 
             modelBuilder.Entity("Backend.Entities.Account", b =>

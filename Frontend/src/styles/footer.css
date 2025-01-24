@@ -1,4 +1,4 @@
-.footer {
+.footer-container {
     display: flex;
     flex-direction: column;
     margin-top: 2rem;
@@ -7,9 +7,15 @@
     padding-top: 2rem;
 }
 
+.footer {
+    margin-top: auto; 
+}
+
+
 .footer .footer-top {
     display: grid;
     grid-template-columns: 1fr 3fr 3fr 3fr 1fr;
+    padding: 2rem 0;
 }
 
 .footer .footer-top h1 {
@@ -27,3 +33,5 @@
     justify-items: center;
     padding: 2rem 0;
 }
+
+

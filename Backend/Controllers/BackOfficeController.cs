@@ -23,7 +23,7 @@ namespace Backend.Controllers
     [Route("api/[controller]")]
     public class BackOfficeController : ControllerBase
     {
-          protected readonly ApplicationDbContext _context;
+        protected readonly ApplicationDbContext _context;
 
         public BackOfficeController(ApplicationDbContext context)
         {
@@ -35,25 +35,25 @@ namespace Backend.Controllers
         {
             try
             {
-            var verhuurAanvragen = await _context.VerhuurAanvragen.Select(v => new 
-                                    {
-                                        aanvraagID = v.AanvraagID,
-                                        startdatum = v.Startdatum,
-                                        einddatum = v.Einddatum,
-                                        bestemming = v.Bestemming,
-                                        kilometers = v.Kilometers,
-                                        status = v.Status,
-                                        voertuig = _context.Voertuigen
-                                            .Where(vt => vt.VoertuigID == v.VoertuigID)
-                                            .Select(va => new 
-                                            {
-                                                voertuig_naam = va.Merk + " " + va.Type,
-                                                voertuig_status = va.Status
-                                            }).ToList()
-                                    })
-                                    .ToListAsync();
+                var verhuurAanvragen = await _context.VerhuurAanvragen.Select(v => new
+                {
+                    aanvraagID = v.AanvraagID,
+                    startdatum = v.Startdatum,
+                    einddatum = v.Einddatum,
+                    bestemming = v.Bestemming,
+                    kilometers = v.Kilometers,
+                    status = v.Status,
+                    voertuig = _context.Voertuigen
+                                                .Where(vt => vt.VoertuigID == v.VoertuigID)
+                                                .Select(va => new
+                                                {
+                                                    voertuig_naam = va.Merk + " " + va.Type,
+                                                    voertuig_status = va.Status
+                                                }).ToList()
+                })
+                                        .ToListAsync();
 
-            return Ok (verhuurAanvragen);
+                return Ok(verhuurAanvragen);
             }
             catch (Exception ex)
             {
@@ -68,17 +68,19 @@ namespace Backend.Controllers
             {
                 var verhuurAanvraag = await _context.VerhuurAanvragen
                     .FirstOrDefaultAsync(v => v.AanvraagID == model.AanvraagID);
-Console.WriteLine(model.AanvraagID);
-                if(verhuurAanvraag != null){
-                     verhuurAanvraag.Status = model.Status;
-                     await _context.SaveChangesAsync();
+                Console.WriteLine(model.AanvraagID);
+                if (verhuurAanvraag != null)
+                {
+                    verhuurAanvraag.Status = model.Status;
+                    await _context.SaveChangesAsync();
                 }
 
-                var succes = new {
+                var succes = new
+                {
                     message = "Verhuur aanvraag status succesvol aangepast.",
                     statusCode = 200
                 };
-                return Ok (succes);
+                return Ok(succes);
             }
             catch (Exception ex)
             {

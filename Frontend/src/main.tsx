@@ -14,6 +14,7 @@ import AdminPanel from "./pages/admin";
 import FrontOfficeDashboard from "./pages/frontofficedashboard";
 import VerhuurAanvragenStatus from './pages/klantAanvragen';
 import GegevensPagina from "./pages/GegevensPagina";
+import Footer from "./components/footer";
 import Privacy from "./pages/privacy";
 import PrivacyEdit from "./pages/privacyEdit";
 
@@ -22,8 +23,11 @@ import "./styles/index.css";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<NavBar />}>
+      <div className="main-content">
+        <NavBar />
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/WagenParkBeheerder" element={<WagenParkBeheerder />} />
           <Route index element={<Index />} />
           <Route path="/email-manager" element={<EmailManager />} />
           <Route path="/voertuigenOverview" element={<VoertuigenOverview />} />
@@ -35,6 +39,9 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/frontofficedashboard" element={<FrontOfficeDashboard />} />
           <Route path="/verhuur-aanvraag-status" element={<VerhuurAanvragenStatus />} />
           <Route path="/profile" element={<GegevensPagina />} />
+        </Routes>
+      </div>
+      <Footer />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/privacy/edit" element={<PrivacyEdit />} />
         </Route>

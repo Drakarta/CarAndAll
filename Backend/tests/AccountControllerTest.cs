@@ -60,7 +60,7 @@ public class AccountControllerTest
             Password = "test",
             Role = "Particuliere huurder"
         };
-        
+
         // Test if controller works
         var result = await _controller.Register(account);
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -147,7 +147,7 @@ public class AccountControllerTest
         _context.Account.Add(account);
         await _context.SaveChangesAsync();
 
-        var updatedAccount = new UpdateUserModel 
+        var updatedAccount = new UpdateUserModel
         {
             Email = "john.doe@email.com",
             Naam = "Jane Doe",
@@ -161,7 +161,7 @@ public class AccountControllerTest
         var result = await _controller.UpdateUser(updatedAccount);
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(200, okResult.StatusCode);
-        
+
         // Test if account is updated in database
         var updatedAccountInDB = _context.Account
             .FirstOrDefault(a => a.Email == updatedAccount.Email);
@@ -169,6 +169,6 @@ public class AccountControllerTest
         Assert.Equal(updatedAccount.Naam, updatedAccountInDB.Naam);
         Assert.Equal(updatedAccount.Adres, updatedAccountInDB.Adres);
         Assert.Equal(updatedAccount.TelefoonNummer, updatedAccountInDB.TelefoonNummer);
-        
+
     }
 }
