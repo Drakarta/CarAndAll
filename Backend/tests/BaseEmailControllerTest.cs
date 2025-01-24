@@ -51,7 +51,7 @@ public class WagenparkbeheerderEmailControllerTests
         {   
             Id = bedrijfId,
             Eigenaar = accountId, 
-            Abbonement = "kleinste", 
+            abonnement = "kleinste", 
             Domein = "exmample.com",
             BedrijfAccounts = new List<BedrijfAccounts>() 
         };
@@ -110,7 +110,7 @@ public class WagenparkbeheerderEmailControllerTests
         {  
             Id = bedrijfId,
             Eigenaar = accountId, 
-            Abbonement = "kleinste", 
+            abonnement = "kleinste", 
             Domein = "exmample.com",
             BedrijfAccounts = new List<BedrijfAccounts>() 
         };
@@ -153,7 +153,7 @@ public class WagenparkbeheerderEmailControllerTests
         {  
             Id = bedrijfId,
             Eigenaar = accountId, 
-            Abbonement = "kleinste", 
+            abonnement = "kleinste", 
             Domein = "exmample.com",
             BedrijfAccounts = new List<BedrijfAccounts>() 
         };
@@ -191,7 +191,7 @@ public class WagenparkbeheerderEmailControllerTests
         var bedrijf = new Bedrijf 
         { 
             Eigenaar = accountId, 
-            Abbonement = "kleinste", 
+            abonnement = "kleinste", 
             Domein = "exmample.com",
             BedrijfAccounts = new List<BedrijfAccounts>() 
 
@@ -233,7 +233,7 @@ public class WagenparkbeheerderEmailControllerTests
         var bedrijf = new Bedrijf 
         { 
             Eigenaar = accountId, 
-            Abbonement = "kleinste", 
+            abonnement = "kleinste", 
             Domein = "example.com", // Set a specific domain
             BedrijfAccounts = new List<BedrijfAccounts>() 
         };

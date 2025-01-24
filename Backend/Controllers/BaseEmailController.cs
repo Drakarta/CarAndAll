@@ -147,15 +147,15 @@ namespace Backend.Controllers
 
                 var bedrijf = await _context.Bedrijf.FindAsync(bedrijf_id);
 
-                var Abbonement = await _context.Bedrijf
+                var abbonement = await _context.Bedrijf
                     .Where(b => b.Id == bedrijf_id)
-                    .Select(b => b.Abbonement)
+                    .Select(b => b.abonnement)
                     .FirstOrDefaultAsync();
                 var CountAccountBedrijf = await _context.BedrijfAccounts
                     .Where(ab => ab.bedrijf_id == bedrijf_id)
                     .CountAsync();
 
-                if (!EmailHelper.CheckAmountAllowedToAddToCompany(Abbonement, CountAccountBedrijf))
+                if (!EmailHelper.CheckAmountAllowedToAddToCompany(ToString(abbonement), CountAccountBedrijf))
                 {
                     var errorDetails = new {
                         message = "MaxNumber",
@@ -187,6 +187,11 @@ namespace Backend.Controllers
                 Console.WriteLine($"Error occurred: {ex.Message}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
+        }
+
+        private string ToString(Abonnement? abbonement)
+        {
+            throw new NotImplementedException();
         }
 
         [HttpPost("removeUserFromCompany")]

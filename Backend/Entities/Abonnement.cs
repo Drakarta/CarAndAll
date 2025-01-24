@@ -1,3 +1,4 @@
+
 namespace Backend.Entities
 {
     public class Abonnement
@@ -9,5 +10,9 @@ namespace Backend.Entities
 
         public int Max_medewerkers { get; set; }
 
+        public static implicit operator Abonnement(string v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

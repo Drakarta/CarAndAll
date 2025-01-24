@@ -21,6 +21,8 @@ import VerhuurAanvragenStatus from './pages/klantAanvragen';
 
 import Profile from "./pages/GegevensPagina";
 
+import BackOfficeAbonnementAanvragen from "./pages/backOfficeAbonnementAanvragen";
+
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -38,6 +40,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/frontofficedashboard" element={<FrontOfficeDashboard />} />
           <Route path="/verhuur-aanvraag-status" element={<VerhuurAanvragenStatus />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/backOfficeAbonnementAanvragen" element={<BackOfficeAbonnementAanvragen />} />
         </Route>
       </Routes>
     </BrowserRouter>
