@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Backend.Controllers
 {
@@ -23,29 +24,43 @@ namespace Backend.Controllers
 
         [Authorize(Policy = "Wagenparkbeheerder")]
 [HttpPost("create")]
-public async Task<IActionResult> CreateAbonnementAanvraag([FromBody] AbonnementAanvraag model)
+public async Task<IActionResult> CreateAbonnementAanvraag([FromBody] AbonnementAanvraagModel model)
 {
     try
     {
         Console.WriteLine("Received request to create AbonnementAanvraag"); // Debugging statement
-        Console.WriteLine($"Naam: {model.Naam}, Beschrijving: {model.Beschrijving}, PrijsMultiplier: {model.PrijsMultiplier}, MaxMedewerkers: {model.MaxMedewerkers}, BedrijfId: {model.BedrijfId}");
+        Console.WriteLine($"Naam: {model.Naam}");
 
         if (string.IsNullOrEmpty(model.Naam))
         {
             return BadRequest(new { message = "The 'Naam' field is required.", statusCode = 400 });
         }
 
-        if (model.PrijsMultiplier <= 0)
-        {
-            return BadRequest(new { message = "The 'PrijsMultiplier' must be greater than zero.", statusCode = 400 });
-        }
+        var abonnement = await _context.Abonnement.FirstOrDefaultAsync(a => a.Naam == model.Naam);
 
-        if (model.BedrijfId == Guid.Empty)
+        var accountEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+                if (accountEmail == null)
+                {
+                    return NotFound("User is not authenticated.");
+                }
+
+                var account_id = await _context.Account
+                    .Where(a => a.Email == accountEmail.Value)
+                    .Select(a => a.Id)
+                    .FirstOrDefaultAsync();
+
+        var BedrijfId = await _context.BedrijfWagenparkbeheerders
+                    .Where(bw => bw.account_id == account_id)
+                    .Include(b => b.Bedrijf)
+                    .Select(bw => bw.bedrijf_id)
+                    .FirstOrDefaultAsync();
+
+        if (BedrijfId == Guid.Empty)
         {
             return BadRequest(new { message = "The 'BedrijfId' field is required.", statusCode = 400 });
         }
 
-        var bedrijf = await _context.Bedrijf.Include(b => b.abonnement).FirstOrDefaultAsync(b => b.Id == model.BedrijfId);
+        var bedrijf = await _context.Bedrijf.Include(b => b.abonnement).FirstOrDefaultAsync(b => b.Id == BedrijfId);
         if (bedrijf == null)
         {
             return NotFound(new { message = "Bedrijf not found.", statusCode = 404 });
@@ -54,10 +69,10 @@ public async Task<IActionResult> CreateAbonnementAanvraag([FromBody] AbonnementA
         var abonnementAanvraag = new AbonnementAanvraag
         {
             Naam = model.Naam,
-            Beschrijving = model.Beschrijving,
-            PrijsMultiplier = model.PrijsMultiplier,
-            MaxMedewerkers = model.MaxMedewerkers,
-            BedrijfId = model.BedrijfId,
+            Beschrijving = abonnement?.Beschrijving ?? "Geen beschrijving beschikbaar",
+            PrijsMultiplier = abonnement.Prijs_multiplier,
+            MaxMedewerkers = abonnement.Max_medewerkers,
+            BedrijfId = BedrijfId,
             Bedrijf = bedrijf,
             Status = "In behandeling"
         };
@@ -74,12 +89,16 @@ public async Task<IActionResult> CreateAbonnementAanvraag([FromBody] AbonnementA
     }
 }
 
-        [HttpGet]
+        [HttpGet ("GetAbonnementAanvragen")]
         public async Task<ActionResult<IEnumerable<AbonnementAanvraag>>> GetAbonnementAanvragen()
         {
             try
             {
-                var aanvragen = await _context.AbonnementAanvragen.ToListAsync();
+                var aanvragen = await _context.AbonnementAanvragen.Where(a => a.Status == "In behandeling").ToListAsync();
+                if (aanvragen.Count == 0)
+                {
+                    return NotFound(new { message = "No abonnement aanvragen found", statusCode = 404 });
+                }
                 return Ok(aanvragen);
             }
             catch (Exception ex)
@@ -88,12 +107,13 @@ public async Task<IActionResult> CreateAbonnementAanvraag([FromBody] AbonnementA
             }
         }
 
+        [Authorize (Policy = "BackOffice")]
         [HttpPost("ChangeStatus")]
         public async Task<IActionResult> ChangeStatus([FromBody] ChangeStatusModel model)
         {
             try
             {
-                if (model == null || model.AanvraagID == Guid.Empty || string.IsNullOrEmpty(model.Status))
+                if (model == null || string.IsNullOrEmpty(model.Status))
                 {
                     return BadRequest(new { message = "Invalid input", statusCode = 400 });
                 }
@@ -102,6 +122,22 @@ public async Task<IActionResult> CreateAbonnementAanvraag([FromBody] AbonnementA
                 if (aanvraag == null)
                 {
                     return NotFound(new { message = "Abonnement aanvraag not found", statusCode = 404 });
+                }
+                
+                var abonnement = await _context.Abonnement.FirstOrDefaultAsync(a => a.Naam == aanvraag.Naam);
+                if (abonnement == null)
+                {
+                    return NotFound(new { message = "Abonnement not found", statusCode = 404 });
+                }
+                if( model.Status == "Geaccepteerd")
+                {
+                    var bedrijf = await _context.Bedrijf.FindAsync(aanvraag.BedrijfId);
+                    if (bedrijf == null)
+                    {
+                        return NotFound(new { message = "Bedrijf not found", statusCode = 404 });
+                    }
+                    bedrijf.AbonnementId = abonnement.Id;
+                    _context.Bedrijf.Update(bedrijf);
                 }
 
                 aanvraag.Status = model.Status;

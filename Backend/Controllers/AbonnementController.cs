@@ -150,58 +150,58 @@ namespace Backend.Controllers
 
         // POST: api/Abonnement/select
         [Authorize]
-        [HttpPost("select")]
-        public async Task<IActionResult> SelectAbonnement([FromBody] JsonElement data)
+[HttpPost("select")]
+public async Task<IActionResult> SelectAbonnement([FromBody] JsonElement data)
+{
+    try
+    {
+        // Ensure `abonnementId` is provided
+        if (!data.TryGetProperty("abonnementId", out var abonnementIdProp))
         {
-            try
-            {
-                // Ensure `abonnementId` is provided
-                if (!data.TryGetProperty("abonnementId", out var abonnementIdProp))
-                {
-                    return BadRequest(new { message = "Missing required field 'abonnementId'.", statusCode = 400 });
-                }
-
-                int abonnementId = abonnementIdProp.GetInt32();
-
-                // Identify the current user and their bedrijf (assuming session or authentication provides user info)
-                var emailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
-                if (emailClaim == null)
-                {
-                    return Unauthorized(new { message = "User is not authenticated.", statusCode = 401 });
-                }
-
-                var email = emailClaim.Value;
-
-                // Retrieve the 'BedrijfWagenparkbeheerders' associated with the logged-in user's email
-                var bedrijfWagenparkbeheerder = await _context.BedrijfWagenparkbeheerders
-                    .Include(bw => bw.Bedrijf)
-                    .FirstOrDefaultAsync(bw => bw.Account.Email == email);
-
-                if (bedrijfWagenparkbeheerder == null)
-                {
-                    return NotFound(new { message = "Bedrijf not found for the current user.", statusCode = 404 });
-                }
-
-                var bedrijf = bedrijfWagenparkbeheerder.Bedrijf;
-
-                // Find the specified abonnement
-                var abonnement = await _context.Abonnement.FindAsync(abonnementId);
-                if (abonnement == null)
-                {
-                    return NotFound(new { message = "Abonnement not found.", statusCode = 404 });
-                }
-
-                // Update the bedrijf's abonnement
-                bedrijf.AbonnementId = abonnement.Id;
-                _context.Bedrijf.Update(bedrijf);
-                await _context.SaveChangesAsync();
-
-                return Ok(new { message = $"Abonnement {abonnement.Naam} successfully selected for Bedrijf {bedrijf.naam}", statusCode = 200 });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = $"Internal server error: {ex.Message}", statusCode = 500 });
-            }
+            return BadRequest(new { message = "Missing required field 'abonnementId'.", statusCode = 400 });
         }
+
+        int abonnementId = abonnementIdProp.GetInt32();
+
+        // Identify the current user and their bedrijf (assuming session or authentication provides user info)
+        var emailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+        if (emailClaim == null)
+        {
+            return Unauthorized(new { message = "User is not authenticated.", statusCode = 401 });
+        }
+
+        var email = emailClaim.Value;
+
+        // Retrieve the 'BedrijfWagenparkbeheerders' associated with the logged-in user's email
+        var bedrijfWagenparkbeheerder = await _context.BedrijfWagenparkbeheerders
+            .Include(bw => bw.Bedrijf)
+            .FirstOrDefaultAsync(bw => bw.Account.Email == email);
+
+        if (bedrijfWagenparkbeheerder == null)
+        {
+            return NotFound(new { message = "Bedrijf not found for the current user.", statusCode = 404 });
+        }
+
+        var bedrijf = bedrijfWagenparkbeheerder.Bedrijf;
+
+        // Find the specified abonnement
+        var abonnement = await _context.Abonnement.FindAsync(abonnementId);
+        if (abonnement == null)
+        {
+            return NotFound(new { message = "Abonnement not found.", statusCode = 404 });
+        }
+
+        // Update the bedrijf's abonnement
+        bedrijf.AbonnementId = abonnement.Id;
+        _context.Bedrijf.Update(bedrijf);
+        await _context.SaveChangesAsync();
+
+        return Ok(new { message = $"Abonnement {abonnement.Naam} successfully selected for Bedrijf {bedrijf.naam}", statusCode = 200 });
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, new { message = $"Internal server error: {ex.Message}", statusCode = 500 });
+    }
+}
     }
 }

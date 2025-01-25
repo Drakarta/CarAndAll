@@ -97,11 +97,7 @@ const Abonnementen: React.FC = () => {
           credentials: "include",
           body: JSON.stringify({
             Naam: abonnement.naam,
-            Beschrijving: abonnement.beschrijving,
-            PrijsMultiplier: abonnement.prijs_multiplier,
-            MaxMedewerkers: abonnement.max_medewerkers,
-            BedrijfId: bedrijfId,
-          }), // Include necessary fields
+          }),
         }
       );
 
@@ -127,7 +123,7 @@ const Abonnementen: React.FC = () => {
     <div className="abonnementenSection">
       {currentAbonnement ? (
         <>
-          <h2>Huidig Abonnement</h2>
+          <h1>Huidig Abonnement</h1>
           <p>
             U heeft al een abonnement: <strong>{currentAbonnement.naam}</strong>
           </p>
@@ -149,7 +145,7 @@ const Abonnementen: React.FC = () => {
           </table>
         </>
       ) : (
-        <h2>Abonnementen Overzicht</h2>
+        <h1>Abonnementen Overzicht</h1>
       )}
       <table className="abonnementenTabel">
         <thead>

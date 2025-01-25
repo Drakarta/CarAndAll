@@ -18,6 +18,7 @@ import Footer from "./components/footer";
 import Privacy from "./pages/privacy";
 import PrivacyEdit from "./pages/privacyEdit";
 import "./styles/index.css";
+import BackOfficeAbonnementAanvragen from "./pages/backOfficeAbonnementAanvragen";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -33,6 +34,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/backOfficeVerhuurAanvragen" element={<BackOfficeVerhuurAanvragen />} />
           <Route path="/auth" element={<LoginRegister />} />
           <Route path="/abonnementen" element={<Abonnementen />} />
+          <Route path="/backOfficeAbonnementAanvragen" element={<BackOfficeAbonnementAanvragen />} />
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="/frontofficedashboard" element={<FrontOfficeDashboard />} />
           <Route path="/verhuur-aanvraag-status" element={<VerhuurAanvragenStatus />} />

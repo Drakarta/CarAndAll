@@ -1,8 +1,10 @@
-    namespace Backend.Models 
+
+namespace Backend.Models 
     {
     public class ChangeStatusModel
     {
-        public Guid AanvraagID { get; set; }
-        public string Status { get; set; }
+        public int AanvraagID { get; set; }
+        public required string Status { get; set; } = string.Empty;
+
     }
     }

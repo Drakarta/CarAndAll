@@ -15,9 +15,11 @@ export default function BackOfficeAbonnementAanvragen() {
   const [abonnementAanvragen, setAbonnementAanvragen] = useState<AbonnementAanvraag[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [status, setStatus] = useState<string>('');
+  const [AanvraagIDset, setAanvraagID] = useState<number | null>(null);
 
   useEffect(() => {
-    const fetchAbonnementAanvragen = async () => {
+    const fetchAbonnementAanvragen = async (): Promise<void> => {
       setLoading(true);
       setError(null);
 
@@ -26,6 +28,11 @@ export default function BackOfficeAbonnementAanvragen() {
           `${import.meta.env.VITE_REACT_APP_API_URL}/AbonnementAanvraag/GetAbonnementAanvragen`,
           { credentials: "include" }
         );
+
+        if(response.status === 404) {
+          setError("Geen aanvragen");
+          return;
+        }
 
         if (!response.ok) {
           throw new Error("Failed to fetch abonnement aanvragen");
@@ -64,6 +71,36 @@ export default function BackOfficeAbonnementAanvragen() {
     return <div className="error">{error}</div>;
   }
 
+  const handleVerhuurAanvraagStatusChange = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/AbonnementAanvraag/ChangeStatus`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ AanvraagID: AanvraagIDset, status: status }),
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.log('Error response:' + response.status + errorText);
+      } else {
+        const data = await response.json();
+        console.log('Success:', data);
+        alert('Verhuur aanvraag status succesvol aangepast.');
+      }
+    } catch (error) {
+      console.error('Error making verhuur aanvraag:', error);
+    }
+  };
+
+  const handleClick = (aanvraagID: number, newStatus: string) => {
+    setStatus(newStatus);
+    setAanvraagID(aanvraagID);
+    handleVerhuurAanvraagStatusChange();
+  };
+
   return (
     <div className="abonnementenSection">
       <h2>Abonnement Aanvragen</h2>
@@ -87,6 +124,10 @@ export default function BackOfficeAbonnementAanvragen() {
               <td>{aanvraag.PrijsMultiplier.toFixed(2)}</td>
               <td>{aanvraag.MaxMedewerkers}</td>
               <td>{aanvraag.Status}</td>
+              <td>
+                <button onClick={() => handleClick(aanvraag.AanvraagID, "Geaccepteerd")}>Accepteren</button>
+                <button onClick={() => handleClick(aanvraag.AanvraagID, "Afgewezen")}>Afwijzen</button>
+              </td>
             </tr>
           ))}
         </tbody>
