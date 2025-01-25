@@ -54,9 +54,9 @@ export default function EmailList({ emails, setAanvragen }: EmailListProps) {
                     return (
                         <li key={email}>
                             {email.toLowerCase()}
-                            <button 
-                                onClick={() => handleButtonClick(email)} 
-                                disabled={isButtonDisabled} 
+                            <button
+                                onClick={() => handleButtonClick(email)}
+                                disabled={isButtonDisabled}
                                 className={isButtonDisabled ? 'disabled' : ''}
                             >
                                 Fetch

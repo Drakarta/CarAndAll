@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import Index from "./pages/index";
 import VoertuigenOverview from "./pages/voertuigenOverview";
-import EmailManager from "./pages/klant/underOverview"; 
+import WagenParkBeheerder from "./pages/klant/underOverview";
 import NavBar from "./components/navBar";
 import LoginRegister from "./pages/loginRegister";
 import Abonnementen from "./pages/abonnementen";
@@ -23,13 +23,13 @@ import "./styles/index.css";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-      <div className="main-content">
-        <NavBar />
+    <div className="main-content">
+    <NavBar />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/WagenParkBeheerder" element={<WagenParkBeheerder />} />
           <Route index element={<Index />} />
-          <Route path="/email-manager" element={<EmailManager />} />
+          <Route path="/WagenParkBeheerder" element={<WagenParkBeheerder />} />
           <Route path="/voertuigenOverview" element={<VoertuigenOverview />} />
           <Route path="/verhuurAanvraag/:voertuigID/:voertuigNaam/:vastartdate/:vaenddate" element={<VerhuurAanvraag />} />
           <Route path="/backOfficeVerhuurAanvragen" element={<BackOfficeVerhuurAanvragen />} />
@@ -39,13 +39,11 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/frontofficedashboard" element={<FrontOfficeDashboard />} />
           <Route path="/verhuur-aanvraag-status" element={<VerhuurAanvragenStatus />} />
           <Route path="/profile" element={<GegevensPagina />} />
-        </Routes>
-      </div>
-      <Footer />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/privacy/edit" element={<PrivacyEdit />} />
-        </Route>
-      </Routes>
+          </Routes>
+          </div>
+          <Footer />
     </BrowserRouter>
   </StrictMode>
 );
