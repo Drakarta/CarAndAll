@@ -1,7 +1,7 @@
 namespace Backend.Entities {
     public class  Voertuig
     {
-        public int VoertuigID { get; }
+        public int VoertuigID { get; set; }
         public string Merk { get; set;}
         public string Type { get; set; }
         public string Kenteken { get; set; }

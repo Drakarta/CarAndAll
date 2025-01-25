@@ -3,6 +3,6 @@ namespace Backend.Entities {
     {
         public int Aantal_deuren { get; set; }
         public bool Elektrisch { get; set; }
-        public string voertuig_categorie = "Auto";
+        public string voertuig_categorie { get; } = "Auto";
     }
 }

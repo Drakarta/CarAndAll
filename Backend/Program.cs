@@ -83,6 +83,18 @@ builder.Services.AddAuthorization(options =>
         policy.RequireAuthenticatedUser();
         policy.RequireRole("Particuliere huurder", "Zakelijkeklant", "Admin");
     });
+    options.AddPolicy("ParticuliereZakelijkeHuurderBackOffice", policy =>
+    {
+        policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
+        policy.RequireAuthenticatedUser();
+        policy.RequireRole("Particuliere huurder", "Zakelijkeklant", "Admin", "Backofficemedewerker");
+    });
+    options.AddPolicy("Backofficemedewerker", policy =>
+    {
+        policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
+        policy.RequireAuthenticatedUser();
+        policy.RequireRole("Admin", "Backofficemedewerker");
+    });
      options.AddPolicy("FrontOffice", policy =>
     {
     policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);

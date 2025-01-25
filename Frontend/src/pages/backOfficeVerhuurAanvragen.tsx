@@ -1,11 +1,20 @@
 import { useEffect, useState } from "react";
 import "../styles/voertuigenOverview.css";
+import VerhuurAanvraag from "./verhuurAanvraag";
+
+interface VerhuurAanvraag{
+  AanvraagID: number;
+  startdatum: string;
+  einddatum: string;
+  bestemming: string;
+  kilometers: number;
+}
 
 export default function VoertuigenOverview() {
-  const [verhuurAanvragen, setVerhuurAanvragen] = useState([]);
-  const [status, setStatus] = useState('');
-  const [AanvraagIDset, setAanvraagID] = useState('');
+  //Verhuuraanvragen lijst
+  const [verhuurAanvragen, setVerhuurAanvragen] = useState<VerhuurAanvraag[]>([]);
 
+  //useEffect voor het ophalen van de opgehaalde verhuuraanvragen uit backend/db
   useEffect(() => {
     const fetchVerhuurAanvragen= async () => {
       try {
@@ -17,7 +26,7 @@ export default function VoertuigenOverview() {
           AanvraagID: item.aanvraagID,
           Status: item.status,
           startdatum: item.startdatum,
-          einddatum: item.eindddatum,
+          einddatum: item.einddatum,
           bestemming: item.bestemming,
           kilometers: item.kilometers
         })));
@@ -29,7 +38,8 @@ export default function VoertuigenOverview() {
     fetchVerhuurAanvragen();
   }, []);
 
-  const handleVerhuurAanvraagStatusChange = async () => {
+  //Verhuuraanvragen status change voor het aanpassen van de status naar geaccepteerd/ afgewezen
+  const handleVerhuurAanvraagStatusChange = async (verhuurAanvraagID: number, verhuurAanvraagStatus: string) => {
     try {
         const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/BackOffice/ChangeStatus`, {
             method: 'POST',
@@ -37,7 +47,7 @@ export default function VoertuigenOverview() {
                 'Content-Type': 'application/json',
             },
             credentials: 'include',
-            body: JSON.stringify({ AanvraagID: AanvraagIDset, status: status }),
+            body: JSON.stringify({ AanvraagID: verhuurAanvraagID, status: verhuurAanvraagStatus }),
         });
 
         if (!response.ok) {
@@ -58,7 +68,7 @@ export default function VoertuigenOverview() {
     <>
        <div className="overviewSection">
         <div className="headerFilter">
-            <h2>Verhuur aanvragen</h2>
+            <h1>Verhuur aanvragen</h1>
         </div>
         <br/>
         <hr></hr>
@@ -86,15 +96,11 @@ export default function VoertuigenOverview() {
                 <td>{verhuuraanvraag.kilometers}</td>
                 <td>
                     <button onClick={ () => {
-                        setStatus("Geaccepteerd");
-                        setAanvraagID(verhuuraanvraag.AanvraagID);
-                        handleVerhuurAanvraagStatusChange();
+                        handleVerhuurAanvraagStatusChange(verhuuraanvraag.AanvraagID, "Geaccepteerd");
                     }
                          }>Accepteren</button>
                     <button onClick={ () => {
-                        setStatus("Afgewezen");
-                        setAanvraagID(verhuuraanvraag.AanvraagID);
-                        handleVerhuurAanvraagStatusChange();
+                        handleVerhuurAanvraagStatusChange(verhuuraanvraag.AanvraagID, "Afgewezen");
                     }
                          }>Afwijzen</button>
                 </td>

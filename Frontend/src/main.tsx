@@ -4,6 +4,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import Index from "./pages/index";
 import VoertuigenOverview from "./pages/voertuigenOverview";
+import VoertuigAanmaken from "./pages/voertuigAanmaken";
+import VoertuigUpdaten from "./pages/voertuigUpdaten";
 import WagenParkBeheerder from "./pages/klant/underOverview"; 
 
 import "./styles/index.css";
@@ -30,6 +32,8 @@ createRoot(document.getElementById("root")!).render(
           <Route index element={<Index />} />
           <Route path="/WagenParkBeheerder" element={<WagenParkBeheerder />} />
           <Route path="/voertuigenOverview" element={<VoertuigenOverview />} />
+          <Route path="/voertuigAanmaken" element={<VoertuigAanmaken />} />
+          <Route path="/voertuigUpdaten/:voertuigID" element={<VoertuigUpdaten />} />
           <Route path="/verhuurAanvraag/:voertuigID/:voertuigNaam/:vastartdate/:vaenddate" element={<VerhuurAanvraag />} />
           <Route path="/backOfficeVerhuurAanvragen" element={<BackOfficeVerhuurAanvragen />} />
           <Route path="/auth" element={<LoginRegister />} />

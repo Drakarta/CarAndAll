@@ -1,20 +1,10 @@
 using Backend.Controllers;
 using Backend.Data;
 using Backend.Models;
-using Moq;
 using Xunit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
 using Backend.Entities;
-using Backend.Interfaces;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.OpenApi.Models;
 
 public class BackOfficeControllerTests
 {
@@ -70,6 +60,8 @@ public class BackOfficeControllerTests
             Account = account,
             Status = "In behandeling"
         };
+
+        _context.VerhuurAanvragen.Add(verhuurAanvraag1);
         await _context.SaveChangesAsync();
 
         var result = await _controller.GetVerhuurAanvragen();
@@ -118,6 +110,8 @@ public class BackOfficeControllerTests
             Account = account,
             Status = "In behandeling"
         };
+
+        _context.VerhuurAanvragen.Add(verhuurAanvraag1);
         await _context.SaveChangesAsync();
 
         var backOfficeModel = new BackOfficeModel { AanvraagID = verhuurAanvraag1.AanvraagID, Status = "Geaccepteerd"};
