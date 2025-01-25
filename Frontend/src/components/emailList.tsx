@@ -54,14 +54,16 @@ export default function EmailList({ emails, setAanvragen }: EmailListProps) {
                     return (
                         <li key={email}>
                             {email.toLowerCase()}
-                            <button 
-                                onClick={() => handleButtonClick(email)} 
-                                disabled={isButtonDisabled} 
+                            <button
+                                onClick={() => handleButtonClick(email)}
+                                disabled={isButtonDisabled}
                                 className={isButtonDisabled ? 'disabled' : ''}
                             >
                                 Fetch
                             </button>
+                            <label htmlFor={`month-select-${email}`}>Month:</label>
                             <select
+                                id={`month-select-${email}`}
                                 value={selectedMonths[email] || ''}
                                 onChange={(e) => setSelectedMonths((prev) => ({ ...prev, [email]: e.target.value }))}
                             >
@@ -70,7 +72,9 @@ export default function EmailList({ emails, setAanvragen }: EmailListProps) {
                                     <option key={month} value={month}>{month}</option>
                                 ))}
                             </select>
+                            <label htmlFor={`year-input-${email}`}>Year:</label>
                             <input
+                                id={`year-input-${email}`}
                                 type="text"
                                 value={years[email] || ''}
                                 onChange={(e) => setYears((prev) => ({ ...prev, [email]: e.target.value }))}

@@ -1,0 +1,33 @@
+.verhuur-aanvragen {
+    font-family: Arial, sans-serif;
+    max-width: 1100px;
+    margin: 0 auto;
+    margin-top: 2rem;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+.aanvragen 
+{
+    border : 1px solid #ddd;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: auto;
+    margin: 5px 5px 5px 5px;
+    
+
+}
+
+.aanvraag-box {
+    border: 1px solid #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: auto;
+    margin: 5px 5px 5px 5px;
+}
