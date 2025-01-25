@@ -7,6 +7,7 @@ interface EmailRemoveProps {
 
 export default function EmailRemove({ setEmails }: EmailRemoveProps) {
     const [email, setEmail] = useState('');
+    const [error, setError] = useState('');
 
     const handleRemoveEmail = async () => {
         try {
@@ -21,12 +22,14 @@ export default function EmailRemove({ setEmails }: EmailRemoveProps) {
             if (response.ok) {
                 setEmails((Emails) => Emails.filter(e => e !== email.toLowerCase()));
                 setEmail('');
+                setError('');
                 window.location.reload();
             } else {
-                console.error('Error removing email:', response.statusText);
+                setError(`Error removing email: ${response.statusText}`);
             }
         } catch (error) {
             console.error('Error removing email:', error);
+            setError('Error removing email');
         }
     };
 
@@ -46,6 +49,7 @@ export default function EmailRemove({ setEmails }: EmailRemoveProps) {
             >
                 Remove Email
             </button>
+            {error && <p>{error}</p>}
         </div>
     );
 };
