@@ -10,14 +10,7 @@ namespace Backend.Entities
 
         public int Max_medewerkers { get; set; }
 
-<<<<<<< HEAD
         public ICollection<Bedrijf> Bedrijven { get; set; } = new List<Bedrijf>();
 
-=======
-        public static implicit operator Abonnement(string v)
-        {
-            throw new NotImplementedException();
-        }
->>>>>>> AbonnementPagina
     }
 }

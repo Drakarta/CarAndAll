@@ -13,9 +13,14 @@ interface AbonnementAanvraag {
 
 export default function BackOfficeAbonnementAanvragen() {
   const [abonnementAanvragen, setAbonnementAanvragen] = useState<AbonnementAanvraag[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchAbonnementAanvragen = async () => {
+      setLoading(true);
+      setError(null);
+
       try {
         const response = await fetch(
           `${import.meta.env.VITE_REACT_APP_API_URL}/AbonnementAanvraag/GetAbonnementAanvragen`,
@@ -38,104 +43,54 @@ export default function BackOfficeAbonnementAanvragen() {
           }))
         );
       } catch (error) {
-        console.error("Error fetching abonnement aanvragen:", error);
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("An unknown error occurred");
+        }
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchAbonnementAanvragen();
   }, []);
 
-  const handleAbonnementAanvraagStatusChange = async (id: number, newStatus: string) => {
-    if (!newStatus || !id) {
-      alert("Aanvraag ID of status ontbreekt!");
-      return;
-    }
+  if (loading) {
+    return <div className="loading">Laden...</div>;
+  }
 
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_REACT_APP_API_URL}/AbonnementAanvraag/ChangeStatus`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({ AanvraagID: id, status: newStatus }),
-        }
-      );
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        alert(`Fout bij het wijzigen van de status: ${errorText}`);
-        return;
-      }
-
-      setAbonnementAanvragen((prev) =>
-        prev.map((aanvraag) =>
-          aanvraag.AanvraagID === id ? { ...aanvraag, Status: newStatus } : aanvraag
-        )
-      );
-
-      alert("Abonnement aanvraag status succesvol aangepast.");
-    } catch (error) {
-      console.error("Error updating abonnement aanvraag status:", error);
-      alert("Er is een fout opgetreden bij het aanpassen van de status.");
-    }
-  };
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
 
   return (
-    <div className="overviewSection">
-      <div className="headerFilter">
-        <h2>Abonnement Aanvragen</h2>
-      </div>
-      <br />
-      <hr />
-      <br />
-      <section>
-        <div>
-          <table className="abonnementTabel">
-            <thead>
-              <tr>
-                <th>AanvraagID</th>
-                <th>Naam</th>
-                <th>Beschrijving</th>
-                <th>Prijs Multiplier</th>
-                <th>Max Medewerkers</th>
-                <th>Status</th>
-                <th>Acties</th>
-              </tr>
-            </thead>
-            <tbody>
-              {abonnementAanvragen.map((aanvraag) => (
-                <tr key={aanvraag.AanvraagID}>
-                  <td>{aanvraag.AanvraagID}</td>
-                  <td>{aanvraag.Naam}</td>
-                  <td>{aanvraag.Beschrijving}</td>
-                  <td>{aanvraag.PrijsMultiplier}</td>
-                  <td>{aanvraag.MaxMedewerkers}</td>
-                  <td>{aanvraag.Status}</td>
-                  <td>
-                    <button
-                      onClick={() =>
-                        handleAbonnementAanvraagStatusChange(aanvraag.AanvraagID, "Geaccepteerd")
-                      }
-                    >
-                      Accepteren
-                    </button>
-                    <button
-                      onClick={() =>
-                        handleAbonnementAanvraagStatusChange(aanvraag.AanvraagID, "Afgewezen")
-                      }
-                    >
-                      Afwijzen
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+    <div className="abonnementenSection">
+      <h2>Abonnement Aanvragen</h2>
+      <table className="abonnementenTabel">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Naam</th>
+            <th>Beschrijving</th>
+            <th>Prijs Multiplier</th>
+            <th>Max Medewerkers</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {abonnementAanvragen.map((aanvraag) => (
+            <tr key={aanvraag.AanvraagID}>
+              <td>{aanvraag.AanvraagID}</td>
+              <td>{aanvraag.Naam}</td>
+              <td>{aanvraag.Beschrijving}</td>
+              <td>{aanvraag.PrijsMultiplier.toFixed(2)}</td>
+              <td>{aanvraag.MaxMedewerkers}</td>
+              <td>{aanvraag.Status}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

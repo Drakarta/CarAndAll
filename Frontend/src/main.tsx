@@ -17,7 +17,6 @@ import GegevensPagina from "./pages/GegevensPagina";
 import Footer from "./components/footer";
 import Privacy from "./pages/privacy";
 import PrivacyEdit from "./pages/privacyEdit";
-
 import "./styles/index.css";
 
 createRoot(document.getElementById("root")!).render(
@@ -27,7 +26,6 @@ createRoot(document.getElementById("root")!).render(
         <NavBar />
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/WagenParkBeheerder" element={<WagenParkBeheerder />} />
           <Route index element={<Index />} />
           <Route path="/email-manager" element={<EmailManager />} />
           <Route path="/voertuigenOverview" element={<VoertuigenOverview />} />
@@ -42,9 +40,9 @@ createRoot(document.getElementById("root")!).render(
         </Routes>
       </div>
       <Footer />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/privacy/edit" element={<PrivacyEdit />} />
-        </Route>
+      <Routes>
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/privacy/edit" element={<PrivacyEdit />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

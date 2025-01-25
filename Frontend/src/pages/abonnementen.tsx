@@ -13,9 +13,9 @@ const Abonnementen: React.FC = () => {
   const [abonnementen, setAbonnementen] = useState<Abonnement[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [currentAbonnement, setCurrentAbonnement] = useState<Abonnement | null>(null);
-  const [bedrijfId, setBedrijfId] = useState<string | null>(null); // Add state for bedrijfId
+  const [bedrijfId, setBedrijfId] = useState<string | null>(null);
 
-  useEffect(() => { 
+  useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
 
@@ -32,9 +32,10 @@ const Abonnementen: React.FC = () => {
 
         if (bedrijfResponse.ok) {
           const bedrijfData = await bedrijfResponse.json();
-          setBedrijfId(bedrijfData.id);
+          console.log("Fetched bedrijfId:", bedrijfData.bedrijfId); // Debugging statement
+          setBedrijfId(bedrijfData.bedrijfId);
         } else {
-          console.error("Error fetching bedrijfId");
+          console.error("Error fetching bedrijfId:", await bedrijfResponse.text());
         }
 
         // Fetch abonnementen
@@ -50,6 +51,8 @@ const Abonnementen: React.FC = () => {
         if (abonnementenResponse.ok) {
           const abonnementenData = await abonnementenResponse.json();
           setAbonnementen(abonnementenData);
+        } else {
+          console.error("Error fetching abonnementen:", await abonnementenResponse.text());
         }
 
         // Fetch current abonnement
@@ -65,6 +68,8 @@ const Abonnementen: React.FC = () => {
         if (userAbonnementResponse.ok) {
           const userAbonnementData: Abonnement = await userAbonnementResponse.json();
           setCurrentAbonnement(userAbonnementData);
+        } else {
+          console.error("Error fetching current abonnement:", await userAbonnementResponse.text());
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -77,6 +82,7 @@ const Abonnementen: React.FC = () => {
   }, []);
 
   const handleSelectAbonnement = async (abonnement: Abonnement) => {
+    console.log("Current bedrijfId:", bedrijfId); // Debugging statement
     if (!bedrijfId) {
       alert("Bedrijf ID is not available.");
       return;
@@ -84,16 +90,23 @@ const Abonnementen: React.FC = () => {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_REACT_APP_API_URL}/abonnement/select`,
+        `${import.meta.env.VITE_REACT_APP_API_URL}/AbonnementAanvraag/create`, // Updated endpoint
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
-          body: JSON.stringify({ abonnementId: abonnement.id, bedrijfId }), // Include bedrijfId
+          body: JSON.stringify({
+            Naam: abonnement.naam,
+            Beschrijving: abonnement.beschrijving,
+            PrijsMultiplier: abonnement.prijs_multiplier,
+            MaxMedewerkers: abonnement.max_medewerkers,
+            BedrijfId: bedrijfId,
+          }), // Include necessary fields
         }
       );
 
       const result = await response.json();
+      console.log("Response from server:", result); // Debugging statement
 
       if (response.ok) {
         alert(`Abonnement ${abonnement.naam} succesvol aangevraagd!`);

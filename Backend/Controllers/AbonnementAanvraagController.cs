@@ -22,53 +22,57 @@ namespace Backend.Controllers
         }
 
         [Authorize(Policy = "Wagenparkbeheerder")]
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateAbonnementAanvraag([FromBody] AbonnementAanvraag model)
+[HttpPost("create")]
+public async Task<IActionResult> CreateAbonnementAanvraag([FromBody] AbonnementAanvraag model)
+{
+    try
+    {
+        Console.WriteLine("Received request to create AbonnementAanvraag"); // Debugging statement
+        Console.WriteLine($"Naam: {model.Naam}, Beschrijving: {model.Beschrijving}, PrijsMultiplier: {model.PrijsMultiplier}, MaxMedewerkers: {model.MaxMedewerkers}, BedrijfId: {model.BedrijfId}");
+
+        if (string.IsNullOrEmpty(model.Naam))
         {
-            try
-            {
-                if (string.IsNullOrEmpty(model.Naam))
-                {
-                    return BadRequest(new { message = "The 'Naam' field is required.", statusCode = 400 });
-                }
-
-                if (model.PrijsMultiplier <= 0)
-                {
-                    return BadRequest(new { message = "The 'PrijsMultiplier' must be greater than zero.", statusCode = 400 });
-                }
-
-                if (model.BedrijfId == Guid.Empty)
-                {
-                    return BadRequest(new { message = "The 'BedrijfId' field is required.", statusCode = 400 });
-                }
-
-                var bedrijf = await _context.Bedrijf.Include(b => b.abonnement).FirstOrDefaultAsync(b => b.Id == model.BedrijfId);
-                if (bedrijf == null)
-                {
-                    return NotFound(new { message = "Bedrijf not found.", statusCode = 404 });
-                }
-
-                var abonnementAanvraag = new AbonnementAanvraag
-                {
-                    Naam = model.Naam,
-                    Beschrijving = model.Beschrijving,
-                    PrijsMultiplier = model.PrijsMultiplier,
-                    MaxMedewerkers = model.MaxMedewerkers,
-                    BedrijfId = model.BedrijfId,
-                    Bedrijf = bedrijf,
-                    Status = "In behandeling"
-                };
-
-                await _context.AbonnementAanvragen.AddAsync(abonnementAanvraag);
-                await _context.SaveChangesAsync();
-
-                return Ok(new { message = "Abonnement aanvraag succesvol ingediend.", statusCode = 200 });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = $"Internal server error: {ex.Message}", statusCode = 500 });
-            }
+            return BadRequest(new { message = "The 'Naam' field is required.", statusCode = 400 });
         }
+
+        if (model.PrijsMultiplier <= 0)
+        {
+            return BadRequest(new { message = "The 'PrijsMultiplier' must be greater than zero.", statusCode = 400 });
+        }
+
+        if (model.BedrijfId == Guid.Empty)
+        {
+            return BadRequest(new { message = "The 'BedrijfId' field is required.", statusCode = 400 });
+        }
+
+        var bedrijf = await _context.Bedrijf.Include(b => b.abonnement).FirstOrDefaultAsync(b => b.Id == model.BedrijfId);
+        if (bedrijf == null)
+        {
+            return NotFound(new { message = "Bedrijf not found.", statusCode = 404 });
+        }
+
+        var abonnementAanvraag = new AbonnementAanvraag
+        {
+            Naam = model.Naam,
+            Beschrijving = model.Beschrijving,
+            PrijsMultiplier = model.PrijsMultiplier,
+            MaxMedewerkers = model.MaxMedewerkers,
+            BedrijfId = model.BedrijfId,
+            Bedrijf = bedrijf,
+            Status = "In behandeling"
+        };
+
+        await _context.AbonnementAanvragen.AddAsync(abonnementAanvraag);
+        await _context.SaveChangesAsync();
+
+        return Ok(new { message = "Abonnement aanvraag succesvol ingediend.", statusCode = 200 });
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Internal server error: {ex.Message}"); // Debugging statement
+        return StatusCode(500, new { message = $"Internal server error: {ex.Message}", statusCode = 500 });
+    }
+}
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AbonnementAanvraag>>> GetAbonnementAanvragen()
