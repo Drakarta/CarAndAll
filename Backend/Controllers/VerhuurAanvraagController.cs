@@ -1,17 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using Newtonsoft.Json;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Text.RegularExpressions;
 using Backend.Data;
 using Backend.Entities;
-using Backend.Interfaces;
-using Backend.Helpers;
 using Backend.Models;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;

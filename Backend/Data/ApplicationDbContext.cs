@@ -18,7 +18,7 @@ namespace Backend.Data
         public DbSet<Email> Emails { get; set; }
         public DbSet<Voertuig> Voertuigen { get; set; }
         public DbSet<VerhuurAanvraag> VerhuurAanvragen { get; set; }
-        public DbSet<VoertuigCategorie> VoertuigCategorie { get; set; }
+        // public DbSet<VoertuigCategorie> VoertuigCategorie { get; set; }
         public DbSet<Schade> Schades { get; set; }
         public DbSet<BedrijfWagenparkbeheerders> BedrijfWagenparkbeheerders { get; set; }
         public DbSet<AbonnementAanvraag> AbonnementAanvragen { get; set; }
@@ -54,17 +54,21 @@ namespace Backend.Data
                 .WithMany(b => b.BedrijfWagenparkbeheerders)
                 .HasForeignKey(ab => ab.bedrijf_id);
 
+            modelBuilder.Entity<Voertuig>().ToTable("Voertuig");
+            modelBuilder.Entity<Voertuig>().HasKey(v => v.VoertuigID);
+            modelBuilder.Entity<VerhuurAanvraag>().HasKey(v => v.AanvraagID);
+            modelBuilder.Entity<VerhuurAanvraag>().ToTable("VerhuurAanvraag");
 
-            builder.Entity<Voertuig>().ToTable("Voertuig");
-            builder.Entity<Voertuig>().HasKey(v => v.VoertuigID);
-            builder.Entity<VoertuigCategorie>().HasKey(v => v.Categorie);
-            builder.Entity<VerhuurAanvraag>().HasKey(v => v.AanvraagID);
-            builder.Entity<VerhuurAanvraag>().ToTable("VerhuurAanvraag");
+            modelBuilder.Entity<Voertuig>()
+                .HasDiscriminator<string>("voertuig_categorie")
+                .HasValue<Auto>("Auto")
+                .HasValue<Caravan>("Caravan")
+                .HasValue<Camper>("Camper");
 
-            builder.Entity<Voertuig>()
-                .HasOne<VoertuigCategorie>(v => v.VoertuigCategorie)
-                .WithMany(c => c.Voertuigen)
-                .HasForeignKey(v => v.Categorie)
+            modelBuilder.Entity<Voertuig>()
+                .Property(v => v.voertuig_categorie)
+                .HasColumnName("voertuig_categorie")
+                .HasMaxLength(8)
                 .IsRequired();
 
             builder.Entity<VerhuurAanvraag>()
