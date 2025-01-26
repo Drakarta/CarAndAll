@@ -72,7 +72,7 @@ export default function AdminPanel() {
           role: newUserRole,
           address: newUserAddress,
           phoneNumber: newUserPhone,
-          name: newUserName, // Ensure name is sent to the backend
+          naam: newUserName, // Ensure name is sent to the backend
         }),
       });
   
@@ -103,45 +103,43 @@ export default function AdminPanel() {
   };
 
   const updateUser = async (id: string) => {
-  if (!editedName || !editedEmail || !editedRole) {
-    setError("Please provide name, email, and role.");
-    return;
-  }
-
-  try {
-    const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/account/users/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({
-        name: editedName,
-        email: editedEmail,
-        role: editedRole,
-      }),
-    });
-
-    if (response.ok) {
-      const updatedData = await response.json();
-      setUsers((prevUsers) =>
-        prevUsers.map((user) =>
-          user.id === id
-            ? { ...user, name: updatedData.name, email: updatedData.email, role: updatedData.role }
-            : user
-        )
-      );
-      setEditingUserId(null);
-      setError(null);
-    } else {
-      const errorData = await response.json();
-      setError(`Failed to update user. ${errorData.message || "Unknown error."}`);
+    if (!editedName || !editedEmail || !editedRole) {
+      setError("Please provide name, email, and role.");
+      return;
     }
-  } catch (err) {
-    console.error(err);
-    setError("An error occurred while updating the user.");
-  }
-};
 
-  
+    try {
+      const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/account/users/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          Role: editedRole, // Use 'Role' instead of 'NewRole'
+          Email: editedEmail,
+          Naam: editedName,
+        }),
+      });
+
+      if (response.ok) {
+        const updatedData = await response.json();
+        setUsers((prevUsers) =>
+          prevUsers.map((user) =>
+            user.id === id
+              ? { ...user, name: updatedData.user.name, email: updatedData.user.email, role: updatedData.user.role }
+              : user
+          )
+        );
+        setEditingUserId(null);
+        setError(null);
+      } else {
+        const errorData = await response.json();
+        setError(`Failed to update user. ${errorData.message || "Unknown error."}`);
+      }
+    } catch (err) {
+      console.error(err);
+      setError("An error occurred while updating the user.");
+    }
+  };
 
   // Remove a user
   const removeUser = async (id: string) => {
@@ -167,7 +165,6 @@ export default function AdminPanel() {
       setError("An error occurred while removing the user.");
     }
   };
-  
 
   if (loading) {
     return <p>Loading...</p>;
@@ -226,7 +223,6 @@ export default function AdminPanel() {
           <table style={{ borderCollapse: "collapse", width: "100%" }}>
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Role</th>
@@ -236,7 +232,6 @@ export default function AdminPanel() {
             <tbody>
               {users.map((user) => (
                 <tr key={user.id}>
-                  <td>{user.id}</td>
                   <td>
                     {editingUserId === user.id ? (
                       <input
