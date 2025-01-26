@@ -50,7 +50,8 @@ public class BackOfficeControllerTests
         _context.Account.Add(account);
 
         var verhuurAanvraag1 = new VerhuurAanvraag
-        {
+        {  
+            AanvraagID = 2,
             Startdatum = DateTime.Today,
             Einddatum = DateTime.Today.AddDays(14),
             Bestemming = "Spanje",
@@ -101,6 +102,7 @@ public class BackOfficeControllerTests
 
         var verhuurAanvraag1 = new VerhuurAanvraag
         {
+            AanvraagID = 1,
             Startdatum = DateTime.Today,
             Einddatum = DateTime.Today.AddDays(14),
             Bestemming = "Spanje",

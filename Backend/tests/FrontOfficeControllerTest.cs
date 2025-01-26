@@ -24,8 +24,8 @@ public class FrontOfficeControllerTests
         _context.SaveChanges();
 
         _context.VerhuurAanvragen.AddRange(
-            new VerhuurAanvraag { AanvraagID = 1, Status = "geaccepteerd", VoertuigID = 101, Bestemming = "Rotterdam" },
-            new VerhuurAanvraag { AanvraagID = 2, Status = "geweigerd", VoertuigID = 102, Bestemming = "Amsterdam" }
+            new VerhuurAanvraag { AanvraagID = 3, Status = "geaccepteerd", VoertuigID = 101, Bestemming = "Rotterdam" },
+            new VerhuurAanvraag { AanvraagID = 4, Status = "geweigerd", VoertuigID = 102, Bestemming = "Amsterdam" }
         );
 
         _context.SaveChanges();
@@ -51,7 +51,7 @@ public class FrontOfficeControllerTests
     public async Task ChangeStatus_ReturnsBadRequest_WhenStatusIsInvalid()
     {
         // Arrange
-        var model = new Request { AanvraagID = 1, NewStatus = "invalid", SchadeInfo = "" };
+        var model = new Request { AanvraagID = 3, NewStatus = "invalid", SchadeInfo = "" };
 
         // Act
         var result = await _controller.ChangeStatus(model);
@@ -81,7 +81,7 @@ public class FrontOfficeControllerTests
         var status = type.GetProperty("Status")?.GetValue(request, null);
 
 
-        Assert.Equal(1, aanvraagID);
+        Assert.Equal(3, aanvraagID);
         Assert.Equal("geaccepteerd", status);
     }
 
