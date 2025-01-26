@@ -39,6 +39,9 @@ export default function voertuigAanmaken() {
                 credentials: 'include',
                 body: JSON.stringify({ merk: merk, type: type, kenteken: kenteken, kleur: kleur, aanschafjaar: aanschafjaar, prijs_per_dag: prijs, aantal_deuren: aantalDeuren, elektrisch: elektrisch, aantal_slaapplekken: aantalSlaapplekken, gewicht_kg: gewicht, voertuig_categorie: selectedVoertuig, status: status}),
             });
+            if (response.status === 405) {
+                window.location.href = "/404";
+            }
 
             let responseData;
             const contentType = response.headers.get('Content-Type');

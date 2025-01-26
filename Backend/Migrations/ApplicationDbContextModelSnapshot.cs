@@ -579,6 +579,7 @@ namespace Backend.Migrations
                         .HasColumnType("int");
 
                     b.HasDiscriminator().HasValue("caravan");
+                });
             modelBuilder.Entity("Backend.Entities.AbonnementAanvraag", b =>
                 {
                     b.HasOne("Backend.Entities.Bedrijf", "Bedrijf")

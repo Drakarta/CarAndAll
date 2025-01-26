@@ -41,6 +41,9 @@ export default function voertuigUpdaten() {
                 },
                 credentials: 'include',
           });
+          if (response.status === 405) {
+            window.location.href = "/404";
+        }
             const data = await response.json();
             console.log(data);
             setMerk(data.merk);

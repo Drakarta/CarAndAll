@@ -5,6 +5,7 @@ using Backend.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Backend.Models;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace Backend.Controllers
 {
@@ -26,13 +27,41 @@ namespace Backend.Controllers
         {
             try
             {
+            var abonnementMultiplier = 1.0;
+            var accountRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
+            var accountEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+            var account_id = await _applicationDbContext.Account
+                    .Where(a => a.Email == accountEmail.Value)
+                    .Select(a => a.Id)
+                    .FirstOrDefaultAsync();
+            
+            if(!accountRole.Value.IsNullOrEmpty() && accountRole.Value == "Zakelijkeklant"){
+            var bedrijf_id = await _applicationDbContext.BedrijfAccounts
+                    .Where(a => a.account_id == account_id)
+                    .Select(a => a.bedrijf_id)
+                    .FirstOrDefaultAsync();
+            
+            var bedrijfAbonnement = await _applicationDbContext.Bedrijf
+                    .Where(b => b.Id == bedrijf_id)
+                    .Select(b => b.AbonnementId)
+                    .FirstOrDefaultAsync();
+
+            abonnementMultiplier = await _applicationDbContext.Abonnement
+                    .Where(a => a.Id == bedrijfAbonnement)
+                    .Select(a => a.Prijs_multiplier)
+                    .FirstOrDefaultAsync();
+            }
+
+            if(abonnementMultiplier == 0 || abonnementMultiplier == 0.0){
+                abonnementMultiplier = 1;
+            }   
             var voertuigIds = await _applicationDbContext.Voertuigen.Where(v => v.Deleted_on == null)
                                     .Select(v => new 
                                     {
                                         voertuigID = v.VoertuigID,
                                         naam = v.Merk + " " + v.Type,
                                         voertuig_categorie = v.voertuig_categorie,
-                                        prijs_per_dag = v.Prijs_per_dag,
+                                        prijs_per_dag = v.Prijs_per_dag * abonnementMultiplier,
                                         status = v.Status,
                                         verhuur_perioden = _applicationDbContext.VerhuurAanvragen
                                             .Where((va => va.VoertuigID == v.VoertuigID))
@@ -43,6 +72,7 @@ namespace Backend.Controllers
                                             }).ToList()
                                     })
                                     .ToListAsync();
+            
                 return Ok(voertuigIds);
             }
             catch (Exception ex)
@@ -305,6 +335,12 @@ namespace Backend.Controllers
                         auto.Elektrisch = (bool)model.Elektrisch;
 
                         await _applicationDbContext.SaveChangesAsync();
+                    }else {
+                        var errorDetails = new {
+                        message = "Voertuig not found.",
+                        statusCode = 400
+                    };
+                    return BadRequest(errorDetails);
                     };
                 }else if(model.voertuig_categorie == "Camper"){
 
@@ -341,6 +377,12 @@ namespace Backend.Controllers
                         camper.Elektrisch = (bool)model.Elektrisch;
 
                         await _applicationDbContext.SaveChangesAsync();
+                    }else {
+                        var errorDetails = new {
+                        message = "Voertuig not found.",
+                        statusCode = 400
+                    };
+                    return BadRequest(errorDetails);
                     };
                 }else if(model.voertuig_categorie == "Caravan"){
 
@@ -377,6 +419,12 @@ namespace Backend.Controllers
                         caravan.Gewicht_kg = (int)model.Gewicht_kg;
 
                         await _applicationDbContext.SaveChangesAsync();
+                    }else {
+                        var errorDetails = new {
+                        message = "Voertuig not found.",
+                        statusCode = 400
+                    };
+                    return BadRequest(errorDetails);
                     };
                 }
 

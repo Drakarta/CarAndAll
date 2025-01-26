@@ -54,18 +54,18 @@ namespace Backend.Data
                 .WithMany(b => b.BedrijfWagenparkbeheerders)
                 .HasForeignKey(ab => ab.bedrijf_id);
 
-            modelBuilder.Entity<Voertuig>().ToTable("Voertuig");
-            modelBuilder.Entity<Voertuig>().HasKey(v => v.VoertuigID);
-            modelBuilder.Entity<VerhuurAanvraag>().HasKey(v => v.AanvraagID);
-            modelBuilder.Entity<VerhuurAanvraag>().ToTable("VerhuurAanvraag");
+            builder.Entity<Voertuig>().ToTable("Voertuig");
+            builder.Entity<Voertuig>().HasKey(v => v.VoertuigID);
+            builder.Entity<VerhuurAanvraag>().HasKey(v => v.AanvraagID);
+            builder.Entity<VerhuurAanvraag>().ToTable("VerhuurAanvraag");
 
-            modelBuilder.Entity<Voertuig>()
+            builder.Entity<Voertuig>()
                 .HasDiscriminator<string>("voertuig_categorie")
                 .HasValue<Auto>("Auto")
                 .HasValue<Caravan>("Caravan")
                 .HasValue<Camper>("Camper");
 
-            modelBuilder.Entity<Voertuig>()
+            builder.Entity<Voertuig>()
                 .Property(v => v.voertuig_categorie)
                 .HasColumnName("voertuig_categorie")
                 .HasMaxLength(8)

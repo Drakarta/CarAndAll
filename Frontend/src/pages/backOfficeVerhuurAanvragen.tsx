@@ -21,6 +21,9 @@ export default function VoertuigenOverview() {
         const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/BackOffice/GetVerhuurAanvragen`, {
           credentials: "include"
       });
+      if (response.status === 405) {
+        window.location.href = "/404";
+    }
         const data = await response.json();
         setVerhuurAanvragen(data.map((item: any) => ({
           AanvraagID: item.aanvraagID,
