@@ -19,25 +19,34 @@ public class FrontOfficeControllerTests
             .Options;
 
         _context = new ApplicationDbContext(options);
+        _controller = new FrontOfficeController(_context);
+        InitializeDatabase();
+    
+    }
 
+    private void InitializeDatabase()
+    {
         _context.VerhuurAanvragen.RemoveRange(_context.VerhuurAanvragen);
         _context.SaveChanges();
-
-        _context.VerhuurAanvragen.AddRange(
-            new VerhuurAanvraag { AanvraagID = 3, Status = "geaccepteerd", VoertuigID = 101, Bestemming = "Rotterdam" },
-            new VerhuurAanvraag { AanvraagID = 4, Status = "geweigerd", VoertuigID = 102, Bestemming = "Amsterdam" }
-        );
-
+        var aanvraag = new VerhuurAanvraag
+        {
+            AanvraagID = 1322,
+            Status = "geaccepteerd",
+            VoertuigID = 105,
+            Bestemming = "Rotterdam",
+        };
+        _context.VerhuurAanvragen.Add(aanvraag);
         _context.SaveChanges();
-
-        _controller = new FrontOfficeController(_context);
     }
+
+ 
 
     [Fact]
     public async Task ChangeStatus_ReturnsNotFound_WhenRequestDoesNotExist()
     {
+
         // Arrange
-        var model = new Request { AanvraagID = 999, NewStatus = "ingenomen", SchadeInfo = "" };
+        var model = new Request { AanvraagID = 998, NewStatus = "ingenomen", SchadeInfo = "" };
 
         // Act
         var result = await _controller.ChangeStatus(model);
@@ -50,8 +59,9 @@ public class FrontOfficeControllerTests
     [Fact]
     public async Task ChangeStatus_ReturnsBadRequest_WhenStatusIsInvalid()
     {
+
         // Arrange
-        var model = new Request { AanvraagID = 3, NewStatus = "invalid", SchadeInfo = "" };
+        var model = new Request { AanvraagID = 1322, NewStatus = "invalid", SchadeInfo = "" };
 
         // Act
         var result = await _controller.ChangeStatus(model);
@@ -60,30 +70,30 @@ public class FrontOfficeControllerTests
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
         Assert.Equal("Invalid status", badRequestResult.Value);
     }
-
-    [Fact]
+   [Fact]
     public async Task GetVerhuurAanvragenWithStatus_ReturnsAcceptedRequests()
     {
+        // Arrange
         // Act
         var result = await _controller.GetVerhuurAanvragenWithStatus();
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
         var requests = okResult.Value as IEnumerable<object>;
+
         Assert.NotNull(requests);
         Assert.Single(requests);
 
-
         var request = requests.First();
         var type = request.GetType();
-
+        
         var aanvraagID = type.GetProperty("AanvraagID")?.GetValue(request, null);
         var status = type.GetProperty("Status")?.GetValue(request, null);
 
-
-        Assert.Equal(3, aanvraagID);
+        Assert.Equal(1322, aanvraagID);
         Assert.Equal("geaccepteerd", status);
     }
+
 
 }
 }

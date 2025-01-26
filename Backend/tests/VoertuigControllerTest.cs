@@ -37,6 +37,7 @@ public class VoertuigControllerTests
 
         var voertuig = new Auto 
         {
+            VoertuigID = 22,
             Merk = "Toyota",
             Type = "Corolla",
             Kenteken = "12-345-67",
@@ -113,6 +114,7 @@ public class VoertuigControllerTests
     {
         var voertuig = new Auto 
         {
+            VoertuigID = 24,
             Merk = "Toyota", 
             Type = "Corolla",
             Kenteken = "12-345-67",
@@ -139,6 +141,7 @@ public class VoertuigControllerTests
     {
         var voertuig = new Auto 
         {
+            VoertuigID = 25,
             Merk = "Toyota", 
             Type = "Corolla",
             Kenteken = "12-345-67",
@@ -180,6 +183,7 @@ public class VoertuigControllerTests
     {
         var voertuig = new Auto 
         {
+            VoertuigID = 26,
             Merk = "Toyota", 
             Type = "Corolla",
             Kenteken = "12-345-67",
@@ -235,6 +239,7 @@ public class VoertuigControllerTests
     {
         var voertuig = new Auto 
         {
+            VoertuigID = 27,
             Merk = "Toyota", 
             Type = "Corolla",
             Kenteken = "12-345-67",
