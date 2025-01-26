@@ -171,4 +171,234 @@ public class AccountControllerTest
         Assert.Equal(updatedAccount.TelefoonNummer, updatedAccountInDB.TelefoonNummer);
 
     }
+
+    [Fact]
+    public async Task GetBackOfficeAccountsTest()
+    {
+        // Clear the database
+        _context.Account.RemoveRange(_context.Account);
+        await _context.SaveChangesAsync();
+
+        // Arrange
+        var backOfficeAccount1 = new Account
+        {
+            Id = Guid.NewGuid(),
+            Email = "backoffice1@email.com",
+            wachtwoord = BC.EnhancedHashPassword("password1"),
+            Rol = "Backofficemedewerker",
+            Naam = "Back Office User 1",
+            Adres = "Address 1",
+            TelefoonNummer = "0612345678"
+        };
+
+        var backOfficeAccount2 = new Account
+        {
+            Id = Guid.NewGuid(),
+            Email = "backoffice2@email.com",
+            wachtwoord = BC.EnhancedHashPassword("password2"),
+            Rol = "Backofficemedewerker",
+            Naam = "Back Office User 2",
+            Adres = "Address 2",
+            TelefoonNummer = "0687654321"
+        };
+
+        _context.Account.Add(backOfficeAccount1);
+        _context.Account.Add(backOfficeAccount2);
+        await _context.SaveChangesAsync();
+
+        MockAuthentication("admin@email.com", "Backofficemedewerker");
+
+        // Act
+        var result = await _controller.GetBackOfficeAccounts();
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(200, okResult.StatusCode);
+
+        Assert.NotNull(okResult.Value);
+        var accountsProperty = okResult.Value.GetType().GetProperty("accounts");
+        Assert.NotNull(accountsProperty);
+        var accounts = Assert.IsAssignableFrom<IEnumerable<object>>(accountsProperty.GetValue(okResult.Value));
+        Assert.Equal(2, accounts.Count());
+    }
+
+    [Fact]
+    public async Task CreateBackOfficeAccountTest_Success()
+    {
+        // Arrange
+        var model = new LoginRegisterModel
+        {
+            Email = "backoffice.new@email.com",
+            Password = "newpassword",
+            Naam = "New Back Office User",
+            Address = "New Address",
+            PhoneNumber = "0612345678"
+        };
+
+        MockAuthentication("admin@email.com", "Backofficemedewerker");
+
+        // Act
+        var result = await _controller.CreateBackOfficeAccount(model);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(200, okResult.StatusCode);
+
+        var createdAccount = _context.Account.FirstOrDefault(a => a.Email == model.Email);
+        Assert.NotNull(createdAccount);
+        Assert.Equal(model.Naam, createdAccount.Naam);
+        Assert.Equal(model.Address, createdAccount.Adres);
+        Assert.Equal(model.PhoneNumber, createdAccount.TelefoonNummer);
+        Assert.Equal("Backofficemedewerker", createdAccount.Rol);
+    }
+
+    [Fact]
+    public async Task CreateBackOfficeAccountTest_EmailAlreadyInUse()
+    {
+        // Arrange
+        var existingAccount = new Account
+        {
+            Id = Guid.NewGuid(),
+            Email = "backoffice.existing@email.com",
+            wachtwoord = BC.EnhancedHashPassword("existingpassword"),
+            Rol = "Backofficemedewerker",
+            Naam = "Existing Back Office User",
+            Adres = "Existing Address",
+            TelefoonNummer = "0612345678"
+        };
+        _context.Account.Add(existingAccount);
+        await _context.SaveChangesAsync();
+
+        var model = new LoginRegisterModel
+        {
+            Email = existingAccount.Email,
+            Password = "newpassword",
+            Naam = "New Back Office User",
+            Address = "New Address",
+            PhoneNumber = "0612345678"
+        };
+
+        MockAuthentication("admin@email.com", "Backofficemedewerker");
+
+        // Act
+        var result = await _controller.CreateBackOfficeAccount(model);
+
+        // Assert
+        var conflictResult = Assert.IsType<ConflictObjectResult>(result);
+        Assert.Equal(409, conflictResult.StatusCode);
+    }
+
+    [Fact]
+    public async Task CreateBackOfficeAccountTest_InvalidRequest()
+    {
+        // Arrange
+        var model = new LoginRegisterModel
+        {
+            Email = "",
+            Password = "",
+            Naam = "New Back Office User",
+            Address = "New Address",
+            PhoneNumber = "0612345678"
+        };
+
+        MockAuthentication("admin@email.com", "Backofficemedewerker");
+
+        // Act
+        var result = await _controller.CreateBackOfficeAccount(model);
+
+        // Assert
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Equal(400, badRequestResult.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateBackOfficeAccountTest_Success()
+    {
+        // Arrange
+        var account = new Account
+        {
+            Id = Guid.NewGuid(),
+            Email = "backoffice.update@email.com",
+            wachtwoord = BC.EnhancedHashPassword("password"),
+            Rol = "Backofficemedewerker",
+            Naam = "Old Name",
+            Adres = "Old Address",
+            TelefoonNummer = "0612345678"
+        };
+        _context.Account.Add(account);
+        await _context.SaveChangesAsync();
+
+        var updateModel = new UpdateUserModel
+        {
+            Naam = "New Name",
+            Adres = "New Address",
+            TelefoonNummer = "0687654321"
+        };
+
+        MockAuthentication("admin@email.com", "Backofficemedewerker");
+
+        // Act
+        var result = await _controller.UpdateBackOfficeAccount(account.Id, updateModel);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(200, okResult.StatusCode);
+
+        var updatedAccount = _context.Account.FirstOrDefault(a => a.Id == account.Id);
+        Assert.NotNull(updatedAccount);
+        Assert.Equal(updateModel.Naam, updatedAccount.Naam);
+        Assert.Equal(updateModel.Adres, updatedAccount.Adres);
+        Assert.Equal(updateModel.TelefoonNummer, updatedAccount.TelefoonNummer);
+    }
+
+    [Fact]
+    public async Task UpdateBackOfficeAccountTest_AccountNotFound()
+    {
+        // Arrange
+        var updateModel = new UpdateUserModel
+        {
+            Naam = "New Name",
+            Adres = "New Address",
+            TelefoonNummer = "0687654321"
+        };
+
+        MockAuthentication("admin@email.com", "Backofficemedewerker");
+
+        // Act
+        var result = await _controller.UpdateBackOfficeAccount(Guid.NewGuid(), updateModel);
+
+        // Assert
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal(404, notFoundResult.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteBackOfficeAccountTest_Success()
+    {
+        // Arrange
+        var account = new Account
+        {
+            Id = Guid.NewGuid(),
+            Email = "backoffice.delete@email.com",
+            wachtwoord = BC.EnhancedHashPassword("password"),
+            Rol = "Backofficemedewerker",
+            Naam = "Back Office User",
+            Adres = "Address",
+            TelefoonNummer = "0612345678"
+        };
+        _context.Account.Add(account);
+        await _context.SaveChangesAsync();
+
+        MockAuthentication("admin@email.com", "Backofficemedewerker");
+
+        // Act
+        var result = await _controller.DeleteBackOfficeAccount(account.Id);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(200, okResult.StatusCode);
+
+        var deletedAccount = _context.Account.FirstOrDefault(a => a.Id == account.Id);
+        Assert.Null(deletedAccount);
+    }
 }

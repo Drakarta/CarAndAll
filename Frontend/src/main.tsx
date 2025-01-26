@@ -18,6 +18,7 @@ import Footer from "./components/footer";
 import Privacy from "./pages/privacy";
 import PrivacyEdit from "./pages/privacyEdit";
 import VierNullVier from "./pages/404";
+import BackofficeAccounts from "./pages/backofficeAccount";
 
 import "./styles/index.css";
 
@@ -43,6 +44,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/privacy/edit" element={<PrivacyEdit />} />
           <Route path="/404" element={<VierNullVier />} />
+          <Route path="BackOfficeAccounts" element={<BackofficeAccounts />} />
           </Routes>
           </div>
           <Footer />
