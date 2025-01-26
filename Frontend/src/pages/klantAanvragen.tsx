@@ -1,28 +1,14 @@
 import { useEffect, useState } from 'react';
 import '../styles/klantAanvragen.css';
+import KlantAanvraag from '../interface/KlantAanvraag';
 
 export default function KlantAanvragen() {
-    interface Voertuig {
-        type: string;
-        merk: string;
-    }
-
-    interface KlantAanvraag {
-        id: number;
-        startdatum: string;
-        einddatum: string;
-        bestemming: string;
-        kilometers: number;
-        voertuig: Voertuig;
-        status: string;
-    }
 
     const [klantAanvragen, setKlantAanvragen] = useState<KlantAanvraag[]>([]);
 
     useEffect(() => {
         fetchAanvragen();
     }, []);
-
     const fetchAanvragen = async () => {
         try {
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/KlantAanvraag/GetKlantAanvragen`, {
@@ -42,12 +28,13 @@ export default function KlantAanvragen() {
             console.error('Error fetching Klant Aanvragen:', error);
         }
     };
-
     return (
         <div className="klant-aanvragen-box">
             <div className="klant-aanvragen">
                 <div className="header">
+                    <h1>
                     Klant Aanvragen
+                    </h1>
                 </div>
                 <div className="content">
                     {klantAanvragen.length === 0 ? (
@@ -66,4 +53,3 @@ export default function KlantAanvragen() {
         </div>
     );
 };
-

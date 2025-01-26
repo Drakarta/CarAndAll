@@ -64,15 +64,18 @@ export default function EmailAdd({ setEmails }: Readonly<EmailAddProps>) {
     };
 
     return (
-        <div>
+<div>
+            <label htmlFor="email-input">Email:</label>
             <input
+                id="email-input"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter email"
                 onKeyDown={handleKeyDown}
             />
-            <select value={role} onChange={(e) => setRole(e.target.value)}>
+            <label htmlFor="role-select">Role:</label>
+            <select id="role-select" value={role} onChange={(e) => setRole(e.target.value)}>
                 <option value="" disabled>Select a role</option>
                 <option value="Wagenparkbeheerder">Wagenparkbeheerder</option>
                 <option value="Zakelijkeklant">zakelijke klant</option>

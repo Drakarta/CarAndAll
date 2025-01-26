@@ -1,20 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using Newtonsoft.Json;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Text.RegularExpressions;
 using Backend.Data;
-using Backend.Entities;
-using Backend.Interfaces;
-using Backend.Helpers;
 using Backend.Models;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using Org.BouncyCastle.Asn1.X509;
 
 
 namespace Backend.Controllers
@@ -30,28 +18,30 @@ namespace Backend.Controllers
             _context = context;
         }
 
+        //Verhuuraanvragen ophalen die 'In behandeling' zijn zodat de backoffice medewerker deze kan verwerken
+        [Authorize(Policy = "Backofficemedewerker")]
         [HttpGet("GetVerhuurAanvragen")]
         public async Task<IActionResult> GetVerhuurAanvragen()
         {
             try
             {
-                var verhuurAanvragen = await _context.VerhuurAanvragen.Select(v => new
-                {
-                    aanvraagID = v.AanvraagID,
-                    startdatum = v.Startdatum,
-                    einddatum = v.Einddatum,
-                    bestemming = v.Bestemming,
-                    kilometers = v.Kilometers,
-                    status = v.Status,
-                    voertuig = _context.Voertuigen
-                                                .Where(vt => vt.VoertuigID == v.VoertuigID)
-                                                .Select(va => new
-                                                {
-                                                    voertuig_naam = va.Merk + " " + va.Type,
-                                                    voertuig_status = va.Status
-                                                }).ToList()
-                })
-                                        .ToListAsync();
+            var verhuurAanvragen = await _context.VerhuurAanvragen.Where(v => v.Status == "In behandeling").Select(v => new 
+                                    {
+                                        aanvraagID = v.AanvraagID,
+                                        startdatum = v.Startdatum,
+                                        einddatum = v.Einddatum,
+                                        bestemming = v.Bestemming,
+                                        kilometers = v.Kilometers,
+                                        status = v.Status,
+                                        voertuig = _context.Voertuigen
+                                            .Where(vt => vt.VoertuigID == v.VoertuigID)
+                                            .Select(va => new 
+                                            {
+                                                voertuig_naam = va.Merk + " " + va.Type,
+                                                voertuig_status = va.Status
+                                            }).ToList()
+                                    })
+                                    .ToListAsync();
 
                 return Ok(verhuurAanvragen);
             }
@@ -61,6 +51,8 @@ namespace Backend.Controllers
             }
         }
 
+        //Verwerken van de verhuuraanvragen aan de hand van de status zetten naar 'Geaccepteerd' of 'Afgewezen'
+        [Authorize(Policy = "Backofficemedewerker")]
         [HttpPost("ChangeStatus")]
         public async Task<IActionResult> ChangeStatus([FromBody] BackOfficeModel model)
         {
@@ -68,11 +60,18 @@ namespace Backend.Controllers
             {
                 var verhuurAanvraag = await _context.VerhuurAanvragen
                     .FirstOrDefaultAsync(v => v.AanvraagID == model.AanvraagID);
-                Console.WriteLine(model.AanvraagID);
-                if (verhuurAanvraag != null)
+
+                if (verhuurAanvraag == null)
                 {
-                    verhuurAanvraag.Status = model.Status;
-                    await _context.SaveChangesAsync();
+                    var errorDetails = new {
+                        message = "The 'Verhuuraanvraag' is empty or 0",
+                        statusCode = 400
+                    };
+                    return BadRequest(errorDetails);
+                }
+                if(verhuurAanvraag != null){
+                     verhuurAanvraag.Status = model.Status;
+                     await _context.SaveChangesAsync();
                 }
 
                 var succes = new

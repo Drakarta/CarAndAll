@@ -3,11 +3,15 @@ import "../styles/voertuigenOverview.css";
 import { useState } from "react";
 
 export default function VerhuurAanvraag() {
+    //Voertuig variablen en start/eind datum
     const {voertuigID, voertuigNaam, vastartdate, vaenddate} = useParams();
+
+    //Verhuuraanvraag variablen
     const [bestemming, setBestemming] = useState('');
     const [kilometers, setKilometers] = useState(0);
     const navigate = useNavigate();
 
+    //Voor het aanmaken van de verhuuraanvraag/verhuuraanvragen een post naar backend met alle benodigde data
     const handleMakeVerhuurAanvraag = async () => {
         try {
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/VerhuurAanvraag/createVerhuurAanvraag`, {
@@ -45,7 +49,7 @@ return (
     <>
     <div className="overviewSection">
         <div className="headerFilter">
-            <h2>Verhuur aanvraag</h2>
+            <h1>Verhuur aanvraag</h1>
         </div>
         <br/>
         <hr></hr>
