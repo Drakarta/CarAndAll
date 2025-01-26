@@ -335,6 +335,12 @@ namespace Backend.Controllers
                         auto.Elektrisch = (bool)model.Elektrisch;
 
                         await _applicationDbContext.SaveChangesAsync();
+                    }else {
+                        var errorDetails = new {
+                        message = "Voertuig not found.",
+                        statusCode = 400
+                    };
+                    return BadRequest(errorDetails);
                     };
                 }else if(model.voertuig_categorie == "Camper"){
 
@@ -371,6 +377,12 @@ namespace Backend.Controllers
                         camper.Elektrisch = (bool)model.Elektrisch;
 
                         await _applicationDbContext.SaveChangesAsync();
+                    }else {
+                        var errorDetails = new {
+                        message = "Voertuig not found.",
+                        statusCode = 400
+                    };
+                    return BadRequest(errorDetails);
                     };
                 }else if(model.voertuig_categorie == "Caravan"){
 
@@ -407,6 +419,12 @@ namespace Backend.Controllers
                         caravan.Gewicht_kg = (int)model.Gewicht_kg;
 
                         await _applicationDbContext.SaveChangesAsync();
+                    }else {
+                        var errorDetails = new {
+                        message = "Voertuig not found.",
+                        statusCode = 400
+                    };
+                    return BadRequest(errorDetails);
                     };
                 }
 

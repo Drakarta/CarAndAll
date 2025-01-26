@@ -85,29 +85,29 @@ public class VoertuigControllerTests
         Assert.Equal(200, okResult.StatusCode);
     }
 
-    // [Fact]
-    // public async Task CreateVoertuig_ReturnsBadRequest_DoesntCreateVoertuig()
-    // {
-    //     var voertuig = new CreateVoertuigModel
-    //     {
-    //         Merk = "", 
-    //         Type = "Corolla",
-    //         Kenteken = "12-345-67",
-    //         Kleur = "Zwart",
-    //         Aanschafjaar = "2020",
-    //         Status = "Beschikbaar",
-    //         Prijs_per_dag = 76,
-    //         Aantal_deuren = 4,
-    //         Elektrisch = false,
-    //         voertuig_categorie = "Auto"
-    //     };
+    [Fact]
+    public async Task CreateVoertuig_ReturnsBadRequest_DoesntCreateVoertuig()
+    {
+        var voertuig = new CreateVoertuigModel
+        {
+            Merk = "", 
+            Type = "Corolla",
+            Kenteken = "12-345-67",
+            Kleur = "Zwart",
+            Aanschafjaar = "2020",
+            Status = "Beschikbaar",
+            Prijs_per_dag = 76,
+            Aantal_deuren = 4,
+            Elektrisch = false,
+            voertuig_categorie = "Auto"
+        };
 
-    //     var result = await _controller.CreateVoertuig(voertuig);
+        var result = await _controller.CreateVoertuig(voertuig);
 
-    //     var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
 
-    //     Assert.Equal(400, badRequestResult.StatusCode);
-    // }
+        Assert.Equal(400, badRequestResult.StatusCode);
+    }
 
     [Fact]
     public async Task GetVoertuigByID_ReturnsOk_HasVoertuig()
@@ -134,6 +134,33 @@ public class VoertuigControllerTests
         var okResult = Assert.IsType<OkObjectResult>(result);
 
         Assert.Equal(200, okResult.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetVoertuigByID_ReturnsNotFound_DoesntHasVoertuig()
+    {
+        var voertuig = new Auto 
+        {
+            VoertuigID = 27,
+            Merk = "Toyota", 
+            Type = "Corolla",
+            Kenteken = "12-345-67",
+            Kleur = "Zwart",
+            Aanschafjaar = "2020",
+            Status = "Beschikbaar",
+            Prijs_per_dag = 76,
+            Aantal_deuren = 4,
+            Elektrisch = false
+        };
+        _context.Voertuigen.Add(voertuig);
+
+        await _context.SaveChangesAsync();
+
+        var result = await _controller.GetVoertuigByID(99);
+
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+
+        Assert.Equal("Voertuig not found.", notFoundResult.Value);
     }
 
     [Fact]
@@ -176,6 +203,48 @@ public class VoertuigControllerTests
         var okResult = Assert.IsType<OkObjectResult>(result);
 
         Assert.Equal(200, okResult.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateVoertuig_ReturnsBadRequest_DoesntHaveUpdatedVoertuig()
+    {
+        var voertuig = new Auto 
+        {
+            VoertuigID = 33,
+            Merk = "Toyota", 
+            Type = "Corolla",
+            Kenteken = "12-345-67",
+            Kleur = "Zwart",
+            Aanschafjaar = "2020",
+            Status = "Beschikbaar",
+            Prijs_per_dag = 76,
+            Aantal_deuren = 4,
+            Elektrisch = false
+        };
+        _context.Voertuigen.Add(voertuig);
+
+        await _context.SaveChangesAsync();
+
+        var voertuigUpdate = new UpdateVoertuigModel
+        {
+            VoertuigID = 976855635,
+            Merk = "Toyota1", 
+            Type = "Corolla1",
+            Kenteken = "12-345-67",
+            Kleur = "Zwart",
+            Aanschafjaar = "2020",
+            Status = "Beschikbaar",
+            Prijs_per_dag = 76,
+            Aantal_deuren = 4,
+            Elektrisch = false,
+            voertuig_categorie = "Auto"
+        };
+
+        var result = await _controller.UpdateVoertuig(voertuigUpdate);
+
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+
+        Assert.Equal(400, badRequestResult.StatusCode);
     }
 
     [Fact]
@@ -232,6 +301,38 @@ public class VoertuigControllerTests
         var okResult = Assert.IsType<OkObjectResult>(result);
 
         Assert.Equal(200, okResult.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteVoertuig_ReturnsNotFound()
+    {
+        var voertuig = new Auto 
+        {
+            VoertuigID = 74,
+            Merk = "Toyota", 
+            Type = "Corolla",
+            Kenteken = "12-345-67",
+            Kleur = "Zwart",
+            Aanschafjaar = "2020",
+            Status = "Beschikbaar",
+            Prijs_per_dag = 76,
+            Aantal_deuren = 4,
+            Elektrisch = false
+        };
+        _context.Voertuigen.Add(voertuig);
+
+        await _context.SaveChangesAsync();
+
+        var voertuigDelete = new DeleteVoertuigModel
+        {
+            VoertuigID = 6754584,
+        };
+
+        var result = await _controller.DeleteVoertuig(voertuigDelete);
+
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+
+        Assert.Equal(404, notFoundResult.StatusCode);
     }
 
     [Fact]
