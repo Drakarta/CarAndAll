@@ -13,6 +13,7 @@ namespace Backend.Data
 
         public DbSet<Account> Account { get; set; }
         public DbSet<Abonnement> Abonnement { get; set; }
+        public DbSet<AbonnementAanvraag> AbonnementAanvragen { get; set; } // Ensure DbSet is properly added
         public DbSet<Bedrijf> Bedrijf { get; set; }
         public DbSet<BedrijfAccounts> BedrijfAccounts { get; set; }
         public DbSet<Email> Emails { get; set; }
@@ -21,7 +22,6 @@ namespace Backend.Data
         // public DbSet<VoertuigCategorie> VoertuigCategorie { get; set; }
         public DbSet<Schade> Schades { get; set; }
         public DbSet<BedrijfWagenparkbeheerders> BedrijfWagenparkbeheerders { get; set; }
-        public DbSet<AbonnementAanvraag> AbonnementAanvragen { get; set; }
         public DbSet<Text> Texts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
