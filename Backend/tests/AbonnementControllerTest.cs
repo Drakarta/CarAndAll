@@ -25,7 +25,15 @@ namespace Backend.Tests
             _context = new ApplicationDbContext(options);
             _controller = new AbonnementController(_context);
 
+            var data = new List<Abonnement>().AsQueryable();
+
             var mockSet = new Mock<DbSet<Abonnement>>();
+            mockSet.As<IQueryable<Abonnement>>().Setup(m => m.Provider).Returns(new TestAsyncQueryProvider<Abonnement>(data.Provider));
+            mockSet.As<IQueryable<Abonnement>>().Setup(m => m.Expression).Returns(data.Expression);
+            mockSet.As<IQueryable<Abonnement>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            mockSet.As<IQueryable<Abonnement>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+            mockSet.As<IAsyncEnumerable<Abonnement>>().Setup(m => m.GetAsyncEnumerator(default)).Returns(new TestAsyncEnumerator<Abonnement>(data.GetEnumerator()));
+
             _context.Abonnement = mockSet.Object;
         }
 
@@ -33,21 +41,29 @@ namespace Backend.Tests
         public async Task GetAbonnementen_ReturnsOkResult_WithListOfAbonnementen()
         {
             // Arrange
-            var abonnementen = new List<Abonnement>
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .Options;
+
+            using (var context = new ApplicationDbContext(options))
             {
-                new Abonnement { Id = 1, Naam = "Abonnement 1" },
-                new Abonnement { Id = 2, Naam = "Abonnement 2" }
-            };
-            _context.Abonnement.AddRange(abonnementen);
-            await _context.SaveChangesAsync();
+                var controller = new AbonnementController(context);
+                var abonnementen = new List<Abonnement>
+                {
+                    new Abonnement { Id = 1, Naam = "Abonnement 1" },
+                    new Abonnement { Id = 2, Naam = "Abonnement 2" }
+                };
+                context.Abonnement.AddRange(abonnementen);
+                await context.SaveChangesAsync();
 
-            // Act
-            var result = await _controller.GetAbonnementen();
+                // Act
+                var result = await controller.GetAbonnementen();
 
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            var returnValue = Assert.IsType<List<Abonnement>>(okResult.Value);
-            Assert.Equal(2, returnValue.Count);
+                // Assert
+                var okResult = Assert.IsType<OkObjectResult>(result.Result);
+                var returnValue = Assert.IsType<List<Abonnement>>(okResult.Value);
+                Assert.Equal(2, returnValue.Count);
+            }
         }
 
         [Fact]
@@ -65,17 +81,25 @@ namespace Backend.Tests
         public async Task GetAbonnementById_ReturnsOkResult_WithAbonnement()
         {
             // Arrange
-            var abonnement = new Abonnement { Id = 1, Naam = "Abonnement 1" };
-            _context.Abonnement.Add(abonnement);
-            await _context.SaveChangesAsync();
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .Options;
 
-            // Act
-            var result = await _controller.GetAbonnementById(1);
+            using (var context = new ApplicationDbContext(options))
+            {
+                var controller = new AbonnementController(context);
+                var abonnement = new Abonnement { Id = 1, Naam = "Abonnement 1" };
+                context.Abonnement.Add(abonnement);
+                await context.SaveChangesAsync();
 
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            var returnValue = Assert.IsType<Abonnement>(okResult.Value);
-            Assert.Equal(1, returnValue.Id);
+                // Act
+                var result = await controller.GetAbonnementById(1);
+
+                // Assert
+                var okResult = Assert.IsType<OkObjectResult>(result.Result);
+                var returnValue = Assert.IsType<Abonnement>(okResult.Value);
+                Assert.Equal(1, returnValue.Id);
+            }
         }
 
         [Fact]
