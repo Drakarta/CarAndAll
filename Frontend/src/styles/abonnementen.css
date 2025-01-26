@@ -1,0 +1,79 @@
+.abonnementenSection {
+    border: 1px solid black;
+    border-radius: 15px;
+    padding: 1rem;
+    margin-top: 5rem;
+    background-color: #f9f9f9;
+    padding-bottom: 1rem; /* Add padding at the bottom */
+  }
+  
+  .abonnementenTabel {
+    width: 100%;
+    border: 1px solid gray;
+    border-collapse: collapse;
+    overflow-x: auto; /* Ensure it is scrollable on small screens */
+  }
+  
+  .abonnementenTabel th {
+    padding: 10px;
+    text-align: left;
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+  
+  .abonnementenTabel tr {
+    border-bottom: 2px solid black;
+  }
+  
+  .abonnementenTabel td {
+    border-right: 1px solid gray;
+    padding: 5px;
+  }
+  
+  .abonnementenTabel td:last-child {
+    border-right: none; /* Remove right border for the last column */
+  }
+  
+  .abonnementenTabel td button {
+    color: black;
+    background-color: white;
+    border: 0;
+    padding: 5px 10px;
+    cursor: pointer;
+    min-width: 100px;
+  }
+  
+  .abonnementenTabel td button:hover {
+    background-color: lightgray;
+  }
+  
+  label {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  
+  select {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid gray;
+    cursor: pointer;
+  }
+  
+  select:focus {
+    outline: none;
+    border-color: black;
+    background-color: #e8e8e8; /* Optional: light background on focus */
+  }
+  
+  /* Media query for smaller screens */
+  @media (max-width: 768px) {
+    .abonnementenTabel th, .abonnementenTabel td {
+      font-size: 12px;
+      padding: 3px;
+    }
+  
+    .abonnementenTabel td button {
+      padding: 3px 6px;
+    }
+  }
+  

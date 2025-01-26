@@ -1,0 +1,10 @@
+{
+    "watch": {
+      "exclude": [
+        "Controllers/*.temp..cs",
+        "*.tmp",
+        "*.temp"
+      ]
+    }
+  }
+  

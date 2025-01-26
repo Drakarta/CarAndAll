@@ -1,0 +1,17 @@
+.markdown-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 3rem 0;
+    gap: 2rem;
+}
+
+.markdown-container .markdown {
+    width: 40%;
+    max-width: 600px
+}
+
+.markdown-container textarea {
+    width: 40%;
+    max-width: 600px;
+}

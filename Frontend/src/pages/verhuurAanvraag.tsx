@@ -1,0 +1,76 @@
+import { useParams, useNavigate } from "react-router-dom";
+import "../styles/voertuigenOverview.css";
+import { useState } from "react";
+
+export default function VerhuurAanvraag() {
+    //Voertuig variablen en start/eind datum
+    const {voertuigID, voertuigNaam, vastartdate, vaenddate} = useParams();
+
+    //Verhuuraanvraag variablen
+    const [bestemming, setBestemming] = useState('');
+    const [kilometers, setKilometers] = useState(0);
+    const navigate = useNavigate();
+
+    //Voor het aanmaken van de verhuuraanvraag/verhuuraanvragen een post naar backend met alle benodigde data
+    const handleMakeVerhuurAanvraag = async () => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/VerhuurAanvraag/createVerhuurAanvraag`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({ startdatum: vastartdate, einddatum: vaenddate, bestemming: bestemming, kilometers: kilometers, voertuigID: voertuigID}),
+            });
+            if (response.status === 405) {
+                window.location.href = "/404";
+            }
+
+            let responseData;
+            const contentType = response.headers.get('Content-Type');
+            if (contentType && contentType.includes('application/json')) {
+                responseData = await response.json();
+            } else {
+                responseData = { message: await response.text() };
+            }
+
+            if (!response.ok) {
+                if(responseData.statusCode === 400){
+                    alert(responseData.message);
+                }
+            } else {
+                alert('Verhuur aanvraag succesvol ingediend.');
+                navigate('/voertuigenOverview');
+            }
+
+        }catch (error) {
+            console.error('Error making verhuur aanvraag:', error);
+        }
+
+    }
+return (
+    <>
+    <div className="overviewSection">
+        <div className="headerFilter">
+            <h1>Verhuur aanvraag</h1>
+        </div>
+        <br/>
+        <hr></hr>
+        <br/>
+        <section>
+            <div>
+                <label>Bestemming: 
+                <input id="bestemming" value={bestemming} onChange={(e) => setBestemming(e.target.value)} required/></label>
+                <br/>
+                <label>Kilometers: 
+                <input type="number" id="kilometers" value={kilometers} onChange={(e) => setKilometers(parseInt(e.target.value))} required/></label>
+                <p><b>Voertuig: </b>{voertuigNaam}</p>
+                <p><b>Start datum: </b>{vastartdate}</p>
+                <p><b>Eind datum: </b>{vaenddate}</p>
+                <button onClick={handleMakeVerhuurAanvraag}>Verhuur aanvraag indienen</button>
+            </div>
+        </section>
+    </div>
+    </>
+  );
+}
