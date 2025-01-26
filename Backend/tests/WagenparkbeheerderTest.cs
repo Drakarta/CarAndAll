@@ -363,7 +363,7 @@ public class WagenparkbeheerderControllerTests
         Kenteken = "AB-CD-12",
         Kleur = "Zwart",
         Aanschafjaar = "2022",
-        Categorie = "SUV",
+        voertuig_categorie = "SUV",
         Status = "Beschikbaar",
     };
 
@@ -465,7 +465,7 @@ public class WagenparkbeheerderControllerTests
         Kenteken = "AB-CD-12",
         Kleur = "Zwart",
         Aanschafjaar = "2022",
-        Categorie = "SUV",
+        voertuig_categorie = "SUV",
         Status = "Beschikbaar",
     };
 
