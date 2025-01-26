@@ -6,6 +6,6 @@ namespace Backend.Entities
         public int SchadeID { get; set; }
         public int VoertuigID { get; set; }
         public Voertuig Voertuig { get; set; } = null!;
-        public string schade { get; set; }
+        public required string schade { get; set; }
     }
 }
