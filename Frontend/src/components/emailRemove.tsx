@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import './emailButton.css';
-
 interface EmailRemoveProps {
     readonly setEmails: React.Dispatch<React.SetStateAction<string[]>>;
 }

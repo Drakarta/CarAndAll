@@ -17,6 +17,7 @@ import GegevensPagina from "./pages/GegevensPagina";
 import Footer from "./components/footer";
 import Privacy from "./pages/privacy";
 import PrivacyEdit from "./pages/privacyEdit";
+import VierNullVier from "./pages/404";
 
 import "./styles/index.css";
 
@@ -41,6 +42,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/profile" element={<GegevensPagina />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/privacy/edit" element={<PrivacyEdit />} />
+          <Route path="/404" element={<VierNullVier />} />
           </Routes>
           </div>
           <Footer />

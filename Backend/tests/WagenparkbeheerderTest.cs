@@ -494,5 +494,65 @@ public class WagenparkbeheerderControllerTests
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(200, okResult.StatusCode);
     }
+
+    [Fact]
+    public async Task RemoveUserFromCompany_ReturnsOk_WhenAuthorized() {
+         var accountId = Guid.NewGuid();
+
+        var account = new Account
+        {
+            Id = accountId,
+            Email = "removeuserfromcompany@wagenpark.com",
+            wachtwoord = "securePassword123",
+            Rol = "Wagenparkbeheerder",
+            BedrijfWagenparkbeheerders = new List<BedrijfWagenparkbeheerders>()
+        };
+        var bedrijf = new Bedrijf
+        {
+            Id = Guid.NewGuid(),
+            Eigenaar = accountId,
+            AbonnementId = 2,
+            Domein = "wagenpark.com",
+            BedrijfAccounts = new List<BedrijfAccounts>(),
+            BedrijfWagenparkbeheerders = new List<BedrijfWagenparkbeheerders>()
+        };
+        var wagenparkbeheerders = new BedrijfWagenparkbeheerders
+        {
+            account_id = accountId,
+            Account = account ?? throw new InvalidOperationException("Account not found"),
+            bedrijf_id = bedrijf.Id,
+            Bedrijf = bedrijf ?? throw new InvalidOperationException("Bedrijf not found")
+        };
+
+        var testaccount = new Account {
+            Id = Guid.NewGuid(),
+            Email = "thetestemail@wagenpark.com",
+            wachtwoord = "securePassword123",
+            Rol = "Zakelijke Klant",
+        };
+
+        var bedrijfAccounts = new BedrijfAccounts
+        {
+            account_id = testaccount.Id,
+            bedrijf_id = bedrijf.Id,
+            Account = testaccount,
+            Bedrijf = bedrijf,
+        };
+        _context.Account.Add(account);
+        _context.Account.Add(testaccount);
+        _context.Bedrijf.Add(bedrijf);
+        _context.BedrijfWagenparkbeheerders.Add(wagenparkbeheerders);
+        _context.BedrijfAccounts.Add(bedrijfAccounts);
+        await _context.SaveChangesAsync();
+
+        MockAuthentication(account.Email, account.Rol);
+
+        var User = new EmailModelRemove { Email = testaccount.Email };
+        var result = await _controller.RemoveUserFromCompany(User);
+
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(200, okResult.StatusCode);
+
+        }
 }
 }
