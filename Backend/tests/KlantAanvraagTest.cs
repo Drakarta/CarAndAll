@@ -37,9 +37,9 @@ public class KlantAanvraagControllerTests
         _context.VerhuurAanvragen.AddRange(
             new VerhuurAanvraag
             {
-                AanvraagID = 1,
+                AanvraagID = 5,
                 Status = "geaccepteerd",
-                VoertuigID = 101,
+                VoertuigID = 105,
                 Bestemming = "Rotterdam",
                 Account = new Account
                 {

@@ -59,6 +59,7 @@ public class VerhuurAanvraagControllerTests
         _context.Account.Add(account);
         var voertuig = new Auto 
         {
+            VoertuigID = 6,
             Merk = "Toyota",
             Type = "Corolla",
             Kenteken = "12-345-67",

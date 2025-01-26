@@ -61,6 +61,8 @@ namespace Backend.Controllers
                 var verhuurAanvraag = await _context.VerhuurAanvragen
                     .FirstOrDefaultAsync(v => v.AanvraagID == model.AanvraagID);
 
+                    Console.WriteLine($" testtestestst {verhuurAanvraag}");
+
                 if (verhuurAanvraag == null)
                 {
                     var errorDetails = new {
