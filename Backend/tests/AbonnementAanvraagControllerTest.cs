@@ -72,6 +72,7 @@ namespace Backend.Tests
                 var actionResult = Assert.IsType<ActionResult<IEnumerable<AbonnementAanvraag>>>(result);
                 var notFoundResult = Assert.IsType<NotFoundObjectResult>(actionResult.Result);
                 Assert.Equal(404, notFoundResult.StatusCode);
+                
             }
         }
 

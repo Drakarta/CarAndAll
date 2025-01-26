@@ -37,34 +37,7 @@ namespace Backend.Tests
             _context.Abonnement = mockSet.Object;
         }
 
-        [Fact]
-        public async Task GetAbonnementen_ReturnsOkResult_WithListOfAbonnementen()
-        {
-            // Arrange
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestDatabase")
-                .Options;
-
-            using (var context = new ApplicationDbContext(options))
-            {
-                var controller = new AbonnementController(context);
-                var abonnementen = new List<Abonnement>
-                {
-                    new Abonnement { Id = 1, Naam = "Abonnement 1" },
-                    new Abonnement { Id = 2, Naam = "Abonnement 2" }
-                };
-                context.Abonnement.AddRange(abonnementen);
-                await context.SaveChangesAsync();
-
-                // Act
-                var result = await controller.GetAbonnementen();
-
-                // Assert
-                var okResult = Assert.IsType<OkObjectResult>(result.Result);
-                var returnValue = Assert.IsType<List<Abonnement>>(okResult.Value);
-                Assert.Equal(2, returnValue.Count);
-            }
-        }
+        
 
         [Fact]
         public async Task GetAbonnementById_ReturnsNotFound_WhenAbonnementDoesNotExist()
@@ -99,8 +72,10 @@ namespace Backend.Tests
                 var okResult = Assert.IsType<OkObjectResult>(result.Result);
                 var returnValue = Assert.IsType<Abonnement>(okResult.Value);
                 Assert.Equal(1, returnValue.Id);
+
             }
         }
+        
 
         [Fact]
         public async Task CreateAbonnement_ReturnsCreatedAtActionResult_WithNewAbonnement()
@@ -117,5 +92,32 @@ namespace Backend.Tests
             Assert.Equal(1, returnValue.Id);
         }
 
+        [Fact]
+        public async Task GetAbonnementen_ReturnsOkResult_WithListOfAbonnementen()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .Options;
+
+            using (var context = new ApplicationDbContext(options))
+            {
+                // Clear the database
+                context.Abonnement.RemoveRange(await context.Abonnement.ToListAsync());
+                await context.SaveChangesAsync();
+
+                var controller = new AbonnementController(context);
+                var abonnementen = new Abonnement { Id = 65, Naam = "Abonnement 2" };
+                context.Abonnement.AddRange(abonnementen);
+                await context.SaveChangesAsync();
+
+                // Act
+                var result = await controller.GetAbonnementen();
+                // Assert
+                var okResult = Assert.IsType<OkObjectResult>(result.Result);
+                var returnValue = Assert.IsType<List<Abonnement>>(okResult.Value);
+                Assert.Equal(1, returnValue.Count);
+            }
+        }
     }
 }

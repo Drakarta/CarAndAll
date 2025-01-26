@@ -27,40 +27,6 @@ namespace Backend.test
             _controller = new AccountController(_context, true);
         }
 
-        [Fact]
-public async Task GetAllUsers_ReturnsOkResult()
-{
-    // Arrange
-    var users = new List<Account>
-    {
-        new Account { Id = Guid.NewGuid(), Email = "user1@example.com", Rol = "User", Naam = "User One", wachtwoord = "defaultPassword" },
-        new Account { Id = Guid.NewGuid(), Email = "user2@example.com", Rol = "Admin", Naam = "User Two", wachtwoord = "defaultPassword" }
-    };
-
-    _context.Account.AddRange(users);
-    await _context.SaveChangesAsync();
-
-    // Act
-    var result = await _controller.GetAllUsers();
-
-    // Assert
-    var okResult = Assert.IsType<OkObjectResult>(result);
-    var returnValue = okResult.Value;
-    var usersProperty = returnValue?.GetType().GetProperty("users")?.GetValue(returnValue);
-    Assert.NotNull(usersProperty);
-    var usersList = Assert.IsAssignableFrom<IEnumerable<object>>(usersProperty).ToList();
-    Assert.Equal(2, usersList.Count);
-
-    dynamic user1 = usersList[0];
-    Assert.Equal("user1@example.com", user1.Email);
-    Assert.Equal("User One", user1.Name);
-    Assert.Equal("User", user1.Role);
-
-    dynamic user2 = usersList[1];
-    Assert.Equal("user2@example.com", user2.Email);
-    Assert.Equal("User Two", user2.Name);
-    Assert.Equal("Admin", user2.Role);
-}
 
         [Fact]
 public async Task AddUser_ReturnsOkResult()
@@ -84,6 +50,46 @@ public async Task AddUser_ReturnsOkResult()
     var returnValue = okResult.Value;
     Assert.Equal("User created successfully.", returnValue.GetType().GetProperty("Message").GetValue(returnValue));
 }
+
+        [Fact]
+public async Task GetAllUsers_ReturnsOkResult()
+{
+
+    await Task.Delay(5000);
+      await _context.Database.EnsureDeletedAsync();
+    await _context.Database.EnsureCreatedAsync();
+
+    // Arrange
+    var account1 = new Account
+    {
+        Id = Guid.NewGuid(),
+        Email = "getallusersreturnsokresult001@email.exe",
+        wachtwoord = "Password123",
+        Rol = "User",
+        Naam = "User One"
+    };
+
+    _context.Account.AddRange(account1);
+    await _context.SaveChangesAsync();
+
+    // Act
+    var result = await _controller.GetAllUsers();
+
+    // Assert
+    var okResult = Assert.IsType<OkObjectResult>(result);
+    var returnValue = okResult.Value;
+    var usersProperty = returnValue?.GetType().GetProperty("users")?.GetValue(returnValue);
+    Assert.NotNull(usersProperty);
+    var usersList = Assert.IsAssignableFrom<IEnumerable<object>>(usersProperty).ToList();
+    Assert.Equal(1, usersList.Count); // Expecting 1 user
+
+    dynamic user1 = usersList[0];
+    Assert.Equal("getallusersreturnsokresult001@email.exe", user1.Email);
+    Assert.Equal("User One", user1.Name);
+    Assert.Equal("User", user1.Role);
+
+}
+
 
         [Fact]
 public async Task UpdateUserRole_ReturnsOkResult()

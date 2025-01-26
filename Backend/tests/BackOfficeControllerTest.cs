@@ -75,6 +75,8 @@ public class BackOfficeControllerTests
         var okResult = Assert.IsType<OkObjectResult>(result);
 
         Assert.Equal(200, okResult.StatusCode);
+
+        
     }
 
     [Fact]
@@ -83,6 +85,7 @@ public class BackOfficeControllerTests
     
        var voertuig = new Voertuig
         {
+            VoertuigID = 24538534,
             Merk = "Toyota",
             Type = "Corolla",
             Kenteken = "12-345-67",
@@ -158,7 +161,7 @@ public class BackOfficeControllerTests
 
         var verhuurAanvraag1 = new VerhuurAanvraag
         {  
-            AanvraagID = 24,
+            AanvraagID = 24000,
             Startdatum = DateTime.Today,
             Einddatum = DateTime.Today.AddDays(14),
             Bestemming = "Spanje",
