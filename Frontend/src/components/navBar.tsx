@@ -88,6 +88,11 @@ const BackOfficeNavBar : React.FC = () => (
           </NavLink>
           <NavLink to="/backOfficeAbonnementAanvragen" className="navBarLink">
             Abonnement aanvragen
+          <NavLink to="/BackOfficeAccounts" className="navBarLink">
+            Backoffice Accounts
+          </NavLink>
+          <NavLink to="/privacy/edit" className="navBarLink">
+            privacy edit
           </NavLink>
         </>
 )

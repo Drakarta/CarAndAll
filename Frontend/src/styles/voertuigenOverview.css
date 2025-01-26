@@ -26,6 +26,8 @@
   
   .datumButtonVoertuigen {
     padding: 0 !important;
+    display: flex;
+    flex-direction: row;
   }
 
   .datepicker button{
@@ -42,3 +44,45 @@
     display: flex;
     justify-content:space-between;
   }
+
+#createVoertuig {
+  display: none;
+}
+
+.basicInputs{
+  border: 1px solid black;
+  padding: 1rem;
+  border-radius: 15px;
+}
+
+.advancedInputs{
+  border: 1px solid black;
+  padding: 1rem;
+  border-radius: 15px;
+}
+
+.allInputs{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.createForm{
+  display: flex;
+  flex-direction: column;
+}
+
+.basicInputs input, .advancedInputs input{
+  margin-left: 1rem;
+}
+
+#Auto, #Camper, #Caravan{
+  display: none;
+}
+
+.updateVoertuig{
+  display: none;
+}
+#updateVoertuigButton{
+  display: none;
+}

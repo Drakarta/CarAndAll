@@ -371,7 +371,7 @@ namespace Backend.Controllers
                     return BadRequest(new { message = "Invalid email format.", statusCode = 400 });
                 }
 
-                var acc = await _context.Account.FirstOrDefaultAsync(a => a.Email.Equals(model.Email, StringComparison.CurrentCultureIgnoreCase));
+                var acc = await _context.Account.FirstOrDefaultAsync(a => a.Email.ToLower() == model.Email.ToLower());
                 if (acc == null)
                 {
                     return NotFound(new { message = "Account with the provided email does not exist.", statusCode = 404 });
@@ -387,6 +387,7 @@ namespace Backend.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }

@@ -26,15 +26,15 @@ export default function DisplayHistory({ aanvragen }: DisplayHistoryProps) {
                     </thead>
                     <tbody>
                         {aanvragen.map((verhuurAanvragen) => (
-                            <tr key={verhuurAanvragen.AccountID}>
-                                <th>{verhuurAanvragen.startdatum}</th>
-                                <th>{verhuurAanvragen.einddatum}</th>
-                                <th>{verhuurAanvragen.bestemming}</th>
-                                <th>{verhuurAanvragen.kilometers}</th>
-                                <th>{verhuurAanvragen.status}</th>
-                                <th>{verhuurAanvragen.voertuig.merk}</th>
-                                <th>{verhuurAanvragen.voertuig.type}</th>
-                                <th>{verhuurAanvragen.voertuig.prijs_per_dag}</th>
+                            <tr key={`${verhuurAanvragen.AccountID}-${verhuurAanvragen.startdatum}`}>
+                                <td>{verhuurAanvragen.startdatum}</td>
+                                <td>{verhuurAanvragen.einddatum}</td>
+                                <td>{verhuurAanvragen.bestemming}</td>
+                                <td>{verhuurAanvragen.kilometers}</td>
+                                <td>{verhuurAanvragen.status}</td>
+                                <td>{verhuurAanvragen.voertuig.merk}</td>
+                                <td>{verhuurAanvragen.voertuig.type}</td>
+                                <td>{verhuurAanvragen.voertuig.prijs_per_dag}</td>
                             </tr>
                         ))}
                     </tbody>

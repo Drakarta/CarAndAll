@@ -192,99 +192,106 @@ namespace Backend.Controllers
         }
         [Authorize(Policy = "AdminPolicy")]
         [HttpGet("users")]
-        public async Task<IActionResult> GetAllUsers()
+public async Task<IActionResult> GetAllUsers()
+{
+    try
+    {
+        var users = await _accountDbContext.Account
+            .Select(u => new 
+            {
+                u.Id,
+                u.Email,
+                Name = u.Naam, // Ensure name is included
+                Role = u.Rol ?? "Error", // Ensure role is included
+                Address = u.Adres ?? "N/A",
+                PhoneNumber = u.TelefoonNummer ?? "N/A"
+            })
+            .ToListAsync();
+
+        return Ok(new { users });
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error fetching users: {ex.Message}");
+        return StatusCode(500, new { message = "Internal Server Error." });
+    }
+}
+[Authorize(Policy = "AdminPolicy")]
+[HttpPost("CreateUser")]
+public async Task<IActionResult> AddUser([FromBody] LoginRegisterModel model)
+{
+    try
+    {
+        if (model == null || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
         {
-            try
-            {
-                var users = await _accountDbContext.Account
-                    .Select(u => new 
-                    {
-                        u.Id,
-                        u.Email,
-                        Rol = u.Rol ?? "Error",
-                        Adres = u.Adres ?? "N/A",
-                        TelefoonNummer = u.TelefoonNummer ?? "N/A"
-                    })
-                    .ToListAsync();
-
-                return Ok(new { users });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error fetching users: {ex.Message}");
-                return StatusCode(500, new { message = "Internal Server Error." });
-            }
+            return BadRequest(new { message = "Invalid user creation request." });
         }
-        [Authorize(Policy = "AdminPolicy")]
-        [HttpPost("CreateUser")]
-        public async Task<IActionResult> AddUser([FromBody] LoginRegisterModel model)
+
+        var existingUser = await _accountDbContext.Account
+            .FirstOrDefaultAsync(u => u.Email == model.Email);
+
+        if (existingUser != null)
         {
-            try
-            {
-                if (model == null || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
-                {
-                    return BadRequest(new { message = "Invalid user creation request." });
-                }
-
-                var existingUser = await _accountDbContext.Account
-                    .FirstOrDefaultAsync(u => u.Email == model.Email);
-
-                if (existingUser != null)
-                {
-                    return Conflict(new { message = "Email is already in use." });
-                }
-
-                var newUser = new Account
-                {
-                    Id = Guid.NewGuid(), // Ensure a unique identifier is generated
-                    Email = model.Email,
-                    Naam = model.Naam,
-                    wachtwoord = BC.EnhancedHashPassword(model.Password),
-                    Rol = model.Role ?? "DefaultRole", // Set a role if provided or default to a fallback
-                    Adres = model.Address ?? "N/A",
-                    TelefoonNummer = model.PhoneNumber ?? "N/A"
-                };
-
-                _accountDbContext.Account.Add(newUser);
-                await _accountDbContext.SaveChangesAsync();
-
-                return Ok(new
-                {
-                    Message = "User created successfully.",
-                    UserId = newUser.Id,
-                    Role = newUser.Rol
-                });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error occurred during user creation: {ex.Message}");
-                return StatusCode(500, new { message = "Internal Server Error: " + ex.Message });
-            }
+            return Conflict(new { message = "Email is already in use." });
         }
+
+        var newUser = new Account
+        {
+            Id = Guid.NewGuid(), // Ensure a unique identifier is generated
+            Email = model.Email,
+            Naam = model.Naam, // Ensure the name is set
+            wachtwoord = BC.EnhancedHashPassword(model.Password),
+            Rol = model.Role ?? "DefaultRole", // Set a role if provided or default to a fallback
+            Adres = model.Address ?? "N/A",
+            TelefoonNummer = model.PhoneNumber ?? "N/A"
+        };
+
+        _accountDbContext.Account.Add(newUser);
+        await _accountDbContext.SaveChangesAsync();
+
+        return Ok(new
+        {
+            Message = "User created successfully.",
+            UserId = newUser.Id,
+            newUser.Email,
+            newUser.Naam, // Ensure the name is returned
+            Role = newUser.Rol,
+            Address = newUser.Adres,
+            PhoneNumber = newUser.TelefoonNummer
+        });
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error occurred during user creation: {ex.Message}");
+        return StatusCode(500, new { message = "Internal Server Error: " + ex.Message });
+    }
+}
 
         [Authorize(Policy = "AdminPolicy")]
         [HttpPut("users/{id}")]
-        public async Task<IActionResult> UpdateUserRole(Guid id, [FromBody] string newRole)
+public async Task<IActionResult> UpdateUserRole(Guid id, [FromBody] UpdateUserRoleModel model)
+{
+    try
+    {
+        var user = await _accountDbContext.Account.FindAsync(id);
+        if (user == null)
         {
-            try
-            {
-                var user = await _accountDbContext.Account.FindAsync(id);
-                if (user == null)
-                {
-                    return NotFound(new { message = "User not found." });
-                }
-
-                user.Rol = newRole;
-                await _accountDbContext.SaveChangesAsync();
-
-                return Ok(new { message = "User role updated successfully." });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error updating user role: {ex.Message}");
-                return StatusCode(500, new { message = "Internal Server Error." });
-            }
+            return NotFound(new { message = "User not found." });
         }
+
+        user.Rol = model.Role; // Use 'Role' instead of 'NewRole'
+        user.Naam = model.Naam; // Ensure name is updated
+        user.Email = model.Email; // Ensure email is updated
+        await _accountDbContext.SaveChangesAsync();
+
+        return Ok(new { message = "User role updated successfully.", user });
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error updating user role: {ex.Message}");
+        return StatusCode(500, new { message = "Internal Server Error." });
+    }
+}
         [Authorize(Policy = "AdminPolicy")]
         [HttpDelete("users/{id}")]
         public async Task<IActionResult> RemoveUser(Guid id)
@@ -359,6 +366,130 @@ namespace Backend.Controllers
                 return StatusCode(500, new { message = "An unexpected error occurred. Please try again later." });
             }
         }
-        
+
+
+        [Authorize(Policy = "BackOffice")]
+        [HttpGet("getbackofficeaccounts")]
+        public async Task<IActionResult> GetBackOfficeAccounts()
+        {
+            try
+            {
+                var accounts = await _accountDbContext.Account
+                    .Where(a => a.Rol == "Backofficemedewerker")
+                    .Select(a => new
+                    {
+                        a.Id,
+                        a.Email,
+                        a.Naam,
+                        a.Adres,
+                        a.TelefoonNummer
+                    })
+                    .ToListAsync();
+
+                return Ok(new { accounts });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching back office accounts: {ex.Message}");
+                return StatusCode(500, new { message = "Internal Server Error." });
+            }
+        }
+
+        [Authorize(Policy = "BackOffice")]
+        [HttpPost("createbackofficeaccount")]
+        public async Task<IActionResult> CreateBackOfficeAccount([FromBody] LoginRegisterModel model)
+        {
+            try
+            {
+                if (model == null || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
+                {
+                    return BadRequest(new { message = "Invalid account creation request." });
+                }
+
+                var existingAccount = await _accountDbContext.Account
+                    .FirstOrDefaultAsync(a => a.Email == model.Email);
+
+                if (existingAccount != null)
+                {
+                    return Conflict(new { message = "Email is already in use." });
+                }
+
+                var newAccount = new Account
+                {
+                    Email = model.Email,
+                    Naam = model.Naam,
+                    wachtwoord = BC.EnhancedHashPassword(model.Password),
+                    Rol = "Backofficemedewerker",
+                    Adres = model.Address ?? "N/A",
+                    TelefoonNummer = model.PhoneNumber ?? "N/A"
+                };
+
+                _accountDbContext.Account.Add(newAccount);
+                await _accountDbContext.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    Message = "Back office account created successfully.",
+                    AccountId = newAccount.Id,
+                    Role = newAccount.Rol
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error occurred during back office account creation: {ex.Message}");
+                return StatusCode(500, new { message = "Internal Server Error: " + ex.Message });
+            }
+        }
+
+        [Authorize(Policy = "BackOffice")]
+        [HttpPut("updatebackofficeaccount/{id}")]
+        public async Task<IActionResult> UpdateBackOfficeAccount(Guid id, [FromBody] UpdateUserModel model)
+        {
+            try
+            {
+                var account = await _accountDbContext.Account.FindAsync(id);
+                if (account == null)
+                {
+                    return NotFound(new { message = "Account not found." });
+                }
+
+                account.Naam = model.Naam;
+                account.Adres = model.Adres;
+                account.TelefoonNummer = model.TelefoonNummer;
+
+                await _accountDbContext.SaveChangesAsync();
+
+                return Ok(new { message = "Back office account updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating back office account: {ex.Message}");
+                return StatusCode(500, new { message = "Internal Server Error." });
+            }
+        }
+
+        [Authorize(Policy = "BackOffice")]
+        [HttpDelete("deletebackofficeaccount/{id}")]
+        public async Task<IActionResult> DeleteBackOfficeAccount(Guid id)
+        {
+            try
+            {
+                var account = await _accountDbContext.Account.FindAsync(id);
+                if (account == null)
+                {
+                    return NotFound(new { message = "Account not found." });
+                }
+
+                _accountDbContext.Account.Remove(account);
+                await _accountDbContext.SaveChangesAsync();
+
+                return Ok(new { message = "Back office account removed successfully." });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error removing back office account: {ex.Message}");
+                return StatusCode(500, new { message = "Internal Server Error." });
+            }
+        }
     }
 }

@@ -36,8 +36,8 @@ namespace Backend.Entities
         public DateTime Einddatum { get; set; }
         public required string Bestemming { get; set; }
         public int Kilometers { get; set; }
-        public VoertuigDto Voertuig { get; set; }
-        public string Status { get; set; }
+        public required VoertuigDto Voertuig { get; set; }
+        public required string Status { get; set; }
         public Guid accountID { get; set; }
     }
 
@@ -49,8 +49,8 @@ namespace Backend.Entities
         public DateTime Einddatum { get; set; }
         public required string Bestemming { get; set; }
         public int Kilometers { get; set; }
-        public VoertuigDto Voertuig { get; set; }
-        public string Status { get; set; }
+        public required VoertuigDto Voertuig { get; set; }
+        public required string Status { get; set; }
         public Guid AccountID { get; set; }
         public required string AccountEmail { get; set; }
         public string AccountNaam { get; set; } = "Unknown";
