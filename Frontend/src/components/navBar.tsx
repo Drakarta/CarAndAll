@@ -2,7 +2,7 @@ import { NavLink, Outlet } from "react-router-dom";
 import Logo from "../assets/CarAndAllLogo.svg";
 import { useTokenStore } from "../stores";
 import LogOutButton from "./logOutButton";
-import Footer from "./footer";
+
 
 import "../styles/navBar.css";
 
@@ -53,18 +53,26 @@ const AdminNavBar: React.FC = () => (
   </>
 );
 
-const BeheerderNavBar : React.FC = () => (
+const WagenParkNavBar : React.FC = () => (
 
   <>
           <BaseNavBar />
-          <NavLink to="/voertuigenOverview" className="navBarLink">
-            Voertuigen
-          </NavLink>
           <NavLink to="/WagenParkBeheerder" className="navBarLink">
             WagenParkBeheerder
           </NavLink>
           <NavLink to="/abonnementen" className="navBarLink">
             Abonnementen
+          </NavLink>
+        </>
+);
+
+
+const ZakelijkeKlantNavBar : React.FC = () => (
+
+  <>
+          <BaseNavBar />
+          <NavLink to="/voertuigenOverview" className="navBarLink">
+            Voertuigen
           </NavLink>
           <NavLink to ="/verhuur-aanvraag-status" className="navBarLink">
       Verhuur Aanvraag Status
@@ -80,6 +88,12 @@ const BackOfficeNavBar : React.FC = () => (
           </NavLink>
           <NavLink to="/backOfficeVerhuurAanvragen" className="navBarLink">
             Verhuur aanvragen
+          </NavLink>
+          <NavLink to="/BackOfficeAccounts" className="navBarLink">
+            Backoffice Accounts
+          </NavLink>
+          <NavLink to="/privacy/edit" className="navBarLink">
+            privacy edit
           </NavLink>
         </>
 )
@@ -97,8 +111,9 @@ const RoleNavBar: React.FC<{ role: string }> = ({ role }) =>  {
     case "Admin":
       return <AdminNavBar />;
     case "Wagenparkbeheerder":
+      return <WagenParkNavBar />;
     case "Zakelijkeklant":
-      return <BeheerderNavBar />;
+      return <ZakelijkeKlantNavBar />;
     case "Backofficemedewerker":
       return <BackOfficeNavBar />;
     case "Particuliere huurder":
@@ -112,7 +127,7 @@ const RoleNavBar: React.FC<{ role: string }> = ({ role }) =>  {
 
 export default function NavBar() {
   const token = useTokenStore((state) => state.token);
-  const role = useTokenStore((state) => state.role) || "";
+  const role = useTokenStore((state) => state.role) ?? "";
 
   return (
     <>
@@ -130,7 +145,6 @@ export default function NavBar() {
         )}
       </nav>
       <Outlet />
-      <Footer />
     </>
   );
 }

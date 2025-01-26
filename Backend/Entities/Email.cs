@@ -6,7 +6,7 @@ namespace Backend.Entities
         public required string Address { get; set; }
 
         public int account_id { get; set; }
-        public Account? Account { get; set; } 
+        public Account? Account { get; set; }
 
         public int bedrijf_id { get; set; }
         public Bedrijf? Bedrijf { get; set; }

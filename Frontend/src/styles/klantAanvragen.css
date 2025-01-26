@@ -1,0 +1,36 @@
+.klant-aanvragen-box {
+    width: 80%;
+    max-width: 1200px;
+    margin: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    padding: 20px;
+}
+
+
+
+.aanvraag-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.aanvraag-row:last-child {
+    border-bottom: none;
+}
+
+.content {
+    width: 100%;
+    border: 1px solid gray;
+    border-collapse: collapse;
+    overflow-x: auto;
+    flex: 2;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column; 
+    gap: 0; 
+}

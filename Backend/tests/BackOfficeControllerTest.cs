@@ -22,12 +22,12 @@ public class BackOfficeControllerTests
         _controller = new BackOfficeController(_context);
     }
 
-     [Fact]
+    [Fact]
     public async Task GetVerhuurAanvragen_ReturnsOk_HasVerhuurAanvragen()
     {
-        var voertuig = new Voertuig 
+        var voertuig = new Voertuig
         {
-            Merk = "Toyota", 
+            Merk = "Toyota",
             Type = "Corolla",
             Kenteken = "12-345-67",
             Kleur = "Zwart",
@@ -40,10 +40,10 @@ public class BackOfficeControllerTests
 
         var accountId = Guid.NewGuid();
 
-        var account = new Account 
+        var account = new Account
         {
-            Id = accountId, 
-            Email = "particulierehuurder@example.com", 
+            Id = accountId,
+            Email = "particulierehuurder@example.com",
             wachtwoord = "securePassword123",
             Rol = "Particuliere huurder"
         };
@@ -70,13 +70,12 @@ public class BackOfficeControllerTests
 
         Assert.Equal(200, okResult.StatusCode);
     }
-    
+
     [Fact]
     public async Task ChangeStatus_ReturnsOk_Geaccepteerd()
-    {
         var voertuig = new Auto 
         {
-            Merk = "Toyota", 
+            Merk = "Toyota",
             Type = "Corolla",
             Kenteken = "12-345-67",
             Kleur = "Zwart",
@@ -90,10 +89,10 @@ public class BackOfficeControllerTests
 
         var accountId = Guid.NewGuid();
 
-        var account = new Account 
+        var account = new Account
         {
-            Id = accountId, 
-            Email = "particulierehuurder@example.com", 
+            Id = accountId,
+            Email = "particulierehuurder@example.com",
             wachtwoord = "securePassword123",
             Rol = "Particuliere huurder"
         };
@@ -114,7 +113,7 @@ public class BackOfficeControllerTests
         _context.VerhuurAanvragen.Add(verhuurAanvraag1);
         await _context.SaveChangesAsync();
 
-        var backOfficeModel = new BackOfficeModel { AanvraagID = verhuurAanvraag1.AanvraagID, Status = "Geaccepteerd"};
+        var backOfficeModel = new BackOfficeModel { AanvraagID = verhuurAanvraag1.AanvraagID, Status = "Geaccepteerd" };
 
         var result = await _controller.ChangeStatus(backOfficeModel);
 

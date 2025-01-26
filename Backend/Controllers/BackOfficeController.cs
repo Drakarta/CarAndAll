@@ -11,7 +11,7 @@ namespace Backend.Controllers
     [Route("api/[controller]")]
     public class BackOfficeController : ControllerBase
     {
-          protected readonly ApplicationDbContext _context;
+        protected readonly ApplicationDbContext _context;
 
         public BackOfficeController(ApplicationDbContext context)
         {
@@ -43,7 +43,7 @@ namespace Backend.Controllers
                                     })
                                     .ToListAsync();
 
-            return Ok (verhuurAanvragen);
+                return Ok(verhuurAanvragen);
             }
             catch (Exception ex)
             {
@@ -74,11 +74,12 @@ namespace Backend.Controllers
                      await _context.SaveChangesAsync();
                 }
 
-                var succes = new {
+                var succes = new
+                {
                     message = "Verhuur aanvraag status succesvol aangepast.",
                     statusCode = 200
                 };
-                return Ok (succes);
+                return Ok(succes);
             }
             catch (Exception ex)
             {

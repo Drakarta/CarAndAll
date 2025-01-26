@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Backend.Models;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Backend.Controllers 
+namespace Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -43,8 +43,7 @@ namespace Backend.Controllers
                                             }).ToList()
                                     })
                                     .ToListAsync();
-
-            return Ok (voertuigIds);
+                return Ok(voertuigIds);
             }
             catch (Exception ex)
             {

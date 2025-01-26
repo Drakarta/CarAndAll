@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-
-
+import './emailButton.css';
 interface EmailRemoveProps {
-    setEmails: React.Dispatch<React.SetStateAction<string[]>>;
+    readonly setEmails: React.Dispatch<React.SetStateAction<string[]>>;
 }
+
 export default function EmailRemove({ setEmails }: EmailRemoveProps) {
     const [email, setEmail] = useState('');
+    const [error, setError] = useState('');
+
     const handleRemoveEmail = async () => {
         try {
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/Wagenparkbeheerder/removeUserFromCompany`, {
@@ -19,11 +21,14 @@ export default function EmailRemove({ setEmails }: EmailRemoveProps) {
             if (response.ok) {
                 setEmails((Emails) => Emails.filter(e => e !== email.toLowerCase()));
                 setEmail('');
+                setError('');
+                window.location.reload();
             } else {
-                console.error('Error removing email:', response.statusText);
+                setError(`Error removing email: ${response.statusText}`);
             }
         } catch (error) {
             console.error('Error removing email:', error);
+            setError('Error removing email');
         }
     };
 
@@ -36,7 +41,14 @@ export default function EmailRemove({ setEmails }: EmailRemoveProps) {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter email to remove"
             />
-            <button onClick={handleRemoveEmail}>Remove Email</button>
+            <button 
+                onClick={handleRemoveEmail} 
+                disabled={!email} 
+                className={!email ? 'disabled' : ''}
+            >
+                Remove Email
+            </button>
+            {error && <p>{error}</p>}
         </div>
     );
 };

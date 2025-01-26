@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.Entities;
 
-
 public class VoertuigControllerTests
 {
     private DbContextOptions<ApplicationDbContext> _options;
@@ -28,7 +27,7 @@ public class VoertuigControllerTests
     {
         var voertuig = new Auto 
         {
-            Merk = "Toyota", 
+            Merk = "Toyota",
             Type = "Corolla",
             Kenteken = "12-345-67",
             Kleur = "Zwart",

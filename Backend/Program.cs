@@ -8,6 +8,7 @@ using Backend.Entities;
 using Backend.Interfaces;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddScoped<IEmailSender, EmailSencer>();
 builder.Services.AddScoped<EmailSencer>();
+
+
+builder.Services.AddScoped<VerhuurAanvraagService>();
 
 builder.Services.AddHttpContextAccessor();
 
@@ -57,18 +61,18 @@ builder.Services.AddAuthorization(options =>
         policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
         policy.RequireAuthenticatedUser();
         policy.RequireRole("Admin");
-});
+    });
     options.AddPolicy("Wagenparkbeheerder", policy =>
     {
-    policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
-    policy.RequireAuthenticatedUser();
-    policy.RequireRole("Wagenparkbeheerder", "Admin");
+        policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
+        policy.RequireAuthenticatedUser();
+        policy.RequireRole("Wagenparkbeheerder", "Admin");
     });
     options.AddPolicy("Zakelijkeklant", policy =>
     {
-    policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
-    policy.RequireAuthenticatedUser();
-    policy.RequireRole("Zakelijkeklant", "Admin");
+        policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
+        policy.RequireAuthenticatedUser();
+        policy.RequireRole("Zakelijkeklant", "Admin");
     });
     options.AddPolicy("ParticuliereHuurder", policy =>
     {
@@ -101,6 +105,18 @@ builder.Services.AddAuthorization(options =>
     policy.RequireAuthenticatedUser();
     policy.RequireRole("Frontofficemedewerker", "Admin");
 
+   });
+    options.AddPolicy("BackOffice", policy =>
+    {
+        policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
+        policy.RequireAuthenticatedUser();
+        policy.RequireRole("Backofficemedewerker", "Admin");
+    });
+    options.AddPolicy("BackOffice", policy =>
+    {
+        policy.AuthenticationSchemes.Add(CookieAuthenticationDefaults.AuthenticationScheme);
+        policy.RequireAuthenticatedUser();
+        policy.RequireRole("Backofficemedewerker", "Admin");
     });
 });
 
@@ -116,4 +132,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();

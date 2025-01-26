@@ -49,17 +49,17 @@ public class VerhuurAanvraagControllerTests
     {
         var accountId = Guid.NewGuid();
 
-        var account = new Account 
+        var account = new Account
         {
-            Id = accountId, 
-            Email = "particulierehuurder@example.com", 
+            Id = accountId,
+            Email = "particulierehuurder@example.com",
             wachtwoord = "securePassword123",
             Rol = "Particuliere huurder"
         };
         _context.Account.Add(account);
         var voertuig = new Auto 
         {
-            Merk = "Toyota", 
+            Merk = "Toyota",
             Type = "Corolla",
             Kenteken = "12-345-67",
             Kleur = "Zwart",
@@ -75,13 +75,14 @@ public class VerhuurAanvraagControllerTests
 
         MockAuthentication(account.Email, account.Rol);
 
-        var verhuurAanvraagModel = new VerhuurAanvraagModel { 
-                    Startdatum = DateTime.Today,
-                    Einddatum = DateTime.Today.AddDays(14),
-                    Bestemming = "Spanje",
-                    Kilometers = 500,
-                    VoertuigID = voertuig.VoertuigID,
-                 };
+        var verhuurAanvraagModel = new VerhuurAanvraagModel
+        {
+            Startdatum = DateTime.Today,
+            Einddatum = DateTime.Today.AddDays(14),
+            Bestemming = "Spanje",
+            Kilometers = 500,
+            VoertuigID = voertuig.VoertuigID,
+        };
 
         var result = await _controller.CreateVerhuurAanvraag(verhuurAanvraagModel);
 

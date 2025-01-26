@@ -1,19 +1,17 @@
 using System;
+using System.Reflection.Metadata.Ecma335;
 
 
 namespace Backend.Helpers
 {
     public static class EmailHelper
     {
-       
+
         public static bool CheckAmountAllowedToAddToCompany(int abonnementMaxNumbers, int emails)
         {
-            if (abonnementMaxNumbers >= emails)
-            {
-                return true;
-            } else {
-                return false;
-            }
+            var valid = (abonnementMaxNumbers != 0 && abonnementMaxNumbers >= emails) ? true : false;
+            return valid;
+
         }
 
         public static bool CheckDomeinAllowToAddToCompany(string email, string domein)

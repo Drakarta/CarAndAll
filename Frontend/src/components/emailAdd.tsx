@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
+import './emailButton.css'
 
 interface EmailAddProps {
     setEmails: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-export default function EmailAdd({ setEmails }: EmailAddProps) {
+export default function EmailAdd({ setEmails }: Readonly<EmailAddProps>) {
     const [email, setEmail] = useState('');
     const [role, setRole] = useState('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -12,7 +13,7 @@ export default function EmailAdd({ setEmails }: EmailAddProps) {
 
     const handleAddEmail = async () => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/Wagenparkbeheerder/addUserToCompany`, {
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/Wagenparkbeheerder/addAccountToCompany`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -23,7 +24,7 @@ export default function EmailAdd({ setEmails }: EmailAddProps) {
 
             let responseData;
             const contentType = response.headers.get('Content-Type');
-            if (contentType && contentType.includes('application/json')) {
+            if (contentType?.includes('application/json')) {
                 responseData = await response.json();
             } else {
                 responseData = { message: await response.text() };
@@ -63,20 +64,29 @@ export default function EmailAdd({ setEmails }: EmailAddProps) {
     };
 
     return (
-        <div>
+<div>
+            <label htmlFor="email-input">Email:</label>
             <input
+                id="email-input"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter email"
                 onKeyDown={handleKeyDown}
             />
-            <select value={role} onChange={(e) => setRole(e.target.value)}>
+            <label htmlFor="role-select">Role:</label>
+            <select id="role-select" value={role} onChange={(e) => setRole(e.target.value)}>
                 <option value="" disabled>Select a role</option>
                 <option value="Wagenparkbeheerder">Wagenparkbeheerder</option>
                 <option value="Zakelijkeklant">zakelijke klant</option>
             </select>
-            <button onClick={handleAddEmail}>Add Email</button>
+            <button
+                onClick={handleAddEmail}
+                disabled={!email || !role}
+                className={!email || !role ? 'disabled' : ''}
+            >
+                Add Email
+            </button>
             {errorMessage && <p>{errorMessage}</p>}
             {responseMessage && <p>{responseMessage}</p>}
         </div>

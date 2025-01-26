@@ -1,23 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using Newtonsoft.Json;
-using System.Threading.Tasks;
-using System.Linq;
 using System.Text.RegularExpressions;
 using Backend.Data;
 using Backend.Entities;
 using Backend.Interfaces;
 using Backend.Helpers;
 using Backend.Models;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using System.Collections.Generic;
 using System.Globalization;
-using Microsoft.VisualBasic;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using BC = BCrypt.Net.BCrypt;
+using Backend.Services;
 
 namespace Backend.Controllers
 {
@@ -27,41 +20,50 @@ namespace Backend.Controllers
     {
         protected readonly ApplicationDbContext _context;
         protected readonly IEmailSender _emailSender;
+        protected readonly VerhuurAanvraagService _VerhuurAanvraagService;
 
-        public WagenparkbeheerderController(ApplicationDbContext context, IEmailSender emailSender)
+        public WagenparkbeheerderController(ApplicationDbContext context, IEmailSender emailSender, VerhuurAanvraagService verhuurAanvraagService)
         {
             _context = context;
             _emailSender = emailSender;
-            
+            _VerhuurAanvraagService = verhuurAanvraagService;
+
         }
 
-        [Authorize(Policy="Wagenparkbeheerder")]
+        [Authorize(Policy = "Wagenparkbeheerder")]
         [HttpGet("emails")]
         public async Task<IActionResult> GetEmails()
         {
             try
             {
                 var accountEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+                if (accountEmail == null)
+                {
+                    return NotFound("User is not authenticated.");
+                }
+
                 var account_id = await _context.Account
                     .Where(a => a.Email == accountEmail.Value)
                     .Select(a => a.Id)
                     .FirstOrDefaultAsync();
 
+
                 var BedrijfEigenaar_id = await _context.BedrijfWagenparkbeheerders
                     .Where(bw => bw.account_id == account_id)
                     .Include(b => b.Bedrijf)
-                    .Select(b => b.Bedrijf.Id)
+                    .Select(bw => bw.bedrijf_id)
                     .FirstOrDefaultAsync();
+
 
                 if (BedrijfEigenaar_id == Guid.Empty)
                 {
                     return Unauthorized("User is not associated with any company.");
                 }
-                var Abbonement = await _context.Bedrijf
+                var Abonement = await _context.Bedrijf
                     .Where(b => b.Id == BedrijfEigenaar_id)
-                    .Select(b => b.abonnement)
+                    .Select(b => b.AbonnementId)
                     .FirstOrDefaultAsync();
-                if (Abbonement == null)
+                if (Abonement == null)
                 {
                     return NotFound("Company does not have any subscription.");
                 }
@@ -74,6 +76,7 @@ namespace Backend.Controllers
                     .Where(result => result.bedrijf_id == BedrijfEigenaar_id)
                     .Select(result => result.Email)
                     .ToListAsync();
+
                 return Ok(accountEmails);
             }
             catch (Exception ex)
@@ -81,26 +84,32 @@ namespace Backend.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        [Authorize(Policy="Wagenparkbeheerder")]
-        [HttpPost("addUserToCompany")]
-        public async Task<IActionResult> AddUserToCompany([FromBody] EmailModelAdd model)
+        [Authorize(Policy = "Wagenparkbeheerder")]
+        [HttpPost("addAccountToCompany")]
+        public async Task<IActionResult> AddAccountToCompany([FromBody] EmailModelAdd model)
         {
             try
             {
                 if (!Regex.IsMatch(model.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
                 {
-                    var errorDetails = new {
+                    var errorDetails = new
+                    {
                         message = "FalseFormatEmail",
                         statusCode = 400
                     };
                     return BadRequest(errorDetails);
                 }
                 var accountEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+                if (accountEmail == null)
+                {
+                    return Unauthorized("User is not authenticated.");
+                }
                 var reqeustEmailToLower = model.Email.ToLower();
                 var lowerAccountEmail = accountEmail.Value.ToLower();
                 if (lowerAccountEmail == reqeustEmailToLower)
                 {
-                    var errorDetails = new {
+                    var errorDetails = new
+                    {
                         message = "User cannot add himself/herself to the company.",
                         statusCode = 400
                     };
@@ -110,16 +119,16 @@ namespace Backend.Controllers
                 var account_id = await _context.Account
                     .Where(a => a.Email == accountEmail.Value)
                     .Select(a => a.Id)
-                    .FirstOrDefaultAsync();;
+                    .FirstOrDefaultAsync();
                 var bedrijf_id = await _context.BedrijfWagenparkbeheerders
                     .Where(bw => bw.account_id == account_id)
-                    .Include(b => b.Bedrijf)
-                    .Select(b => b.Bedrijf.Id)
+                    .Select(bw => bw.bedrijf_id)
                     .FirstOrDefaultAsync();
 
                 if (bedrijf_id == Guid.Empty)
                 {
-                    var errorDetails = new {
+                    var errorDetails = new
+                    {
                         message = "User is not associated with any company.",
                         statusCode = 401
                     };
@@ -128,11 +137,12 @@ namespace Backend.Controllers
 
                 var domein = await _context.Bedrijf
                     .Where(b => b.Id == bedrijf_id)
-                    .Select(b => b.Domein.ToLower())
+                    .Select(b => b.Domein != null ? b.Domein.ToLower() : string.Empty)
                     .FirstOrDefaultAsync();
                 if (domein == null || !EmailHelper.CheckDomeinAllowToAddToCompany(reqeustEmailToLower, domein))
                 {
-                    var errorDetails = new {
+                    var errorDetails = new
+                    {
                         message = "FalseDomein",
                         statusCode = 400
                     };
@@ -144,7 +154,7 @@ namespace Backend.Controllers
 
                 if (account == null)
                 {
-                    var password = Password.CreatePassword(8);
+                    var password = Password.CreatePassword(12);
                     var newAccount = new Account
                     {
                         Id = Guid.NewGuid(),
@@ -155,25 +165,38 @@ namespace Backend.Controllers
                     _context.Account.Add(newAccount);
                     await _context.SaveChangesAsync();
                     account = await _context.Account
-                        .FirstOrDefaultAsync(a => string.Equals(a.Email, model.Email, StringComparison.OrdinalIgnoreCase));
+                        .FirstOrDefaultAsync(a => string.Equals(a.Email.ToLower(), model.Email.ToLower()));
                     // string context = $"{model.Email} {password} Dit zijn uw loggin gegevens";
                     // _emailSencer.SendEmail("pbt05@hotmail.nl", "Account gegevens", context);
+
                 }
+
+
 
                 var bedrijf = await _context.Bedrijf.FindAsync(bedrijf_id);
 
+
+                if (bedrijf == null)
+                {
+                    return NotFound("Company not found.");
+                }
+
                 var abonnementMaxNumbers = await _context.Bedrijf
-                    .Where(b => b.Id == bedrijf_id)
-                    .Select(b => b.abonnement.Max_medewerkers)
+                    .Where(b => b.Id == bedrijf.Id)
+                    .Select(b => b.abonnement != null ? b.abonnement.Max_medewerkers : 0)
                     .FirstOrDefaultAsync();
-                Console.WriteLine($"Max number of employees allowed: {abonnementMaxNumbers}");
+
+
                 var CountAccountBedrijf = await _context.BedrijfAccounts
                     .Where(ab => ab.bedrijf_id == bedrijf_id)
                     .CountAsync();
 
+
+
                 if (!EmailHelper.CheckAmountAllowedToAddToCompany(abonnementMaxNumbers, CountAccountBedrijf))
                 {
-                    var errorDetails = new {
+                    var errorDetails = new
+                    {
                         message = "MaxNumber",
                         statusCode = 400
                     };
@@ -182,7 +205,7 @@ namespace Backend.Controllers
 
                 var accountBedrijf = new BedrijfAccounts
                 {
-                    account_id = account.Id,
+                    account_id = account?.Id ?? throw new InvalidOperationException("Account not found"),
                     bedrijf_id = bedrijf_id,
                     Account = account,
                     Bedrijf = bedrijf ?? throw new InvalidOperationException("Bedrijf not found")
@@ -204,7 +227,8 @@ namespace Backend.Controllers
                 _context.BedrijfAccounts.Add(accountBedrijf);
                 await _context.SaveChangesAsync();
 
-                var succesDetails = new {
+                var succesDetails = new
+                {
                     message = "User added to the company successfully.",
                     statusCode = 200
                 };
@@ -213,11 +237,11 @@ namespace Backend.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error occurred: {ex.Message}");
+
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        [Authorize(Policy="Wagenparkbeheerder")]
+        [Authorize(Policy = "Wagenparkbeheerder")]
         [HttpPost("removeUserFromCompany")]
         public async Task<IActionResult> RemoveUserFromCompany([FromBody] EmailModelRemove model)
         {
@@ -225,7 +249,8 @@ namespace Backend.Controllers
             {
                 if (!Regex.IsMatch(model.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
                 {
-                    var errorDetails = new {
+                    var errorDetails = new
+                    {
                         message = "This is not the correct format of an email.",
                         statusCode = 400
                     };
@@ -233,11 +258,12 @@ namespace Backend.Controllers
                 }
 
                 var account = await _context.Account
-                    .FirstOrDefaultAsync(a => a.Email.ToLower() == model.Email.ToLower());
+                    .FirstOrDefaultAsync(a => a.Email.Equals(model.Email, StringComparison.CurrentCultureIgnoreCase));
 
                 if (account == null)
                 {
-                    var errorDetails = new {
+                    var errorDetails = new
+                    {
                         message = "Account with the provided email does not exist.",
                         statusCode = 404
                     };
@@ -245,6 +271,10 @@ namespace Backend.Controllers
                 }
 
                 var accountEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+                if (accountEmail == null)
+                {
+                    return Unauthorized("User is not authenticated.");
+                }
                 var account_id = await _context.Account
                     .Where(a => a.Email == accountEmail.Value)
                     .Select(a => a.Id)
@@ -262,7 +292,8 @@ namespace Backend.Controllers
 
                 if (bedrijf_id == Guid.Empty)
                 {
-                    var errorDetails = new {
+                    var errorDetails = new
+                    {
                         message = "User is not associated with any company.",
                         statusCode = 401
                     };
@@ -274,41 +305,50 @@ namespace Backend.Controllers
 
                 if (accountBedrijf == null)
                 {
-                    var errorDetails = new {
+                    var errorDetails = new
+                    {
                         message = "User is not associated with company.",
                         statusCode = 404
                     };
                     return NotFound(errorDetails);
                 }
-                 var bedrijfEigenaar = await _context.Bedrijf
-                    .Where(b => b.Id == bedrijf_id)
-                    .Select(b => b.Eigenaar)
-                    .FirstOrDefaultAsync();
+                var bedrijfEigenaar = await _context.Bedrijf
+                   .Where(b => b.Id == bedrijf_id)
+                   .Select(b => b.Eigenaar)
+                   .FirstOrDefaultAsync();
 
                 if (account.Id == bedrijfEigenaar)
                 {
-                    var errorDetails = new {
+                    var errorDetails = new
+                    {
                         message = "Owner cannot be removed from the company.",
                         statusCode = 400
                     };
                     return BadRequest(errorDetails);
                 }
 
-                  if (account.Rol == "Wagenparkbeheerder")
+                if (account.Rol == "Wagenparkbeheerder")
                 {
                     var bedrijfWagenparkbeheerder = await _context.BedrijfWagenparkbeheerders
                         .FirstOrDefaultAsync(bw => bw.account_id == account.Id && bw.bedrijf_id == bedrijf_id);
-                    
-                    _context.BedrijfWagenparkbeheerders.Remove(bedrijfWagenparkbeheerder);
+                        if (bedrijfWagenparkbeheerder != null)
+                        {
+                            _context.BedrijfWagenparkbeheerders.Remove(bedrijfWagenparkbeheerder);
+                        } else {
+                            return NotFound("User is not a fleet manager.");
+                        }
+
+                   
                 }
 
                 // string context = $"{model.Email} U bent verwijderd van het bedrijf:{BedrijfNaam}  ";
                 //  _emailSencer.SendEmail("pbt05@hotmail.nl", "Account verwijderd", context);
-               
+
 
                 _context.BedrijfAccounts.Remove(accountBedrijf);
                 await _context.SaveChangesAsync();
-                var succesDetails = new {
+                var succesDetails = new
+                {
                     message = "User removed from the company successfully.",
                     statusCode = 200
                 };
@@ -320,7 +360,7 @@ namespace Backend.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        [Authorize(Policy="Wagenparkbeheerder")]
+        [Authorize(Policy = "Wagenparkbeheerder")]
         [HttpPost("GetVoertuigenPerUser")]
         public async Task<IActionResult> GetVoertuigenPerUser([FromBody] VoertuigUserModel model)
         {
@@ -328,132 +368,28 @@ namespace Backend.Controllers
             {
                 if (string.IsNullOrEmpty(model.Email) || !Regex.IsMatch(model.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
                 {
-                    var errorDetails = new {
-                        message = "Invalid email format.",
-                        statusCode = 400
-                    };
-                    return BadRequest(errorDetails);
+                    return BadRequest(new { message = "Invalid email format.", statusCode = 400 });
                 }
 
-                var acc = await _context.Account
-                    .FirstOrDefaultAsync(a => a.Email.ToLower() == model.Email.ToLower());
-
+                var acc = await _context.Account.FirstOrDefaultAsync(a => a.Email.ToLower() == model.Email.ToLower());
                 if (acc == null)
                 {
-                    var errorDetails = new {
-                        message = "Account with the provided email does not exist.",
-                        statusCode = 404
-                    };
-                    return NotFound(errorDetails);
+                    return NotFound(new { message = "Account with the provided email does not exist.", statusCode = 404 });
                 }
-                if ((model.maand != "Whole year") && (model.jaar == 0))
-                {
-                    int monthNumber = DateTime.ParseExact(model.maand, "MMMM", CultureInfo.InvariantCulture).Month;
-                    var verhuurAanvragen = await _context.VerhuurAanvragen
-                        .Where(v => v.Account.Id == acc.Id && (v.Startdatum.Month == monthNumber || v.Einddatum.Month == monthNumber))
-                        .Include(v => v.Voertuig)
-                        .Select(a => new VerhuurAanvraagDTO
-                {
-                    AanvraagID = a.AanvraagID,
-                    Startdatum = a.Startdatum,
-                    Einddatum = a.Einddatum,
-                    Bestemming = a.Bestemming,
-                    Kilometers = a.Kilometers,
-                    Status = a.Status,
-                    Voertuig = new VoertuigDTO
-                    {
-                        Merk = a.Voertuig.Merk,
-                        Type = a.Voertuig.Type,
-                        Kenteken = a.Voertuig.Kenteken,
-                        Kleur = a.Voertuig.Kleur,
-                        Prijs_per_dag = a.Voertuig.Prijs_per_dag
-                    }
-                }).ToListAsync();
 
-                    return Ok(verhuurAanvragen);
-                } 
-                else if ((model.maand == "Whole year") && (model.jaar != 0))
+                var verhuurAanvragen = await _VerhuurAanvraagService.GetVerhuurAanvragen(model, acc.Id);
+                
+                if (verhuurAanvragen == null)
                 {
-                    var verhuurAanvragen = await _context.VerhuurAanvragen
-                        .Where(v => v.Account.Id == acc.Id && (v.Startdatum.Year == model.jaar || v.Einddatum.Year == model.jaar))
-                        .Include(v => v.Voertuig)
-                        .Select(a => new VerhuurAanvraagDTO
-                {
-                    AanvraagID = a.AanvraagID,
-                    Startdatum = a.Startdatum,
-                    Einddatum = a.Einddatum,
-                    Bestemming = a.Bestemming,
-                    Kilometers = a.Kilometers,
-                    Status = a.Status,
-                    Voertuig = new VoertuigDTO
-                    {
-                        Merk = a.Voertuig.Merk,
-                        Type = a.Voertuig.Type,
-                        Kenteken = a.Voertuig.Kenteken,
-                        Kleur = a.Voertuig.Kleur,
-                        Prijs_per_dag = a.Voertuig.Prijs_per_dag
-                    }
-                }).ToListAsync();
-
-                    return Ok(verhuurAanvragen);
+                    return StatusCode(204);
                 }
-                else if ((model.maand != "Whole year") && (model.jaar != 0))
-                {
-                    int monthNumber = DateTime.ParseExact(model.maand, "MMMM", CultureInfo.InvariantCulture).Month;
-                    var verhuurAanvragen = await _context.VerhuurAanvragen
-                        .Where(v => v.Account.Id == acc.Id && ((v.Startdatum.Year == model.jaar && v.Startdatum.Month == monthNumber) || (v.Einddatum.Year == model.jaar && v.Einddatum.Month == monthNumber)))
-                        .Include(v => v.Voertuig)
-                        .Select(a => new VerhuurAanvraagDTO
-                {
-                    AanvraagID = a.AanvraagID,
-                    Startdatum = a.Startdatum,
-                    Einddatum = a.Einddatum,
-                    Bestemming = a.Bestemming,
-                    Kilometers = a.Kilometers,
-                    Status = a.Status,
-                    Voertuig = new VoertuigDTO
-                    {
-                        Merk = a.Voertuig.Merk,
-                        Type = a.Voertuig.Type,
-                        Kenteken = a.Voertuig.Kenteken,
-                        Kleur = a.Voertuig.Kleur,
-                        Prijs_per_dag = a.Voertuig.Prijs_per_dag
-                    }
-                }).ToListAsync();
-
-                    return Ok(verhuurAanvragen);
-                }
-                else
-                {
-                    var verhuurAanvragen = await _context.VerhuurAanvragen
-                        .Where(v => v.Account.Id == acc.Id)
-                        .Include(v => v.Voertuig)
-                        .Select(a => new VerhuurAanvraagDTO
-                {
-                    AanvraagID = a.AanvraagID,
-                    Startdatum = a.Startdatum,
-                    Einddatum = a.Einddatum,
-                    Bestemming = a.Bestemming,
-                    Kilometers = a.Kilometers,
-                    Status = a.Status,
-                    Voertuig = new VoertuigDTO
-                    {
-                        Merk = a.Voertuig.Merk,
-                        Type = a.Voertuig.Type,
-                        Kenteken = a.Voertuig.Kenteken,
-                        Kleur = a.Voertuig.Kleur,
-                        Prijs_per_dag = a.Voertuig.Prijs_per_dag
-                    }
-                }).ToListAsync();
-
-                    return Ok(verhuurAanvragen);
-                }
+                return Ok(verhuurAanvragen);
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
     }
-
 }
