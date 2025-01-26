@@ -47,6 +47,9 @@ export default function VoertuigenOverview() {
         const response = await fetch(`${import.meta.env.VITE_REACT_APP_VOERTUIGEN_API_URL}`, {
           credentials: "include"
       });
+      if (response.status === 405) {
+        window.location.href = "/404";
+    }
         const data = await response.json();
         setVoertuigen(data);
       } catch (error) {
@@ -223,7 +226,8 @@ export default function VoertuigenOverview() {
             </tr>
           </thead>
           <tbody>
-            {filterResultaat.map((voertuig, index) => (
+          {filterResultaat.length > 0 ? (
+            filterResultaat.map((voertuig, index) => (
               <tr key={index}>
                 <td>{voertuig.voertuig_categorie}</td>
                 <td>{voertuig.naam}</td>
@@ -257,7 +261,13 @@ export default function VoertuigenOverview() {
                   </div>
                 </td>
               </tr>
-            ))}
+            ))
+
+          ) : (
+            <tr>
+              <td colSpan={4} style={{ textAlign: 'center' }}>No results found</td>
+            </tr>
+          )}
           </tbody>
         </table>
       </div>

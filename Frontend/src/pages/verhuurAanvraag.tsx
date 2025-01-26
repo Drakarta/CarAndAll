@@ -22,6 +22,9 @@ export default function VerhuurAanvraag() {
                 credentials: 'include',
                 body: JSON.stringify({ startdatum: vastartdate, einddatum: vaenddate, bestemming: bestemming, kilometers: kilometers, voertuigID: voertuigID}),
             });
+            if (response.status === 405) {
+                window.location.href = "/404";
+            }
 
             let responseData;
             const contentType = response.headers.get('Content-Type');
