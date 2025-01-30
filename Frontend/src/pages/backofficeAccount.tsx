@@ -15,11 +15,16 @@ interface BackofficeAccount {
 }
 
 export default function BackofficeAccounts() {
+    // List of backoffice accounts gotten from the API
     const [backofficeAccounts, setBackofficeAccounts] = useState<BackofficeAccount[]>([]);
+    // State to determine if the edit account modal should be shown
     const [edit, setEdit] = useState<boolean>(false);
+    // State to determine which account should be edited
     const [selectedAccount, setSelectedAccount] = useState<BackofficeAccount | null>(null);
+    // State to determine if the create account modal should be shown
     const [create, setCreate] = useState<boolean>(false);
     
+    // Fetch backoffice accounts from the API
     useEffect(() => {
         const fetchBackofficeAccounts = async () => {
             try {
@@ -49,14 +54,18 @@ export default function BackofficeAccounts() {
         fetchBackofficeAccounts();
     }, []);
 
+    // Function to set the edit state to true and set the selected account
     function editAccount(account: BackofficeAccount) {
-        setEdit(true);
         setSelectedAccount(account);
+        setEdit(true);
     }
     return (
         <>
+            {/* If the edit state and selectedAccount exist then show the EditBOAccount component */}
             {edit && selectedAccount ? <EditBOAccount account={selectedAccount} edit={() => setEdit(false)} /> : null}
+            {/* If the create state is true then show the CreateBOAccount component */}
             {create ? <CreateBOAccount create={() => setCreate(false)}/> : null}
+            {/* Overview section */}
             <div className="overviewSection">
                 <div className="headerFilter">
                     <h1>Back office accounts</h1>
@@ -78,6 +87,7 @@ export default function BackofficeAccounts() {
                     </tr>
                 </thead>
                 <tbody>
+                {/* Map through the backoffice accounts and show them in a table */}
                 {backofficeAccounts.map((account: BackofficeAccount, index) => (
                     <tr key={index}>
                         <td>{account.naam}</td>
