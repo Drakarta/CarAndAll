@@ -32,6 +32,7 @@ export default function GegevensPagina() {
     const [edit, setEdit] = useState<boolean>(newuser === "true" ? false : true);
 
     // Fetch the user data from the API
+    // Returns id, email, name, address, phoneNumber, role
     useEffect(() => {
       const fetchUserData = async () => {
         try {

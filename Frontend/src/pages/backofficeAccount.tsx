@@ -25,6 +25,7 @@ export default function BackofficeAccounts() {
     const [create, setCreate] = useState<boolean>(false);
     
     // Fetch backoffice accounts from the API
+    // returns all accounts with the role "Backoffice Medewerker"
     useEffect(() => {
         const fetchBackofficeAccounts = async () => {
             try {

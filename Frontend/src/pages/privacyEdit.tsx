@@ -63,6 +63,7 @@ export default function PrivacyEdit() {
   }, [markdown]);
   
   // Handle form submission
+  // Input Type: privacy, Content: markdown (privacy text)
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setSubmitting(true);
