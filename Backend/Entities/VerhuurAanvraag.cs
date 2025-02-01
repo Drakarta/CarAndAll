@@ -26,6 +26,8 @@ namespace Backend.Entities
         public Voertuig Voertuig { get; set; } = null!;
         public Account Account { get; set; } = null!;
         public string Status { get; set; }
+        public double Verzekering_multiplier { get; set; } = 1.0;
+        public ICollection<VerhuurAanvraagAccessoire> VerhuurAanvraagAccessoires { get; set;}
     }
 
     [Keyless]

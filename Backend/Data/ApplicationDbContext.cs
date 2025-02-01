@@ -19,7 +19,8 @@ namespace Backend.Data
         public DbSet<Email> Emails { get; set; }
         public DbSet<Voertuig> Voertuigen { get; set; }
         public DbSet<VerhuurAanvraag> VerhuurAanvragen { get; set; }
-        // public DbSet<VoertuigCategorie> VoertuigCategorie { get; set; }
+        public DbSet<VerhuurAanvraagAccessoire> VerhuurAanvraagAccessoires { get; set; }
+        public DbSet<Accessoire> Accessoires { get; set; }
         public DbSet<Schade> Schades { get; set; }
         public DbSet<BedrijfWagenparkbeheerders> BedrijfWagenparkbeheerders { get; set; }
         public DbSet<Text> Texts { get; set; }
@@ -57,7 +58,11 @@ namespace Backend.Data
             builder.Entity<Voertuig>().ToTable("Voertuig");
             builder.Entity<Voertuig>().HasKey(v => v.VoertuigID);
             builder.Entity<VerhuurAanvraag>().HasKey(v => v.AanvraagID);
+            builder.Entity<Accessoire>().HasKey(v => v.AccessoireNaam);
             builder.Entity<VerhuurAanvraag>().ToTable("VerhuurAanvraag");
+
+            builder.Entity<VerhuurAanvraagAccessoire>()
+                .HasKey(vaa => new { vaa.AanvraagID, vaa.AccessoireNaam });
 
             builder.Entity<Voertuig>()
                 .HasDiscriminator<string>("voertuig_categorie")
@@ -69,6 +74,18 @@ namespace Backend.Data
                 .Property(v => v.voertuig_categorie)
                 .HasColumnName("voertuig_categorie")
                 .HasMaxLength(8)
+                .IsRequired();
+
+            builder.Entity<VerhuurAanvraagAccessoire>()
+                .HasOne(v => v.VerhuurAanvraag)
+                .WithMany(v => v.VerhuurAanvraagAccessoires)
+                .HasForeignKey(v => v.AanvraagID)
+                .IsRequired();
+
+            builder.Entity<VerhuurAanvraagAccessoire>()
+                .HasOne(v => v.Accessoire)
+                .WithMany(v => v.VerhuurAanvraagAccessoires)
+                .HasForeignKey(v => v.AccessoireNaam)
                 .IsRequired();
 
             builder.Entity<VerhuurAanvraag>()

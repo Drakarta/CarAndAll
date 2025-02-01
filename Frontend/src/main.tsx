@@ -37,7 +37,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/voertuigenOverview" element={<VoertuigenOverview />} />
           <Route path="/voertuigAanmaken" element={<VoertuigAanmaken />} />
           <Route path="/voertuigUpdaten/:voertuigID" element={<VoertuigUpdaten />} />
-          <Route path="/verhuurAanvraag/:voertuigID/:voertuigNaam/:vastartdate/:vaenddate" element={<VerhuurAanvraag />} />
+          <Route path="/verhuurAanvraag/:voertuigID/:voertuigNaam/:voertuigPrijs/:vastartdate/:vaenddate" element={<VerhuurAanvraag />} />
           <Route path="/backOfficeVerhuurAanvragen" element={<BackOfficeVerhuurAanvragen />} />
           <Route path="/auth" element={<LoginRegister />} />
           <Route path="/abonnementen" element={<Abonnementen />} />
