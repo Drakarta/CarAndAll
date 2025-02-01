@@ -44,6 +44,7 @@ public class VerhuurAanvraagControllerTests
         };
     }
 
+    //Testen voor het testen of de verhuuraanvraag aangemaakt wordt en Ok returned
     [Fact]
     public async Task CreateVerhuurAanvraag_IsCreated_IsSaved()
     {
@@ -92,6 +93,7 @@ public class VerhuurAanvraagControllerTests
         Assert.Equal(200, okResult.StatusCode);
     }
 
+    //Testen voor het testen of de verhuuraanvraag aangemaakt wordt en No bestemming Bad Request returned
     [Fact]
     public async Task CreateVerhuurAanvraag_NoBestemmingBadRequest_IsntSaved()
     {
@@ -140,6 +142,7 @@ public class VerhuurAanvraagControllerTests
         Assert.Equal(400, badRequestResult.StatusCode);
     }
 
+    //Testen voor het testen of de verhuuraanvraag aangemaakt wordt en No kilometers BadRequest returned
     [Fact]
     public async Task CreateVerhuurAanvraag_NoKilometersBadRequest_IsntSaved()
     {

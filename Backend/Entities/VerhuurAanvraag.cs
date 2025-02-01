@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Entities
 {
+    //Verhuuraanvraag class met alle verhuuraanvraag variablen
     public class VerhuurAanvraag
     {
         public int AanvraagID { get; set; }

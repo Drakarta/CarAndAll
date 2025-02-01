@@ -1,5 +1,6 @@
 namespace Backend.Entities
 {
+    //Tussen table class tussen verhuuraanvraag en accessoires
     public class VerhuurAanvraagAccessoire
     {
         public required int AanvraagID { get; set; }
