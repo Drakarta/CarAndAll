@@ -6,6 +6,7 @@ export default function RegisterForm(props: { bussiness: boolean }) {
   const setToken = useTokenStore((state) => state.setToken);
   const [input, setInput] = useState({ email: "", password: "", repeatPassword: "" })
   const [isEmailValid, setIsEmailValid] = useState(true)
+  const [role, setRole] = useState("Particuliere huurder")
   
   // Regex for email validation
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
@@ -40,6 +41,10 @@ export default function RegisterForm(props: { bussiness: boolean }) {
       return
     }
 
+    if (props.bussiness == true) {
+      setRole("Bussiness")
+    }
+
     // Fetch request to register the user
     // Returns 200 if successful, 400 if not all fields are filled in, 409 if email is already in use
     const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/account/register`, {
@@ -47,25 +52,16 @@ export default function RegisterForm(props: { bussiness: boolean }) {
       headers: {
           'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email: input.email, password: input.password })
+      body: JSON.stringify({ email: input.email, password: input.password, role: role })
     })
-
-    let role: string
-    if (props.bussiness) {
-      role = "Wagenparkbeheerder"
-      
-    } else {
-      role = "Particuliere huurder"
-    }
-
-
+    
     if (response.status == 200) {
       const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/account/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email: input.email, password: input.password, role: role }),
+        body: JSON.stringify({ email: input.email, password: input.password, }),
         credentials: 'include',
       })
       const data = await response.json()
