@@ -1,5 +1,6 @@
 namespace Backend.Models
 {
+    //model voor het helpen met verwerken van de data voor het updaten van voertuig voertuigcontroller
     public class UpdateVoertuigModel
     {
         public required int VoertuigID { get; set; }
