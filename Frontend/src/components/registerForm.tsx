@@ -54,7 +54,8 @@ export default function RegisterForm(props: { bussiness: boolean }) {
       },
       body: JSON.stringify({ email: input.email, password: input.password, role: role })
     })
-    
+
+    // User gets logged in after a successful registration
     if (response.status == 200) {
       const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/account/login`, {
         method: 'POST',
