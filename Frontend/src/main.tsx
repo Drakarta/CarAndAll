@@ -28,8 +28,8 @@ import BackOfficeAbonnementAanvragen from "./pages/backOfficeAbonnementAanvragen
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-    <div className="main-content">
-    <NavBar />
+      <div className="main-content">
+        <NavBar />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route index element={<Index />} />
@@ -50,9 +50,9 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/privacy/edit" element={<PrivacyEdit />} />
           <Route path="/404" element={<VierNullVier />} />
           <Route path="BackOfficeAccounts" element={<BackofficeAccounts />} />
-          </Routes>
-          </div>
-          <Footer />
+        </Routes>
+      </div>
+      <Footer />
     </BrowserRouter>
   </StrictMode>
 );

@@ -6,17 +6,21 @@ export default function RegisterForm(props: { bussiness: boolean }) {
   const setToken = useTokenStore((state) => state.setToken);
   const [input, setInput] = useState({ email: "", password: "", repeatPassword: "" })
   const [isEmailValid, setIsEmailValid] = useState(true)
-
+  
+  // Regex for email validation
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
+  // Function to handle input changes
   const handleChange = (e: { target: { name: any; value: any } }) => {
     setInput({ ...input, [e.target.name]: e.target.value })
 
+    // Check if email is valid according to the emailRegex
     if (e.target.name === "email") {
       setIsEmailValid(emailRegex.test(e.target.value))
     }
   }
 
+  // handlesubmit function 
   const handleSubmit = async (event: any) => {
     event.preventDefault()
     if (input.password !== input.repeatPassword) {
@@ -36,6 +40,8 @@ export default function RegisterForm(props: { bussiness: boolean }) {
       return
     }
 
+    // Fetch request to register the user
+    // Returns 200 if successful, 400 if not all fields are filled in, 409 if email is already in use
     const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/account/register`, {
       method: 'POST',
       headers: {

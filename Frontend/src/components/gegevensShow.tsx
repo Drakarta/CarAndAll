@@ -1,3 +1,4 @@
+// Show the information of the user
 export default function GegevensShow(props: any) {
     return (
     <form className={"userinfo-form"}>
