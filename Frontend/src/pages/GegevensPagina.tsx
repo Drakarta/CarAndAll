@@ -5,7 +5,7 @@ import GegevensShow from "../components/gegevensShow";
 import "../styles/gegevens.css";
 import { useLocation } from "react-router-dom";
 
-// Define the user object type
+// Interface for the user object
 interface User {
   id: string;
   email: string;
@@ -17,14 +17,22 @@ interface User {
 
 
 export default function GegevensPagina() {
+    // Get the query parameters from the URL
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const newuser = queryParams.get('newuser');
+
+    // State to store the user object
     const [user, setUser] = useState<User | null>(null);
+    // State to determine if the page is still loading
     const [loading, setLoading] = useState<boolean>(true);
+    // State to store any errors that occur during fetching
     const [error, setError] = useState<string | null>(null);
+    // State to determine if the user is in edit mode
     const [edit, setEdit] = useState<boolean>(newuser === "true" ? false : true);
-  
+
+    // Fetch the user data from the API
+    // Returns id, email, name, address, phoneNumber, role
     useEffect(() => {
       const fetchUserData = async () => {
         try {
@@ -63,6 +71,7 @@ export default function GegevensPagina() {
       };
     fetchUserData();
   }, []);
+
   return (
     <div>
       <h1>GegevensPagina</h1>
@@ -73,6 +82,7 @@ export default function GegevensPagina() {
       ) : user ? (
         <>
         <div className={"userinfo"}> 
+          {/* If the user is in edit mode show the GegevensInput component, otherwise show the GegevensShow component */}
           {edit ? <GegevensShow user={user} edit={() => setEdit(!edit)} /> : <GegevensInput user={user} edit={() => setEdit(!edit)}/>}
         </div>
         </>

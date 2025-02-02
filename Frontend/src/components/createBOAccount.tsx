@@ -7,14 +7,14 @@ export default function CreateBOAccount(props: {create: () => void}) {
 
     const handleChange = (e: { target: { name: any; value: any } }) => {
         setInput({ ...input, [e.target.name]: e.target.value })
-
+        // Check if email is valid according to the emailRegex
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         if (e.target.name === "email" && !emailRegex.test(e.target.value)) {
             setIsEmailValid(false)
         } else if (e.target.name === "email" && emailRegex.test(e.target.value)) {
             setIsEmailValid(true)
         }
-
+        // Check if password is valid
         if (e.target.name === "password" && e.target.value === "") {
             setIsPasswordValid(false)
         } else if (e.target.name === "password" && e.target.value !== "") {
@@ -22,6 +22,7 @@ export default function CreateBOAccount(props: {create: () => void}) {
         }
     }
 
+    // Function to handle the submit of the form
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         if (!isEmailValid) {
@@ -44,6 +45,7 @@ export default function CreateBOAccount(props: {create: () => void}) {
 
         if (response.status === 200) {
             alert("Successfully updated backoffice account!");
+            // Reload the page to show the updated list of accounts
             window.location.reload();
         } else if (response.status === 400) {
             alert("Check if all fields are filled in.");
@@ -52,73 +54,71 @@ export default function CreateBOAccount(props: {create: () => void}) {
         }
     };
 
-  return (
-    <div className='page-center editBOAccount'>
-        <div className='editBOAccountContainer'>
-            <h1>Create Backoffice Account</h1>
-            <div>
-                <form>
-                    <div className='editBOAccountFormInput'>
-                        <label htmlFor='naam'>Naam</label>
-                        <input 
-                            type='text' 
-                            id='naam' 
-                            name='naam' 
-                            value={input.naam} 
-                            onChange={handleChange}
-                            />
-                    </div>
-                    <div className='editBOAccountFormInput'>
-                        <label htmlFor='email'>Email</label>
-                        <input 
-                            type='text' 
-                            id='email' 
-                            name='email' 
-                            value={input.email} 
-                            onChange={handleChange} 
-                            required
-                            />
-                    </div>
-                    <div className='editBOAccountFormInput'>
-                        <label htmlFor='password'>Password</label>
-                        <input 
-                            type='password' 
-                            id='password' 
-                            name='password' 
-                            value={input.password} 
-                            onChange={handleChange} 
-                            required
-                            />
-                    </div>
-                    <div className='editBOAccountFormInput'>
-                        <label htmlFor='adres'>Adres</label>
-                        <input 
-                            type='text' 
-                            id='adres' 
-                            name='adres' 
-                            value={input.adres}
-                            onChange={handleChange} 
-                            />
-                    </div>
-                    <div className='editBOAccountFormInput'>
-                        <label htmlFor='telefoonNummer'>Telefoonnummer</label>
-                        <input 
-                            type='text' 
-                            id='telefoonNummer' 
-                            name='telefoonNummer'
-                            value={input.telefoonNummer}
-                            onChange={handleChange} 
-                            />
-                    </div>
-                    <div className='editBOAccountFormButtons'>
-                        <button type='submit' className='button' onClick={handleSubmit} >Create</button>
-                        <button type='button' className='button' onClick={props.create}>Cancel</button>
-                    </div>
-                </form>
+    return (
+        <div className='page-center editBOAccount'>
+            <div className='editBOAccountContainer'>
+                <h1>Create Backoffice Account</h1>
+                <div>
+                    <form>
+                        <div className='editBOAccountFormInput'>
+                            <label htmlFor='naam'>Naam</label>
+                            <input 
+                                type='text' 
+                                id='naam' 
+                                name='naam' 
+                                value={input.naam} 
+                                onChange={handleChange}
+                                />
+                        </div>
+                        <div className='editBOAccountFormInput'>
+                            <label htmlFor='email'>Email</label>
+                            <input 
+                                type='text' 
+                                id='email' 
+                                name='email' 
+                                value={input.email} 
+                                onChange={handleChange} 
+                                required
+                                />
+                        </div>
+                        <div className='editBOAccountFormInput'>
+                            <label htmlFor='password'>Password</label>
+                            <input 
+                                type='password' 
+                                id='password' 
+                                name='password' 
+                                value={input.password} 
+                                onChange={handleChange} 
+                                required
+                                />
+                        </div>
+                        <div className='editBOAccountFormInput'>
+                            <label htmlFor='adres'>Adres</label>
+                            <input 
+                                type='text' 
+                                id='adres' 
+                                name='adres' 
+                                value={input.adres}
+                                onChange={handleChange} 
+                                />
+                        </div>
+                        <div className='editBOAccountFormInput'>
+                            <label htmlFor='telefoonNummer'>Telefoonnummer</label>
+                            <input 
+                                type='text' 
+                                id='telefoonNummer' 
+                                name='telefoonNummer'
+                                value={input.telefoonNummer}
+                                onChange={handleChange} 
+                                />
+                        </div>
+                        <div className='editBOAccountFormButtons'>
+                            <button type='submit' className='button' onClick={handleSubmit} >Create</button>
+                            <button type='button' className='button' onClick={props.create}>Cancel</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-
         </div>
-    </div>
-            
-  )
+    )
 }

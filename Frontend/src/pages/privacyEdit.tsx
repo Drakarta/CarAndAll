@@ -4,15 +4,21 @@ import remarkBreaks from 'remark-breaks';
 import '../styles/privacy.css';
 
 export default function PrivacyEdit() {
+  // State to store the privacy text
   const [markdown, setMarkdown] = useState('');
+  // State to determine if the page is still loading
   const [loading, setLoading] = useState(true);
+  // State to store any errors that occur during fetching
   const [error, setError] = useState<string | null>(null);
+  // State to determine if the user is submitting the form
   const [submitting, setSubmitting] = useState(false);
 
+  // Handle changes to the textarea
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMarkdown(event.target.value);
   };
 
+  // Fetch the privacy text from the API
   useEffect(() => {
     const fetchPrivacyText = async () => {
       try {
@@ -47,6 +53,7 @@ export default function PrivacyEdit() {
     fetchPrivacyText();
   }, []);
 
+  // Automatically resize the textarea
   useEffect(() => {
     const textarea = document.querySelector('.markdown-editor') as HTMLTextAreaElement;
     if (textarea) {
@@ -54,11 +61,12 @@ export default function PrivacyEdit() {
       textarea.style.height = `${textarea.scrollHeight}px`;
     }
   }, [markdown]);
-
+  
+  // Handle form submission
+  // Input Type: privacy, Content: markdown (privacy text)
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setSubmitting(true);
-
     try {
       const response = await fetch(
         `${import.meta.env.VITE_REACT_APP_API_URL}/privacy/updatetext`,
@@ -71,7 +79,6 @@ export default function PrivacyEdit() {
           credentials: 'include',
         }
       );
-
       if (response.ok) {
         alert('Privacy text updated successfully');
       } else {
@@ -88,26 +95,30 @@ export default function PrivacyEdit() {
   
   
   
-
+  // If the page is still loading, display a loading message
   if (loading) {
     return <div className="loading">Loading...</div>;
   }
 
+  // If there was an error, display it
   if (error) {
     return <div className="error">{error}</div>;
   }
 
   return (
-    <div className="markdown-container">
+    <div className="markdown-container">\
+      {/* Textarea to edit the privacy text */}
       <textarea
         className="markdown-editor"
         value={markdown}
         onChange={handleChange}
         placeholder="Type your Markdown here..."
       />
+      {/* display the privacy text as markdown */}
       <div className="markdown">
         <Markdown remarkPlugins={[remarkBreaks]}>{markdown}</Markdown>
       </div>
+      {/* Button to submit the form */}
       <button onClick={handleSubmit} disabled={submitting}>
         {submitting ? 'Saving...' : 'Save'}
       </button>

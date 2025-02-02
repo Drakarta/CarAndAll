@@ -127,9 +127,9 @@ namespace Backend.Controllers
         [HttpGet("getuserbyid")]
         public async Task<IActionResult> GetUserById()
         {
-         
+        
             
-             try
+            try
             {
                 var accountEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
                 if (accountEmail == null)

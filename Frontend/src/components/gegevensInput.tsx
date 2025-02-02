@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+// Interface for the user object
 interface User {
     name: string;
     email: string;
@@ -8,13 +9,17 @@ interface User {
     role: string;
 }
 
+// Component to show the input fields for the user information
 export default function GegevensInput(props: { user: User, edit: () => void }) {
+    // State to store the input fields
+    // name (string), email (string), address (string), phoneNumber (string)
     const [input, setInput] = useState({ naam: props.user.name, email: props.user.email, address: props.user.address, phoneNumber: props.user.phoneNumber });
 
     const handleChange = (e: { target: { name: string; value: string } }) => {
         setInput({ ...input, [e.target.name]: e.target.value });
     };
 
+    // Function to handle the submit of the form
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/account/updateuser`, {
@@ -28,6 +33,7 @@ export default function GegevensInput(props: { user: User, edit: () => void }) {
 
         if (response.status === 200) {
             alert("Successfully updated user information!");
+            // Reload the page to show the updated list of accounts
             window.location.reload();
         } else if (response.status === 400) {
             alert("Check if all fields are filled in.");
