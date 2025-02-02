@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import DisplayHistory from '../../components/displayHistory';
 import { useAanvragenState } from '../../state/aanvragenState';
 
+//UnderOverview is de pagina waar de wagenparkbeheerder de emails kan beheren. Hier worden ook de emails opgevraagd en doorgegeven aan de emailList component.
 export default function UnderOverview() {
     const [emails, setEmails] = useState<string[]>([]);
     const { aanvragen, setAanvragen } = useAanvragenState();

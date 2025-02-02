@@ -5,6 +5,8 @@ type EmailListProps = {
     readonly emails: string[];
     readonly setAanvragen: React.Dispatch<React.SetStateAction<VerhuurAanvraag[] | null>>;
 };
+
+//laat alle gebruikers zien van een bedrijf met invoervelden voor maand en jaar zodat hiervan de verhuuraanvragen kunnen worden opgevraagd
 export default function EmailList({ emails, setAanvragen }: EmailListProps) {
     const [selectedMonths, setSelectedMonths] = useState<{ [key: string]: string }>({});
     const [years, setYears] = useState<{ [key: string]: string }>({});

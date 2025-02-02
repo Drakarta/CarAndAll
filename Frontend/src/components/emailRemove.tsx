@@ -4,6 +4,7 @@ interface EmailRemoveProps {
     readonly setEmails: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
+//Verwijdert een account van een bedrijf
 export default function EmailRemove({ setEmails }: EmailRemoveProps) {
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');

@@ -4,7 +4,7 @@ import './emailButton.css'
 interface EmailAddProps {
     setEmails: React.Dispatch<React.SetStateAction<string[]>>;
 }
-
+//Voegt een account toe aan een bepaald bedrijf
 export default function EmailAdd({ setEmails }: Readonly<EmailAddProps>) {
     const [email, setEmail] = useState('');
     const [role, setRole] = useState('');

@@ -29,7 +29,7 @@ namespace Backend.Controllers
             _VerhuurAanvraagService = verhuurAanvraagService;
 
         }
-
+        //Krijg alle emails van het huidige bedrijf waar de wagenparkbeheerder voor werkt
         [Authorize(Policy = "Wagenparkbeheerder")]
         [HttpGet("emails")]
         public async Task<IActionResult> GetEmails()
@@ -84,6 +84,8 @@ namespace Backend.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        //Voeg een account toe aan de huidige bedrijf waar de wagenparkbeheerder voor werkt (Bij het toevoegen van een email wordt geled op domein en of de email al bestaat)
         [Authorize(Policy = "Wagenparkbeheerder")]
         [HttpPost("addAccountToCompany")]
         public async Task<IActionResult> AddAccountToCompany([FromBody] EmailModelAdd model)
@@ -241,6 +243,8 @@ namespace Backend.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        //Verwijder een account van de huidige bedrijf waar de wagenparkbeheerder voor werkt. (De eigenaar van het bedrijf kan niet verwijderd worden)
         [Authorize(Policy = "Wagenparkbeheerder")]
         [HttpPost("removeUserFromCompany")]
         public async Task<IActionResult> RemoveUserFromCompany([FromBody] EmailModelRemove model)
@@ -258,7 +262,7 @@ namespace Backend.Controllers
                 }
 
                 var account = await _context.Account
-                    .FirstOrDefaultAsync(a => a.Email.Equals(model.Email, StringComparison.CurrentCultureIgnoreCase));
+                    .FirstOrDefaultAsync(a => a.Email.Equals(model.Email.ToLower()));
 
                 if (account == null)
                 {
@@ -360,6 +364,8 @@ namespace Backend.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+        
+        //Krijg alle verhuuraanvragen van een werknemer van het bedrijf waar de wagenparkbeheerder voor werkt
         [Authorize(Policy = "Wagenparkbeheerder")]
         [HttpPost("GetVoertuigenPerUser")]
         public async Task<IActionResult> GetVoertuigenPerUser([FromBody] VoertuigUserModel model)

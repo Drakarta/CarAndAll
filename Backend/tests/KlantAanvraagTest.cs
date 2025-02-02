@@ -17,6 +17,8 @@ public class KlantAanvraagControllerTests
     private readonly KlantAanvraagController _controller;
 
     public KlantAanvraagControllerTests()
+
+    //database geseed/ voorbereidingen getroffen
     {
         _options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase(databaseName: "TestDatabase")
@@ -51,7 +53,7 @@ public class KlantAanvraagControllerTests
             }
         );
     }
-
+    //testen of de methode GetKlantAanvragen werkt, en returns ok teruggeeft als de gebruiker geautoriseerd is
     [Fact]
     public async Task GetAanvragen_ReturnsOk_WhenAuthorized()
     {

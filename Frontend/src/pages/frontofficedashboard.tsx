@@ -5,6 +5,8 @@ interface VerhuurAanvraag {
   AanvraagID: number;
   Status: string;
 }
+
+// FrontOfficeDashboard is de pagina waar de frontoffice de verhuuraanvragen kan beheren. Hier worden de geaccepteerd en uitgegeven verhuuraanvragen opgevraagd en kan ook de status van veranderd worden zodat ze uitgegeven of ingenomen kunnen worden.
 export default function VerhuurAanvragen() {
   const [aanvragen, setAanvragen] = useState<VerhuurAanvraag[]>([]);
   const [loading, setLoading] = useState(false);
