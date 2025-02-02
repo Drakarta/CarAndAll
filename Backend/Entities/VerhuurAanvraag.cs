@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Entities
 {
+    //Verhuuraanvraag class met alle verhuuraanvraag variablen
     public class VerhuurAanvraag
     {
         public int AanvraagID { get; set; }
@@ -26,6 +27,8 @@ namespace Backend.Entities
         public Voertuig Voertuig { get; set; } = null!;
         public Account Account { get; set; } = null!;
         public string Status { get; set; }
+        public double Verzekering_multiplier { get; set; } = 1.0;
+        public ICollection<VerhuurAanvraagAccessoire> VerhuurAanvraagAccessoires { get; set;}
     }
 
     [Keyless]

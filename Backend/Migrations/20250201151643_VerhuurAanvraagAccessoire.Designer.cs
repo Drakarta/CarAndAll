@@ -4,6 +4,7 @@ using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250201151643_VerhuurAanvraagAccessoire")]
+    partial class VerhuurAanvraagAccessoire
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,22 +90,6 @@ namespace Backend.Migrations
                     b.HasIndex("BedrijfId");
 
                     b.ToTable("AbonnementAanvraag", (string)null);
-                });
-
-            modelBuilder.Entity("Backend.Entities.Accessoire", b =>
-                {
-                    b.Property<string>("AccessoireNaam")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Extra_prijs_per_dag")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Max_aantal")
-                        .HasColumnType("int");
-
-                    b.HasKey("AccessoireNaam");
-
-                    b.ToTable("Accessoires");
                 });
 
             modelBuilder.Entity("Backend.Entities.Account", b =>
@@ -298,24 +285,6 @@ namespace Backend.Migrations
                     b.HasIndex("VoertuigID");
 
                     b.ToTable("VerhuurAanvraag", (string)null);
-                });
-
-            modelBuilder.Entity("Backend.Entities.VerhuurAanvraagAccessoire", b =>
-                {
-                    b.Property<int>("AanvraagID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("AccessoireNaam")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Aantal")
-                        .HasColumnType("int");
-
-                    b.HasKey("AanvraagID", "AccessoireNaam");
-
-                    b.HasIndex("AccessoireNaam");
-
-                    b.ToTable("VerhuurAanvraagAccessoires");
                 });
 
             modelBuilder.Entity("Backend.Entities.Voertuig", b =>
@@ -723,25 +692,6 @@ namespace Backend.Migrations
                     b.Navigation("Voertuig");
                 });
 
-            modelBuilder.Entity("Backend.Entities.VerhuurAanvraagAccessoire", b =>
-                {
-                    b.HasOne("Backend.Entities.VerhuurAanvraag", "VerhuurAanvraag")
-                        .WithMany("VerhuurAanvraagAccessoires")
-                        .HasForeignKey("AanvraagID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Backend.Entities.Accessoire", "Accessoire")
-                        .WithMany("VerhuurAanvraagAccessoires")
-                        .HasForeignKey("AccessoireNaam")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Accessoire");
-
-                    b.Navigation("VerhuurAanvraag");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -798,11 +748,6 @@ namespace Backend.Migrations
                     b.Navigation("Bedrijven");
                 });
 
-            modelBuilder.Entity("Backend.Entities.Accessoire", b =>
-                {
-                    b.Navigation("VerhuurAanvraagAccessoires");
-                });
-
             modelBuilder.Entity("Backend.Entities.Account", b =>
                 {
                     b.Navigation("BedrijfAccounts");
@@ -819,11 +764,6 @@ namespace Backend.Migrations
                     b.Navigation("BedrijfAccounts");
 
                     b.Navigation("BedrijfWagenparkbeheerders");
-                });
-
-            modelBuilder.Entity("Backend.Entities.VerhuurAanvraag", b =>
-                {
-                    b.Navigation("VerhuurAanvraagAccessoires");
                 });
 
             modelBuilder.Entity("Backend.Entities.Voertuig", b =>

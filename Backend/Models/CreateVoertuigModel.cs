@@ -1,5 +1,6 @@
 namespace Backend.Models
 {
+    //model voor het helpen met verwerken van de data voor het aanmaken van voertuig voertuigcontroller
     public class CreateVoertuigModel
     {
         public required string Merk { get; set;}

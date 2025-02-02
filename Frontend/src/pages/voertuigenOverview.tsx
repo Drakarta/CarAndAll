@@ -15,9 +15,9 @@ interface Voertuig {
   status: string;
   prijs_per_dag: number;
   voertuig_categorie: string;
-  verhuur_perioden: {
-    startDatum: Date;
-    eindDatum: Date;
+  verhuur_perioden:  {
+    startDatum: Date,
+    eindDatum: Date
   }
 }
 
@@ -246,7 +246,7 @@ export default function VoertuigenOverview() {
                       setVerhuurAanvraagStartDate(nieuweVerhuurAanvraagStartDate);
                       setVerhuurAanvraagEndDate(nieuweVerhuurAanvraagEndDate);
                       if(verhuurAanvraagDateRange[1] !== null){
-                        navigate('/verhuurAanvraag/' + voertuig.voertuigID + '/' + voertuig.naam + '/' + (new Date(verhuurAanvraagStartDate).toLocaleDateString("sv-SE")) + '/' + (new Date(verhuurAanvraagEndDate).toLocaleDateString("sv-SE")));
+                        navigate('/verhuurAanvraag/' + voertuig.voertuigID + '/' + voertuig.naam + '/' + voertuig.prijs_per_dag + '/' + (new Date(verhuurAanvraagStartDate).toLocaleDateString("sv-SE")) + '/' + (new Date(verhuurAanvraagEndDate).toLocaleDateString("sv-SE")));
                       }
                     }
                     }

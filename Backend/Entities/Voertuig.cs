@@ -1,5 +1,6 @@
 namespace Backend.Entities
 {
+    //Voertuig class met alle variablen en parent class van auto, camper en caravan
     public class Voertuig
     {
         public int VoertuigID { get; set; }

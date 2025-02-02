@@ -24,6 +24,7 @@ public class VoertuigControllerTests
         _controller = new VoertuigController(_context);
     }
 
+    //Testen voor het testen of een voertuig succesvol wordt opgehaald
     [Fact]
     public async Task GetVoertuigen_ReturnsOk_HasVoertuigen()
     {
@@ -61,6 +62,7 @@ public class VoertuigControllerTests
         Assert.Equal(200, okResult.StatusCode);
     }
 
+    //Testen voor het testen of een voertuig succesvol wordt aangemaakt en Ok returned
     [Fact]
     public async Task CreateVoertuig_ReturnsOk_HasCreatedVoertuig()
     {
@@ -84,7 +86,7 @@ public class VoertuigControllerTests
 
         Assert.Equal(200, okResult.StatusCode);
     }
-
+    //Testen voor het testen of een voertuig succesvol wordt aangemaakt en Bad Request terug geeft
     [Fact]
     public async Task CreateVoertuig_ReturnsBadRequest_DoesntCreateVoertuig()
     {
@@ -109,6 +111,7 @@ public class VoertuigControllerTests
         Assert.Equal(400, badRequestResult.StatusCode);
     }
 
+    //Testen voor het testen of een voertuig by id kan worden gevonden returns Ok
     [Fact]
     public async Task GetVoertuigByID_ReturnsOk_HasVoertuig()
     {
@@ -136,6 +139,7 @@ public class VoertuigControllerTests
         Assert.Equal(200, okResult.StatusCode);
     }
 
+    //Testen voor het testen of een voertuig by id kan worden gevonden returns Not Found
     [Fact]
     public async Task GetVoertuigByID_ReturnsNotFound_DoesntHasVoertuig()
     {
@@ -162,7 +166,7 @@ public class VoertuigControllerTests
 
         Assert.Equal("Voertuig not found.", notFoundResult.Value);
     }
-
+    //Testen voor het testen of een voertuig geupdate wordt returns Ok
     [Fact]
     public async Task UpdateVoertuig_ReturnsOk_HasUpdatedVoertuig()
     {
@@ -205,6 +209,7 @@ public class VoertuigControllerTests
         Assert.Equal(200, okResult.StatusCode);
     }
 
+    //Testen voor het testen of een voertuig geupdate wordt returns Bad Request
     [Fact]
     public async Task UpdateVoertuig_ReturnsBadRequest_DoesntHaveUpdatedVoertuig()
     {
@@ -246,7 +251,7 @@ public class VoertuigControllerTests
 
         Assert.Equal(400, badRequestResult.StatusCode);
     }
-
+    //Testen voor het testen of een voertuig verwijderd wordt met verhuuraanvragen returns Ok
     [Fact]
     public async Task DeleteVoertuig_ReturnsOk_HasVerhuurAanvraag()
     {
@@ -302,7 +307,7 @@ public class VoertuigControllerTests
 
         Assert.Equal(200, okResult.StatusCode);
     }
-
+    //Testen voor het testen of een voertuig verwijderd wordt returns Not Found
     [Fact]
     public async Task DeleteVoertuig_ReturnsNotFound()
     {
@@ -335,6 +340,7 @@ public class VoertuigControllerTests
         Assert.Equal(404, notFoundResult.StatusCode);
     }
 
+    //Testen voor het testen of een voertuig verwijderd wordt zonder verhuuraanvragen returns Ok
     [Fact]
     public async Task DeleteVoertuig_ReturnsOk_HasNoVerhuurAanvraag()
     {

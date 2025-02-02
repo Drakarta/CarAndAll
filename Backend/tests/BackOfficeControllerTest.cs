@@ -24,7 +24,7 @@ public class BackOfficeControllerTests
 
     }
 
-
+    //Testen of het ophalen van verhuuraanvragen Ok returned
     [Fact]
     public async Task GetVerhuurAanvragen_ReturnsOk_HasVerhuurAanvragen()
     {
@@ -79,6 +79,7 @@ public class BackOfficeControllerTests
         
     }
 
+    //Testen of de changestatus Ok returned voor geaccepteerd
     [Fact]
     public async Task ChangeStatus_ReturnsOk_Geaccepteerd()
     {
@@ -132,6 +133,7 @@ public class BackOfficeControllerTests
         Assert.Equal(200, okResult.StatusCode);
     }
 
+    //Testen of de changestatus Bad Request returned voor geaccepteerd niet valid
     [Fact]
     public async Task ChangeStatus_ReturnsBadRequest_Geaccepteerd_NoValidVerhuuraanvraag()
     {
