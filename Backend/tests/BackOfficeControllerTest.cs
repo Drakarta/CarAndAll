@@ -102,7 +102,7 @@ public class BackOfficeControllerTests
         var account = new Account
         {
             Id = accountId,
-            Email = "particulierehuurder@example.com",
+            Email = "particulierehuurder456@example.com",
             wachtwoord = "securePassword123",
             Rol = "Particuliere huurder"
         };
@@ -110,7 +110,7 @@ public class BackOfficeControllerTests
 
         var verhuurAanvraag1 = new VerhuurAanvraag
         {  
-            AanvraagID = 23,
+            AanvraagID = 2355,
             Startdatum = DateTime.Today,
             Einddatum = DateTime.Today.AddDays(14),
             Bestemming = "Spanje",
@@ -123,7 +123,7 @@ public class BackOfficeControllerTests
         _context.VerhuurAanvragen.Add(verhuurAanvraag1);
         await _context.SaveChangesAsync();
 
-        var backOfficeModel = new BackOfficeModel { AanvraagID = 23, Status = "Geaccepteerd" };
+        var backOfficeModel = new BackOfficeModel { AanvraagID = 2355, Status = "Geaccepteerd" };
 
         var result = await _controller.ChangeStatus(backOfficeModel);
     

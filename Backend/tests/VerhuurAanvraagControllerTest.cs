@@ -84,6 +84,7 @@ public class VerhuurAanvraagControllerTests
             Bestemming = "Spanje",
             Kilometers = 500,
             VoertuigID = voertuig.VoertuigID,
+            Verzekering_multiplier = 1.0,
         };
 
         var result = await _controller.CreateVerhuurAanvraag(verhuurAanvraagModel);
@@ -133,6 +134,7 @@ public class VerhuurAanvraagControllerTests
             Bestemming = "",
             Kilometers = 500,
             VoertuigID = voertuig.VoertuigID,
+            Verzekering_multiplier = 1.0,
         };
 
         var result = await _controller.CreateVerhuurAanvraag(verhuurAanvraagModel);
@@ -182,6 +184,7 @@ public class VerhuurAanvraagControllerTests
             Bestemming = "Griekenland",
             Kilometers = 0,
             VoertuigID = voertuig.VoertuigID,
+            Verzekering_multiplier = 1.0,
         };
 
         var result = await _controller.CreateVerhuurAanvraag(verhuurAanvraagModel);

@@ -36,6 +36,8 @@ namespace Backend.Controllers
             var aanvragen = await _context.VerhuurAanvragen
      .Where(a => a.Account.Id == account_id)
      .Include(a => a.Voertuig)
+     .Include(a => a.VerhuurAanvraagAccessoires)
+     .ThenInclude(vaa => vaa.Accessoire)
      .Select(a => new VerhuurAanvraagDto
      {
          AanvraagID = a.AanvraagID,
@@ -44,6 +46,7 @@ namespace Backend.Controllers
          Bestemming = a.Bestemming,
          Kilometers = a.Kilometers,
          Status = a.Status,
+         Verzekering_multiplier = a.Verzekering_multiplier,
          Voertuig = new VoertuigDto
          {
              Merk = a.Voertuig.Merk,
@@ -51,7 +54,15 @@ namespace Backend.Controllers
              Kenteken = a.Voertuig.Kenteken,
              Kleur = a.Voertuig.Kleur,
              Prijs_per_dag = a.Voertuig.Prijs_per_dag
-         }
+         },
+         VerhuurAanvraagAccessoires = a.VerhuurAanvraagAccessoires
+             .Select(vaa => new VerhuurAanvraagAccessoireDto
+             {
+                 AccessoireNaam = vaa.AccessoireNaam,
+                 Aantal = vaa.Aantal,
+                 ExtraPrijsPerDag = vaa.Accessoire.Extra_prijs_per_dag,
+                 MaxAantal = vaa.Accessoire.Max_aantal
+             }).ToList()
      }).ToListAsync();
             return Ok(aanvragen);
         }
