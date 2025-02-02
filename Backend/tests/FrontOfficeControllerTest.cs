@@ -23,7 +23,7 @@ public class FrontOfficeControllerTests
         InitializeDatabase();
     
     }
-
+    // Initializeren van de database en ook geseed
     private void InitializeDatabase()
     {
         _context.VerhuurAanvragen.RemoveRange(_context.VerhuurAanvragen);
@@ -40,7 +40,7 @@ public class FrontOfficeControllerTests
     }
 
  
-
+    //testen of de methode ChangeStatus werkt, en returns not found teruggeeft als de aanvraag niet bestaat
     [Fact]
     public async Task ChangeStatus_ReturnsNotFound_WhenRequestDoesNotExist()
     {
@@ -56,6 +56,7 @@ public class FrontOfficeControllerTests
         Assert.Equal("Aanvraag not found", notFoundResult.Value);
     }
 
+    //testen of de methode ChangeStatus werkt, en returns bad request teruggeeft als de status niet geldig is
     [Fact]
     public async Task ChangeStatus_ReturnsBadRequest_WhenStatusIsInvalid()
     {
@@ -70,6 +71,8 @@ public class FrontOfficeControllerTests
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
         Assert.Equal("Invalid status", badRequestResult.Value);
     }
+
+    //testen of de methode GetVerhuurAanvragenWithStatus werkt, en returns de geaccepteerde aanvragen terug
    [Fact]
     public async Task GetVerhuurAanvragenWithStatus_ReturnsAcceptedRequests()
     {

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import '../styles/klantAanvragen.css';
 import KlantAanvraag from '../interface/KlantAanvraag';
 
+//Hier worden alle klant aanvragen opgehaald en weergegeven
+
 export default function KlantAanvragen() {
 
     const [klantAanvragen, setKlantAanvragen] = useState<KlantAanvraag[]>([]);

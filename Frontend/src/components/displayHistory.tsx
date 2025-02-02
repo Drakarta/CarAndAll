@@ -5,6 +5,7 @@ type DisplayHistoryProps = {
     readonly aanvragen: VerhuurAanvraag[];
 };
 
+//DisplayHistory laad de verhuuraanvragen van een specifieke gebruiker gebaseerdt op een bepaalde maand en jaar.
 export default function DisplayHistory({ aanvragen }: DisplayHistoryProps) {
     if (aanvragen.length > 0) {
         const accountName = aanvragen[0].accountNaam || 'Unknown';

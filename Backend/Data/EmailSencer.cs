@@ -14,6 +14,7 @@ namespace Backend.Data
             _configuration = configuration;
         }
 
+        //Hier wordt de email verstuurd via de gmail van CarAndAll
         public void SendEmail(string toEmail, string subject, string body)
         {
             try

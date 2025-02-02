@@ -13,13 +13,14 @@ using Backend.Services;
 
 namespace Backend.test {
 public class WagenparkbeheerderControllerTests
+
 {
     private readonly DbContextOptions<ApplicationDbContext> _options;
     private readonly ApplicationDbContext _context;
     private readonly Mock<IEmailSender> _mockEmailSender;
     private readonly WagenparkbeheerderController _controller;
     
-
+    //constructor
     public WagenparkbeheerderControllerTests()
     {
         _options = new DbContextOptionsBuilder<ApplicationDbContext>()
@@ -34,6 +35,7 @@ public class WagenparkbeheerderControllerTests
 
     }
 
+    //testen of de methode getEmails werkt, en returns ok teruggeeft als de gebruiker geautoriseerd is
     [Fact]
     public async Task GetEmails_ReturnsOk_WhenAuthorized()
     {
@@ -107,6 +109,7 @@ public class WagenparkbeheerderControllerTests
         Assert.Equal(200, okResult.StatusCode);
     }
 
+    //Hier wordt de authenticatie van de gebruiker gesimuleerd
     private void MockAuthentication(string email, string Rol)
     {
         var claims = new List<Claim>
@@ -127,7 +130,7 @@ public class WagenparkbeheerderControllerTests
         };
     }
 
-
+    //testen of de methode AddAccountToCompany werkt, en returns ok teruggeeft als de gebruiker geautoriseerd is
     [Fact]
     public async Task AddAccountToCompany_ReturnsOk_WhenAuthorized()
     {
@@ -182,7 +185,7 @@ public class WagenparkbeheerderControllerTests
 
         Assert.Equal(200, okResult.StatusCode);
     }
-
+    //testen of de methode AddAccountToCompany werkt, en returns BadRequest teruggeeft als de email niet in het juiste formaat is
     [Fact]
     public async Task AddUserToCompany_ReturnsBadRequest_WhenEmailFormatIsInvalid()
     {
@@ -224,7 +227,7 @@ public class WagenparkbeheerderControllerTests
         Assert.Equal(400, badRequestResult.StatusCode);
         Assert.Contains("FalseFormatEmail", badRequestResult.Value.ToString());
     }
-
+    //testen of de methode AddAccountToCompany werkt, en returns BadRequest teruggeeft als de gebruiker zichzelf probeert toe te voegen
     [Fact]
     public async Task AddAccountToCompany_ReturnsBadRequest_WhenUserAddsSelf()
     {
@@ -267,7 +270,7 @@ public class WagenparkbeheerderControllerTests
 
 
 
-
+    //testen of de methode AddAccountToCompany werkt, en returns BadRequest teruggeeft als het domein niet geldig is
     [Fact]
     public async Task AddAccountToCompany_ReturnsBadRequest_WhenDomainIsInvalid()
     {
@@ -317,6 +320,7 @@ public class WagenparkbeheerderControllerTests
         Assert.Contains("FalseDomein", badRequestResult.Value.ToString());
     }
 
+    //testen of de methode GetVoertuigenPerUser werkt, en returns ok en de juiste verhuuraanvragen teruggeeft gebaseerd op de email en het hele jaar
     [Fact]
     public async Task GetVoertuigenPerUser_ReturnsOk_WhenValidEmailAndWholeYear()
     {
@@ -393,6 +397,7 @@ public class WagenparkbeheerderControllerTests
     Assert.Equal(200, okResult.StatusCode);
 }
 
+    //testen of de methode GetVoertuigenPerUser werkt, en bij een ongeldige email BadRequest teruggeeft
     [Fact]
     public async Task GetVoertuigenPerUser_ReturnsBadRequest_WhenInvalidEmailFormat()
     {
@@ -407,6 +412,7 @@ public class WagenparkbeheerderControllerTests
         Assert.Contains("Invalid email format.", badRequestResult.Value.ToString());
     }
 
+    //testen of de methode GetVoertuigenPerUser werkt, en bij een ongeldige account BadRequest teruggeeft
     [Fact]
     public async Task GetVoertuigenPerUser_ReturnsNotFound_WhenAccountDoesNotExist()
     {
@@ -421,6 +427,7 @@ public class WagenparkbeheerderControllerTests
         Assert.Contains("Account with the provided email does not exist.", notFoundResult.Value.ToString());
     }
 
+    //testen of de methode GetVoertuigenPerUser werkt, en de juiste voertuigen teruggeeft gebaseerd op de email en de maand en het jaar
     [Fact]
     public async Task GetVoertuigenPerUser_ReturnsOk_WhenValidEmailAndMonthAndYear()
     {
@@ -495,6 +502,7 @@ public class WagenparkbeheerderControllerTests
         Assert.Equal(200, okResult.StatusCode);
     }
 
+    //testen of de methode RemoveUserFromCompany werkt, en returns ok teruggeeft als de gebruiker geautoriseerd is
     [Fact]
     public async Task RemoveUserFromCompany_ReturnsOk_WhenAuthorized() {
          var accountId = Guid.NewGuid();

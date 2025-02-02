@@ -1,10 +1,12 @@
 using System.Text;
+using BC = BCrypt.Net.BCrypt;
 
 namespace Backend.Data
 {
     public static class Password
     {
 
+        //hier wordt een random password gegenereerd voor een zakelijke klant/ wagenparkbeheerder die nog niet een account heeft bij CarAndAll en wordt toegevoegd via het wagenparkbeheer panel
         public static string CreatePassword(int length)
         {
             const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -14,7 +16,8 @@ namespace Backend.Data
             {
                 res.Append(valid[rnd.Next(valid.Length)]);
             }
-            return res.ToString();
+            var salt = BC.EnhancedHashPassword(res.ToString());
+            return salt;
         }
     }
 }
