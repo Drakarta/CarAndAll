@@ -18,6 +18,8 @@ namespace Backend.Controllers
             _privacyDbContext = context;
         }
 
+
+        // GET: api/Privacy/gettext
         [HttpGet("gettext")]
         public async Task<IActionResult> GetPrivacy([FromQuery] string type)
         {
@@ -44,10 +46,13 @@ namespace Backend.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        // POST: api/Privacy/updatetext
         [HttpPost("updatetext")]
         [Authorize(Policy= "BackOffice")]
         public async Task<IActionResult> PostPrivacy([FromBody] TextModelUpdate text)
         {
+            // Check if the request body is empty
             if (text == null || string.IsNullOrWhiteSpace(text.Type) || string.IsNullOrWhiteSpace(text.Content))
             {
                 return BadRequest("Both 'Type' and 'Content' fields are required.");
@@ -55,6 +60,7 @@ namespace Backend.Controllers
 
             try
             {
+                // Check if the text type exists in the database
                 var existingText = await _privacyDbContext.Texts
                     .Where(p => p.Type == text.Type)
                     .FirstOrDefaultAsync();
@@ -64,6 +70,7 @@ namespace Backend.Controllers
                     return NotFound($"No entry found for type: {text.Type}");
                 }
 
+                // Update the existing text content
                 existingText.Content = text.Content;
                 await _privacyDbContext.SaveChangesAsync();
 
@@ -75,6 +82,7 @@ namespace Backend.Controllers
             }
         }
 
+        // POST: api/Privacy/addtext
         // [HttpPost("addtext")]
         // public async Task<IActionResult> AddPrivacyText([FromBody] TextModelUpdate text)
         // {
