@@ -1,5 +1,13 @@
+interface User {
+  name: string;
+  email: string;
+  address: string;
+  phoneNumber: string;
+  role: string;
+}
+
 // Show the information of the user
-export default function GegevensShow(props: any) {
+export default function GegevensShow(props: { user: User}) {
     return (
     <form className={"userinfo-form"}>
         <p>Name:</p>
