@@ -94,6 +94,7 @@ public async Task GetAllUsers_ReturnsOkResult()
         [Fact]
 public async Task UpdateUserRole_ReturnsOkResult()
 {
+    await Task.Delay(5000);
     // Arrange
     var userId = Guid.NewGuid();
     var user = new Account { Id = userId, Email = "user@example.com", Rol = "User", Naam = "User Name", wachtwoord = "defaultPassword" };

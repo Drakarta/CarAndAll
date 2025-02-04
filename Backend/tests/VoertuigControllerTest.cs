@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Backend.Entities;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Moq;
 
 public class VoertuigControllerTests
 {
@@ -23,6 +24,7 @@ public class VoertuigControllerTests
 
         _controller = new VoertuigController(_context);
     }
+    
 
     //Testen voor het testen of een voertuig succesvol wordt opgehaald
     [Fact]
@@ -117,7 +119,7 @@ public class VoertuigControllerTests
     {
         var voertuig = new Auto 
         {
-            VoertuigID = 24,
+            VoertuigID = 2313345,
             Merk = "Toyota", 
             Type = "Corolla",
             Kenteken = "12-345-67",
@@ -133,6 +135,8 @@ public class VoertuigControllerTests
         await _context.SaveChangesAsync();
 
         var result = await _controller.GetVoertuigByID(voertuig.VoertuigID);
+
+
 
         var okResult = Assert.IsType<OkObjectResult>(result);
 
@@ -346,7 +350,7 @@ public class VoertuigControllerTests
     {
         var voertuig = new Auto 
         {
-            VoertuigID = 27,
+            VoertuigID = 273745,
             Merk = "Toyota", 
             Type = "Corolla",
             Kenteken = "12-345-67",
@@ -357,9 +361,19 @@ public class VoertuigControllerTests
             Aantal_deuren = 4,
             Elektrisch = false
         };
-        _context.Voertuigen.Add(voertuig);
+        await _context.Voertuigen.AddAsync(voertuig);
+
+        var account = new Account
+        {
+            Id = Guid.NewGuid(),
+            Email = "particulierehuurder313@example.com",
+            wachtwoord = "hashed_password",
+            Rol = "Particuliere huurder"
+        };
+        _context.Account.Add(account);
 
         await _context.SaveChangesAsync();
+        MockAuthentication(account.Email, account.Rol);
 
         var voertuigDelete = new DeleteVoertuigModel
         {

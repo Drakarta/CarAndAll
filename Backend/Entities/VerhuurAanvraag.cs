@@ -41,7 +41,9 @@ namespace Backend.Entities
         public int Kilometers { get; set; }
         public required VoertuigDto Voertuig { get; set; }
         public required string Status { get; set; }
+        public double Verzekering_multiplier { get; set; }
         public Guid accountID { get; set; }
+        public ICollection<VerhuurAanvraagAccessoireDto> VerhuurAanvraagAccessoires { get; set; }
     }
 
     [Keyless]
