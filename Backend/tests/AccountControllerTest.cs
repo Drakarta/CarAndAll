@@ -51,6 +51,7 @@ public class AccountControllerTest
         };
     }
 
+    // Test if controller is created
     [Fact]
     public async Task RegisterTest()
     {
@@ -72,12 +73,13 @@ public class AccountControllerTest
         Assert.NotNull(emailInDB);
     }
 
+    // Mock authentication method
     private void MockAuthentication(string email, object rol)
     {
         throw new NotImplementedException();
     }
 
-    [Fact]
+    [Fact] // Test for login test with correct information
     public async Task LoginTest_SuccessfulLoggIn()
     {
         // Arrange
@@ -106,7 +108,7 @@ public class AccountControllerTest
     }
 
 
-    [Fact]
+    [Fact] // Test for login test with incorrect information
     public async Task LoginTest_UnsuccessfulLoggIn()
     {
         var account = new Account
@@ -131,7 +133,7 @@ public class AccountControllerTest
         Assert.Equal(401, unauthorizedResult.StatusCode);
     }
 
-    [Fact]
+    [Fact] // Test for Updating user information
     public async Task UpdateUserTest()
     {
         var account = new Account
@@ -172,7 +174,7 @@ public class AccountControllerTest
 
     }
 
-    [Fact]
+    [Fact] // Test for getting backoffice accounts list
     public async Task GetBackOfficeAccountsTest()
     {
         // Clear the database
@@ -222,7 +224,7 @@ public class AccountControllerTest
         Assert.Equal(2, accounts.Count());
     }
 
-    [Fact]
+    [Fact] // Test for creating backoffice account
     public async Task CreateBackOfficeAccountTest_Success()
     {
         // Arrange
@@ -252,7 +254,7 @@ public class AccountControllerTest
         Assert.Equal("Backofficemedewerker", createdAccount.Rol);
     }
 
-    [Fact]
+    [Fact] // Test for creating backoffice account with email already in use
     public async Task CreateBackOfficeAccountTest_EmailAlreadyInUse()
     {
         // Arrange
@@ -288,7 +290,7 @@ public class AccountControllerTest
         Assert.Equal(409, conflictResult.StatusCode);
     }
 
-    [Fact]
+    [Fact] // Test for creating backoffice account with invalid request
     public async Task CreateBackOfficeAccountTest_InvalidRequest()
     {
         // Arrange
@@ -311,7 +313,7 @@ public class AccountControllerTest
         Assert.Equal(400, badRequestResult.StatusCode);
     }
 
-    [Fact]
+    [Fact] // Test for updating backoffice account
     public async Task UpdateBackOfficeAccountTest_Success()
     {
         // Arrange
@@ -351,7 +353,7 @@ public class AccountControllerTest
         Assert.Equal(updateModel.TelefoonNummer, updatedAccount.TelefoonNummer);
     }
 
-    [Fact]
+    [Fact] // Test for updating backoffice account with invalid request
     public async Task UpdateBackOfficeAccountTest_AccountNotFound()
     {
         // Arrange
@@ -372,7 +374,7 @@ public class AccountControllerTest
         Assert.Equal(404, notFoundResult.StatusCode);
     }
 
-    [Fact]
+    [Fact] // Test for deleting backoffice account
     public async Task DeleteBackOfficeAccountTest_Success()
     {
         // Arrange

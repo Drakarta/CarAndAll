@@ -28,7 +28,7 @@ public class PrivacyControllerTest
             }
         };
     }
-
+    // Mock the authentication
     private void MockAuthentication(string email, string Rol)
     {
         var claims = new List<Claim>
@@ -49,7 +49,7 @@ public class PrivacyControllerTest
         };
     }
 
-    [Fact]
+    [Fact] // Test the GetText method
     public async Task GetTextTest()
     {
 
@@ -59,7 +59,7 @@ public class PrivacyControllerTest
         Assert.Equal(200, okResult.StatusCode);
     }
 
-    [Fact]
+    [Fact] // Test the UpdateText method
     public async Task UpdateTextTest()
     {
         var newPrivacy = new Text
