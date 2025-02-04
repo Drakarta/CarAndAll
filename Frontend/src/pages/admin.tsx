@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import "../styles/admin.css";
 
-// Define a User type for simplicity
+// Defineer interface voor gebruikers
 interface User {
   id: string;
   email: string;
-  name: string; // Added name field
+  name: string; 
   role: string;
   address: string;
   phoneNumber: string;
@@ -14,18 +14,18 @@ interface User {
 export default function AdminPanel() {
   const [users, setUsers] = useState<User[]>([]);
   const [newUserEmail, setNewUserEmail] = useState<string>("");
-  const [newUserName, setNewUserName] = useState<string>(""); // Track new user name
+  const [newUserName, setNewUserName] = useState<string>(""); 
   const [newUserRole, setNewUserRole] = useState<string>("");
   const [newUserAddress, setNewUserAddress] = useState<string>("");
   const [newUserPhone, setNewUserPhone] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [editingUserId, setEditingUserId] = useState<string | null>(null); // Track editing user ID
-  const [editedName, setEditedName] = useState<string>(""); // Track edited name
-  const [editedEmail, setEditedEmail] = useState<string>(""); // Track edited email
-  const [editedRole, setEditedRole] = useState<string>(""); // Track edited role
+  const [editingUserId, setEditingUserId] = useState<string | null>(null); 
+  const [editedName, setEditedName] = useState<string>(""); 
+  const [editedEmail, setEditedEmail] = useState<string>(""); 
+  const [editedRole, setEditedRole] = useState<string>(""); 
 
-  // Fetch users from the API
+  // Fetch gebruikers van de API
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -39,7 +39,7 @@ export default function AdminPanel() {
 
         if (response.ok) {
           const data = await response.json();
-          setUsers(data.users); // Assuming API returns a `users` array
+          setUsers(data.users); 
         } else {
           setError(`Failed to fetch users. Status: ${response.status}`);
         }
@@ -54,7 +54,7 @@ export default function AdminPanel() {
     fetchUsers();
   }, []);
 
-  // Add a new user
+  // Voeg een nieuwe gebruiker toe
   const addUser = async () => {
     if (!newUserEmail || !newUserName || !newUserRole || !newUserAddress || !newUserPhone) {
       setError("Please fill out all fields.");
@@ -72,7 +72,7 @@ export default function AdminPanel() {
           role: newUserRole,
           address: newUserAddress,
           phoneNumber: newUserPhone,
-          naam: newUserName, // Ensure name is sent to the backend
+          naam: newUserName, 
         }),
       });
   
@@ -101,7 +101,7 @@ export default function AdminPanel() {
       setError("An error occurred while adding the user.");
     }
   };
-
+// Update een bestaande gebruiker
   const updateUser = async (id: string) => {
     if (!editedName || !editedEmail || !editedRole) {
       setError("Please provide name, email, and role.");
@@ -114,7 +114,7 @@ export default function AdminPanel() {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
-          Role: editedRole, // Use 'Role' instead of 'NewRole'
+          Role: editedRole, 
           Email: editedEmail,
           Naam: editedName,
         }),
@@ -141,7 +141,7 @@ export default function AdminPanel() {
     }
   };
 
-  // Remove a user
+//Verwijder een gebruiker
   const removeUser = async (id: string) => {
     try {
       const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/account/users/${id}`, {
@@ -153,7 +153,7 @@ export default function AdminPanel() {
       });
   
       if (response.ok) {
-        // Remove the user from the local state
+        // Verwijder de gebruiker uit de lokaal opgeslagen lijst
         setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
         setError(null);
       } else {
@@ -173,7 +173,7 @@ export default function AdminPanel() {
   if (error) {
     return <p style={{ color: "red" }}>{error}</p>;
   }
-
+// Render de Admin Panel
   return (
     <div style={{ padding: "20px" }}>
       <h1>Admin Panel</h1>

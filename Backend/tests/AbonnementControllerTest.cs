@@ -18,6 +18,7 @@ namespace Backend.Tests
 
         public AbonnementControllerTest()
         {
+            // Create a new in-memory database
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: "TestDatabase")
                 .Options;
@@ -27,6 +28,7 @@ namespace Backend.Tests
 
             var data = new List<Abonnement>().AsQueryable();
 
+            // Mock the DbSet
             var mockSet = new Mock<DbSet<Abonnement>>();
             mockSet.As<IQueryable<Abonnement>>().Setup(m => m.Provider).Returns(new TestAsyncQueryProvider<Abonnement>(data.Provider));
             mockSet.As<IQueryable<Abonnement>>().Setup(m => m.Expression).Returns(data.Expression);
@@ -40,6 +42,7 @@ namespace Backend.Tests
         
 
         [Fact]
+        // Test if the GetAbonnementById method returns a NotFoundObjectResult when the abonnement does not exist
         public async Task GetAbonnementById_ReturnsNotFound_WhenAbonnementDoesNotExist()
         {
             // Act
@@ -51,6 +54,7 @@ namespace Backend.Tests
         }
 
         [Fact]
+        // Test if the GetAbonnementById method returns an OkObjectResult with the abonnement when the abonnement exists
         public async Task GetAbonnementById_ReturnsOkResult_WithAbonnement()
         {
             // Arrange
@@ -78,6 +82,7 @@ namespace Backend.Tests
         
 
         [Fact]
+        // Test if the CreateAbonnement method returns a CreatedAtActionResult with the new abonnement
         public async Task CreateAbonnement_ReturnsCreatedAtActionResult_WithNewAbonnement()
         {
             // Arrange
@@ -93,6 +98,7 @@ namespace Backend.Tests
         }
 
         [Fact]
+        // Test if the GetAbonnementen method returns an OkObjectResult with a list of abonnementen
         public async Task GetAbonnementen_ReturnsOkResult_WithListOfAbonnementen()
         {
             // Arrange

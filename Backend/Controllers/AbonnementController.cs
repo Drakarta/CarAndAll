@@ -39,7 +39,7 @@ namespace Backend.Controllers
             var abonnement = await _context.Abonnement.FindAsync(id);
             if (abonnement == null)
             {
-                return NotFound("Abonnement not found");
+                return NotFound("Abonnement niet gevonden");
             }
             return Ok(abonnement);
         }
@@ -51,53 +51,53 @@ namespace Backend.Controllers
         {
             try
             {
-                // Retrieve the current user's email and role based on the logged-in session or claims
+                // Haal de e-mail en rol van de huidige gebruiker op basis van de ingelogde sessie of claims
                 var emailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
                 var roleClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
 
                 if (emailClaim == null || roleClaim == null)
                 {
-                    Console.WriteLine("User is not authenticated or role is not available.");
-                    return NotFound("User is not authenticated or role is not available.");
+                    Console.WriteLine("Gebruiker is niet geauthenticeerd of rol is niet beschikbaar.");
+                    return NotFound("Gebruiker is niet geauthenticeerd of rol is niet beschikbaar.");
                 }
 
                 var email = emailClaim.Value;
                 var role = roleClaim.Value;
 
-                // Log the retrieved email and role
-                Console.WriteLine($"Retrieved email: {email}");
-                Console.WriteLine($"Retrieved role: {role}");
+                // Log de opgehaalde e-mail en rol
+                Console.WriteLine($"Opgehaalde e-mail: {email}");
+                Console.WriteLine($"Opgehaalde rol: {role}");
 
-                // Confirm that the role is 'Wagenparkbeheerder'
+                // Bevestig dat de rol 'Wagenparkbeheerder' is
                 if (role != "Wagenparkbeheerder")
                 {
-                    Console.WriteLine("User does not have the required role.");
-                    return Unauthorized(new { message = "User does not have the required role." });
+                    Console.WriteLine("Gebruiker heeft niet de vereiste rol.");
+                    return Unauthorized(new { message = "Gebruiker heeft niet de vereiste rol." });
                 }
 
-                // Retrieve the 'BedrijfWagenparkbeheerders' associated with the logged-in user's email
+                // Haal de 'BedrijfWagenparkbeheerders' op die zijn gekoppeld aan de e-mail van de ingelogde gebruiker
                 var bedrijfWagenparkbeheerder = await _context.BedrijfWagenparkbeheerders
                     .Include(bw => bw.Bedrijf)
                     .FirstOrDefaultAsync(bw => bw.Account.Email == email);
 
                 if (bedrijfWagenparkbeheerder == null)
                 {
-                    Console.WriteLine("No associated Bedrijf found for the current user.");
-                    return NotFound(new { message = "No associated Bedrijf found for the current user." });
+                    Console.WriteLine("Geen gekoppeld Bedrijf gevonden voor de huidige gebruiker.");
+                    return NotFound(new { message = "Geen gekoppeld Bedrijf gevonden voor de huidige gebruiker." });
                 }
 
                 var bedrijfId = bedrijfWagenparkbeheerder.bedrijf_id;
 
-                // Log the retrieved bedrijfId
-                Console.WriteLine($"Retrieved bedrijfId: {bedrijfId}");
+                // Log de opgehaalde bedrijfId
+                Console.WriteLine($"Opgehaalde bedrijfId: {bedrijfId}");
 
-                // Return the 'Bedrijf' Id
+                // Retourneer de 'Bedrijf' Id
                 return Ok(new { bedrijfId = bedrijfId });
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Internal server error: {ex.Message}");
-                return StatusCode(500, new { message = $"Internal server error: {ex.Message}" });
+                Console.WriteLine($"Interne serverfout: {ex.Message}");
+                return StatusCode(500, new { message = $"Interne serverfout: {ex.Message}" });
             }
         }
 
@@ -118,7 +118,7 @@ namespace Backend.Controllers
             var abonnement = await _context.Abonnement.FindAsync(id);
             if (abonnement == null)
             {
-                return NotFound("Abonnement not found");
+                return NotFound("Abonnement niet gevonden");
             }
 
             abonnement.Naam = updatedAbonnement.Naam;
@@ -139,7 +139,7 @@ namespace Backend.Controllers
             var abonnement = await _context.Abonnement.FindAsync(id);
             if (abonnement == null)
             {
-                return NotFound("Abonnement not found");
+                return NotFound("Abonnement niet gevonden");
             }
 
             _context.Abonnement.Remove(abonnement);
@@ -150,58 +150,58 @@ namespace Backend.Controllers
 
         // POST: api/Abonnement/select
         [Authorize]
-[HttpPost("select")]
-public async Task<IActionResult> SelectAbonnement([FromBody] JsonElement data)
-{
-    try
-    {
-        // Ensure `abonnementId` is provided
-        if (!data.TryGetProperty("abonnementId", out var abonnementIdProp))
+        [HttpPost("select")]
+        public async Task<IActionResult> SelectAbonnement([FromBody] JsonElement data)
         {
-            return BadRequest(new { message = "Missing required field 'abonnementId'.", statusCode = 400 });
+            try
+            {
+                // Zorg ervoor dat `abonnementId` is opgegeven
+                if (!data.TryGetProperty("abonnementId", out var abonnementIdProp))
+                {
+                    return BadRequest(new { message = "Ontbrekend vereist veld 'abonnementId'.", statusCode = 400 });
+                }
+
+                int abonnementId = abonnementIdProp.GetInt32();
+
+                // Identificeer de huidige gebruiker en hun bedrijf (ervan uitgaande dat sessie of authenticatie gebruikersinformatie biedt)
+                var emailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+                if (emailClaim == null)
+                {
+                    return Unauthorized(new { message = "Gebruiker is niet geauthenticeerd.", statusCode = 401 });
+                }
+
+                var email = emailClaim.Value;
+
+                // Haal de 'BedrijfWagenparkbeheerders' op die zijn gekoppeld aan de e-mail van de ingelogde gebruiker
+                var bedrijfWagenparkbeheerder = await _context.BedrijfWagenparkbeheerders
+                    .Include(bw => bw.Bedrijf)
+                    .FirstOrDefaultAsync(bw => bw.Account.Email == email);
+
+                if (bedrijfWagenparkbeheerder == null)
+                {
+                    return NotFound(new { message = "Bedrijf niet gevonden voor de huidige gebruiker.", statusCode = 404 });
+                }
+
+                var bedrijf = bedrijfWagenparkbeheerder.Bedrijf;
+
+                // Zoek het opgegeven abonnement
+                var abonnement = await _context.Abonnement.FindAsync(abonnementId);
+                if (abonnement == null)
+                {
+                    return NotFound(new { message = "Abonnement niet gevonden.", statusCode = 404 });
+                }
+
+                // Werk het abonnement van het bedrijf bij
+                bedrijf.AbonnementId = abonnement.Id;
+                _context.Bedrijf.Update(bedrijf);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = $"Abonnement {abonnement.Naam} succesvol geselecteerd voor Bedrijf {bedrijf.naam}", statusCode = 200 });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"Interne serverfout: {ex.Message}", statusCode = 500 });
+            }
         }
-
-        int abonnementId = abonnementIdProp.GetInt32();
-
-        // Identify the current user and their bedrijf (assuming session or authentication provides user info)
-        var emailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
-        if (emailClaim == null)
-        {
-            return Unauthorized(new { message = "User is not authenticated.", statusCode = 401 });
-        }
-
-        var email = emailClaim.Value;
-
-        // Retrieve the 'BedrijfWagenparkbeheerders' associated with the logged-in user's email
-        var bedrijfWagenparkbeheerder = await _context.BedrijfWagenparkbeheerders
-            .Include(bw => bw.Bedrijf)
-            .FirstOrDefaultAsync(bw => bw.Account.Email == email);
-
-        if (bedrijfWagenparkbeheerder == null)
-        {
-            return NotFound(new { message = "Bedrijf not found for the current user.", statusCode = 404 });
-        }
-
-        var bedrijf = bedrijfWagenparkbeheerder.Bedrijf;
-
-        // Find the specified abonnement
-        var abonnement = await _context.Abonnement.FindAsync(abonnementId);
-        if (abonnement == null)
-        {
-            return NotFound(new { message = "Abonnement not found.", statusCode = 404 });
-        }
-
-        // Update the bedrijf's abonnement
-        bedrijf.AbonnementId = abonnement.Id;
-        _context.Bedrijf.Update(bedrijf);
-        await _context.SaveChangesAsync();
-
-        return Ok(new { message = $"Abonnement {abonnement.Naam} successfully selected for Bedrijf {bedrijf.naam}", statusCode = 200 });
-    }
-    catch (Exception ex)
-    {
-        return StatusCode(500, new { message = $"Internal server error: {ex.Message}", statusCode = 500 });
-    }
-}
     }
 }

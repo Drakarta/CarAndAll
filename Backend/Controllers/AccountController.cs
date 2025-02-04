@@ -190,19 +190,23 @@ namespace Backend.Controllers
                 return StatusCode(500, new { message = "An error occurred during logout." });
             }
         }
+
+
         [Authorize(Policy = "AdminPolicy")]
-        [HttpGet("users")]
+[HttpGet("users")]
+// Haal alle gebruikers op
 public async Task<IActionResult> GetAllUsers()
 {
     try
     {
+        // Selecteer alleen de benodigde velden
         var users = await _accountDbContext.Account
             .Select(u => new 
             {
                 u.Id,
                 u.Email,
-                Name = u.Naam, // Ensure name is included
-                Role = u.Rol ?? "Error", // Ensure role is included
+                Name = u.Naam, 
+                Role = u.Rol ?? "Error", 
                 Address = u.Adres ?? "N/A",
                 PhoneNumber = u.TelefoonNummer ?? "N/A"
             })
@@ -212,49 +216,52 @@ public async Task<IActionResult> GetAllUsers()
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Error fetching users: {ex.Message}");
-        return StatusCode(500, new { message = "Internal Server Error." });
+        Console.WriteLine($"Fout bij het ophalen van gebruikers: {ex.Message}");
+        return StatusCode(500, new { message = "Interne serverfout." });
     }
 }
+
 [Authorize(Policy = "AdminPolicy")]
 [HttpPost("CreateUser")]
+// Maak een nieuwe gebruiker aan
 public async Task<IActionResult> AddUser([FromBody] LoginRegisterModel model)
 {
     try
     {
+        // Zorg ervoor dat het model geldig is
         if (model == null || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
         {
-            return BadRequest(new { message = "Invalid user creation request." });
+            return BadRequest(new { message = "Ongeldig verzoek voor het aanmaken van een gebruiker." });
         }
-
+        // Controleer of de e-mail al in gebruik is
         var existingUser = await _accountDbContext.Account
             .FirstOrDefaultAsync(u => u.Email == model.Email);
-
+        // Retourneer een conflict als de e-mail al in gebruik is
         if (existingUser != null)
         {
-            return Conflict(new { message = "Email is already in use." });
+            return Conflict(new { message = "E-mail is al in gebruik." });
         }
-
+        // Maak een nieuwe gebruiker aan
         var newUser = new Account
         {
-            Id = Guid.NewGuid(), // Ensure a unique identifier is generated
+            Id = Guid.NewGuid(), // Zorg ervoor dat er een unieke identifier wordt gegenereerd
             Email = model.Email,
-            Naam = model.Naam, // Ensure the name is set
+            Naam = model.Naam, // Zorg ervoor dat de naam is ingesteld
             wachtwoord = BC.EnhancedHashPassword(model.Password),
-            Rol = model.Role ?? "DefaultRole", // Set a role if provided or default to a fallback
+            Rol = model.Role ?? "DefaultRole", // Stel een rol in als deze is opgegeven of gebruik een standaardrol
             Adres = model.Address ?? "N/A",
             TelefoonNummer = model.PhoneNumber ?? "N/A"
         };
-
+        // Voeg de gebruiker toe aan de database
         _accountDbContext.Account.Add(newUser);
         await _accountDbContext.SaveChangesAsync();
 
         return Ok(new
         {
-            Message = "User created successfully.",
+            Message = "Gebruiker succesvol aangemaakt.",
             UserId = newUser.Id,
             newUser.Email,
-            newUser.Naam, // Ensure the name is returned
+            newUser.Naam,
             Role = newUser.Rol,
             Address = newUser.Adres,
             PhoneNumber = newUser.TelefoonNummer
@@ -262,59 +269,66 @@ public async Task<IActionResult> AddUser([FromBody] LoginRegisterModel model)
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Error occurred during user creation: {ex.Message}");
-        return StatusCode(500, new { message = "Internal Server Error: " + ex.Message });
+        Console.WriteLine($"Fout opgetreden tijdens het aanmaken van de gebruiker: {ex.Message}");
+        return StatusCode(500, new { message = "Interne serverfout: " + ex.Message });
     }
 }
 
-        [Authorize(Policy = "AdminPolicy")]
-        [HttpPut("users/{id}")]
+[Authorize(Policy = "AdminPolicy")]
+[HttpPut("users/{id}")]
+// Werk de rol van een gebruiker bij
 public async Task<IActionResult> UpdateUserRole(Guid id, [FromBody] UpdateUserRoleModel model)
 {
     try
     {
+        // Zorg ervoor dat het model geldig is
         var user = await _accountDbContext.Account.FindAsync(id);
         if (user == null)
         {
-            return NotFound(new { message = "User not found." });
+            return NotFound(new { message = "Gebruiker niet gevonden." });
         }
-
-        user.Rol = model.Role; // Use 'Role' instead of 'NewRole'
-        user.Naam = model.Naam; // Ensure name is updated
-        user.Email = model.Email; // Ensure email is updated
+        // Zorg ervoor dat de rol is ingesteld
+        user.Rol = model.Role; 
+        user.Naam = model.Naam; 
+        user.Email = model.Email; 
         await _accountDbContext.SaveChangesAsync();
 
-        return Ok(new { message = "User role updated successfully.", user });
+        return Ok(new { message = "Gebruikersrol succesvol bijgewerkt.", user });
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Error updating user role: {ex.Message}");
-        return StatusCode(500, new { message = "Internal Server Error." });
+        // Log de fout
+        Console.WriteLine($"Fout bij het bijwerken van de gebruikersrol: {ex.Message}");
+        return StatusCode(500, new { message = "Interne serverfout." });
     }
 }
-        [Authorize(Policy = "AdminPolicy")]
-        [HttpDelete("users/{id}")]
-        public async Task<IActionResult> RemoveUser(Guid id)
+
+[Authorize(Policy = "AdminPolicy")]
+[HttpDelete("users/{id}")]
+// Verwijder een gebruiker uit de database
+public async Task<IActionResult> RemoveUser(Guid id)
+{
+    try
+    {
+        // Zoek de gebruiker
+        var user = await _accountDbContext.Account.FindAsync(id);
+        if (user == null)
         {
-            try
-            {
-                var user = await _accountDbContext.Account.FindAsync(id);
-                if (user == null)
-                {
-                    return NotFound(new { message = "User not found." });
-                }
-
-                _accountDbContext.Account.Remove(user);
-                await _accountDbContext.SaveChangesAsync();
-
-                return Ok(new { message = "User removed successfully." });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error removing user: {ex.Message}");
-                return StatusCode(500, new { message = "Internal Server Error." });
-            }
+            return NotFound(new { message = "Gebruiker niet gevonden." });
         }
+        // Verwijder de gebruiker
+        _accountDbContext.Account.Remove(user);
+        await _accountDbContext.SaveChangesAsync();
+
+        return Ok(new { message = "Gebruiker succesvol verwijderd." });
+    }
+    catch (Exception ex)
+    {
+        // Log de fout
+        Console.WriteLine($"Fout bij het verwijderen van de gebruiker: {ex.Message}");
+        return StatusCode(500, new { message = "Interne serverfout." });
+    }
+}
         public class UpdateUserModel
         {
             public string Email { get; set; }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "../styles/abonnementen.css";
 
-// Define the interface for abonnement aanvragen
+// Gedefineerd interface voor abonnementaanvragen
 interface AbonnementAanvraag {
   AanvraagID: number;
   Naam: string;
@@ -22,7 +22,7 @@ export default function BackOfficeAbonnementAanvragen() {
     const fetchAbonnementAanvragen = async (): Promise<void> => {
       setLoading(true);
       setError(null);
-
+// Fetch request om abonnement aanvragen op te halen
       try {
         const response = await fetch(
           `${import.meta.env.VITE_REACT_APP_API_URL}/AbonnementAanvraag/GetAbonnementAanvragen`,
@@ -37,7 +37,7 @@ export default function BackOfficeAbonnementAanvragen() {
         if (!response.ok) {
           throw new Error("Failed to fetch abonnement aanvragen");
         }
-
+// Data omzetten naar JSON formaat
         const data = await response.json();
         setAbonnementAanvragen(
           data.map((item: any) => ({
@@ -70,7 +70,7 @@ export default function BackOfficeAbonnementAanvragen() {
   if (error) {
     return <div className="error">{error}</div>;
   }
-
+// Functie om status van abonnement aanvraag te wijzigen
   const handleVerhuurAanvraagStatusChange = async () => {
     try {
       const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/AbonnementAanvraag/ChangeStatus`, {
@@ -100,7 +100,7 @@ export default function BackOfficeAbonnementAanvragen() {
     setAanvraagID(aanvraagID);
     handleVerhuurAanvraagStatusChange();
   };
-
+// Teruggeven van abonnement aanvragen
   return (
     <div className="abonnementenSection">
       <h2>Abonnement Aanvragen</h2>

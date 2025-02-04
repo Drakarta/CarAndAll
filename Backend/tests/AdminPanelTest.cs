@@ -29,6 +29,7 @@ namespace Backend.test
 
 
         [Fact]
+        // Test of de AddUser methode een OkObjectResult teruggeeft wanneer de gebruiker succesvol is aangemaakt
 public async Task AddUser_ReturnsOkResult()
 {
     // Arrange
@@ -52,6 +53,7 @@ public async Task AddUser_ReturnsOkResult()
 }
 
         [Fact]
+        // Test of de GetAllUsers methode een OkObjectResult teruggeeft met een lijst van gebruikers
 public async Task GetAllUsers_ReturnsOkResult()
 {
 
@@ -92,6 +94,7 @@ public async Task GetAllUsers_ReturnsOkResult()
 
 
         [Fact]
+        // Test of de UpdateUserRole methode een OkObjectResult teruggeeft wanneer de gebruikersrol succesvol is bijgewerkt
 public async Task UpdateUserRole_ReturnsOkResult()
 {
     // Arrange
@@ -112,6 +115,7 @@ public async Task UpdateUserRole_ReturnsOkResult()
 }
 
         [Fact]
+        // Test of de RemoveUser methode een OkObjectResult teruggeeft wanneer de gebruiker succesvol is verwijderd
 public async Task RemoveUser_ReturnsOkResult()
 {
     // Arrange

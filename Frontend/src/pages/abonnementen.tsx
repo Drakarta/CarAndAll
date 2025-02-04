@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../styles/abonnementen.css";
-
+// Gedefineerd interface voor abonnementen
 interface Abonnement {
   id: number;
   naam: string;
@@ -29,7 +29,7 @@ const Abonnementen: React.FC = () => {
             credentials: "include",
           }
         );
-
+        // Data omzetten naar JSON formaat
         if (bedrijfResponse.ok) {
           const bedrijfData = await bedrijfResponse.json();
           console.log("Fetched bedrijfId:", bedrijfData.bedrijfId); // Debugging statement
@@ -64,7 +64,7 @@ const Abonnementen: React.FC = () => {
             credentials: "include",
           }
         );
-
+        
         if (userAbonnementResponse.ok) {
           const userAbonnementData: Abonnement = await userAbonnementResponse.json();
           setCurrentAbonnement(userAbonnementData);
@@ -80,14 +80,14 @@ const Abonnementen: React.FC = () => {
 
     fetchData();
   }, []);
-
+  // Functie om abonnement te selecteren
   const handleSelectAbonnement = async (abonnement: Abonnement) => {
     console.log("Current bedrijfId:", bedrijfId); // Debugging statement
     if (!bedrijfId) {
       alert("Bedrijf ID is not available.");
       return;
     }
-
+    // Functie om abonnement aan te vragen
     try {
       const response = await fetch(
         `${import.meta.env.VITE_REACT_APP_API_URL}/AbonnementAanvraag/create`, // Updated endpoint
@@ -118,7 +118,7 @@ const Abonnementen: React.FC = () => {
   if (loading) {
     return <div className="loading">Laden...</div>;
   }
-
+  // Teruggeven van abonnementen
   return (
     <div className="abonnementenSection">
       {currentAbonnement ? (

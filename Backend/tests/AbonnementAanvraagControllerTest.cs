@@ -21,6 +21,7 @@ namespace Backend.Tests
 
         public AbonnementAanvraagControllerTest()
         {
+            // Create a new in-memory database
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: "TestDatabase")
                 .Options;
@@ -28,6 +29,7 @@ namespace Backend.Tests
             var context = new ApplicationDbContext(options);
             _controller = new AbonnementAanvraagController(context);
 
+            // Mock the User object
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.Name, "testuser"),
@@ -40,6 +42,7 @@ namespace Backend.Tests
         }
 
         [Fact]
+        // Test if the CreateAbonnementAanvraag method returns a BadRequestObjectResult when the model is invalid
         public async Task CreateAbonnementAanvraag_ReturnsBadRequest_WhenNaamIsEmpty()
         {
             // Arrange
@@ -54,6 +57,7 @@ namespace Backend.Tests
         }
 
         [Fact]
+        //  Test if the CreateAbonnementAanvraag method returns a NotFoundObjectResult when the user is not authenticated
         public async Task GetAbonnementAanvragen_ReturnsNotFound_WhenNoAanvragenFound()
         {
             // Arrange
@@ -77,6 +81,7 @@ namespace Backend.Tests
         }
 
         [Fact]
+        // Test if the CreateAbonnementAanvraag method returns a BadRequestObjectResult when the BedrijfId is empty
         public async Task ChangeStatus_ReturnsBadRequest_WhenModelIsInvalid()
         {
             // Arrange
@@ -91,6 +96,7 @@ namespace Backend.Tests
         }
 
         [Fact]
+        // Test if the CreateAbonnementAanvraag method returns a NotFoundObjectResult when the aanvraag is not found
         public async Task ChangeStatus_ReturnsNotFound_WhenAanvraagNotFound()
         {
             // Arrange
