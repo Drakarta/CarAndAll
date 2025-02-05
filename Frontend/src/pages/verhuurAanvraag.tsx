@@ -136,7 +136,6 @@ return (
                 <p><b>Eind datum: </b>{vaenddate}</p>
                 <p><b>Voertuig prijs per dag: </b>{ (parseFloat(voertuigPrijs?.toString() || "0") * selectedVerzekering)} + enige accessoire kosten</p>
                 <button onClick={handleMakeVerhuurAanvraag}>Verhuur aanvraag indienen</button>
-                <button onClick={() => alert(selectedAccessoires[0].accessoireNaam + selectedAccessoires[0].aantal)}>Test</button>
             </div>
             <div>
                 <p><b>Accessoire lijst:</b></p>
